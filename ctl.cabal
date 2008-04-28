@@ -36,6 +36,7 @@ exposed-modules:
 	Control.Bifunctor.Composition,
 	Control.Comonad,
 	Control.Comonad.Cofree,
+	Control.Comonad.Cofree.Alt,
 	Control.Comonad.Identity,
 	Control.Comonad.Instances,
 	Control.Comonad.State,
@@ -62,7 +63,8 @@ exposed-modules:
 	Control.Morphism.Dyna,
 	Control.Morphism.Apo,
 	Control.Morphism.Zygo,
-	Control.Morphism.Histo
+	Control.Morphism.Histo,
+	Data.Void
 
 ghc-options:		-O2 -funbox-strict-fields
 hs-source-dirs:		src

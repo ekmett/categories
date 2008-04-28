@@ -62,7 +62,7 @@ type (f :*: g) a = BifunctorF (,) f g a
 -- because (f :*: g) is a partialy applied type synonym even though it immediately gets filled out
 
 #ifndef __HADDOCK__
-runProductF :: (f * g) a -> (f a, g a)
+runProductF :: (f :*: g) a -> (f a, g a)
 #else
 runProductF :: Bifunctor (,) f g a -> (f a, g a)
 #endif

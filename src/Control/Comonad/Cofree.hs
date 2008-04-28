@@ -7,7 +7,7 @@
 --
 -- Maintainer  :  Edward Kmett <ekmett@gmail.com>
 -- Stability   :  experimental
--- Portability :  portable
+-- Portability :  rank-2 types 
 --
 ----------------------------------------------------------------------------
 module Control.Comonad.Cofree where
@@ -15,7 +15,6 @@ module Control.Comonad.Cofree where
 import Control.Comonad
 import Control.Arrow ((|||), (&&&), (+++), (***))
 
--- | The cofree comonad of a functor (aka the branching stream comonad)
 data Cofree f a = Cofree { runCofree :: (a, f (Cofree f a)) }
 
 instance Functor f => Functor (Cofree f) where
@@ -30,3 +29,4 @@ outCofree = snd . runCofree
 
 anaCofree :: Functor f => (a -> c) -> (a -> f a) -> a -> Cofree f c
 anaCofree h t = Cofree . (h &&& fmap (anaCofree h t) . t)
+

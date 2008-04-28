@@ -1,0 +1,68 @@
+name:			ctl
+category:		Control, Monads, Comonads
+version:		0.1
+license:		BSD3
+license-file:		LICENSE
+build-depends:		base -any, mtl -any
+author:			Edward A. Kmett
+maintainer:		ekmett@gmail.com
+stability:		experimental
+homepage:		http://comonad.com/
+synopsis:		Comonad Transformer Library
+copyright:		Copyright (C) 2008 Edward A. Kmett
+description: 		Defines comonads, a few missing monads and constructive algorithmic morphisms
+
+extensions:		
+	CPP, 
+	EmptyDataDecls, 
+	FlexibleContexts,
+	FlexibleInstances,
+	FunctionalDependencies, 
+	MultiParamTypeClasses, 
+	TypeFamilies, 
+	TypeSynonymInstances,
+	TypeOperators,
+	UndecidableInstances,
+	GADTs
+
+
+exposed-modules:
+--	Control.Arrow.CoKleisli,
+	Control.Bifunctor,
+	Control.Bifunctor.Braided,
+	Control.Bifunctor.Associative,
+	Control.Bifunctor.Instances,
+	Control.Bifunctor.Monoidal,
+	Control.Bifunctor.Composition,
+	Control.Comonad,
+	Control.Comonad.Cofree,
+	Control.Comonad.Identity,
+	Control.Comonad.Instances,
+	Control.Comonad.State,
+	Control.Comonad.State.Class,
+	Control.Comonad.Reader,
+	Control.Comonad.Reader.Class,
+	Control.Functor.Adjunction,
+	Control.Functor.Algebra,
+	Control.Functor.Composition
+	Control.Functor.Extras,
+	Control.Functor.Fix,
+	Control.Functor.Full,
+	Control.Functor.Pointed,
+	Control.Functor.Representable,
+	Control.Monad.Free,
+	Control.Monad.Either,
+	Control.Morphism.Hylo,
+	Control.Morphism.Cata,
+	Control.Morphism.Ana,
+	Control.Morphism.Meta,
+	Control.Morphism.Futu,
+	Control.Morphism.Chrono,
+	Control.Morphism.Para,
+	Control.Morphism.Dyna,
+	Control.Morphism.Apo,
+	Control.Morphism.Zygo,
+	Control.Morphism.Histo
+
+ghc-options:		-O2 -funbox-strict-fields
+hs-source-dirs:		src

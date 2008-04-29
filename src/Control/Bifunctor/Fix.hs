@@ -17,5 +17,5 @@ newtype MuB s a = InB { outB :: s a (MuB s a) }
 type NuB s a = MuB s a 
 
 instance Bifunctor s => Functor (MuB s) where
-        fmap f = InB . bimap f (map f) . outB
+        fmap f = InB . bimap f (fmap f) . outB
 

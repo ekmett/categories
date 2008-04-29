@@ -79,19 +79,22 @@ liftSwapB :: Bifunctor p => (p a b -> p c d) -> SwapB p b a -> SwapB p d c
 liftSwapB f = SwapB . f . runSwapB
 
 instance Bifunctor p => Bifunctor (SwapB p) where
-	bimap = liftSwapB . flip bimap 
+	bimap f g = liftSwapB (bimap g f)
 
+{-
 instance Coassociative p => Associative (SwapB p) where
 	associate = liftSwapB coassociate
 
 instance Associative p => Coassociative (SwapB p) where
 	coassociate = liftSwapB associate
+-}
 
 instance Braided p => Braided (SwapB p) where
 	braid = liftSwapB braid
 
 instance Symmetric p => Symmetric (SwapB p)
 
+{-
 instance HasIdentity p i => HasIdentity (SwapB p) i
 
 instance Monoidal p i => Monoidal (SwapB p) i where
@@ -101,6 +104,7 @@ instance Monoidal p i => Monoidal (SwapB p) i where
 instance Comonoidal p i => Comonoidal (SwapB p) i where
 	coidl = SwapB . coidr
 	coidr = SwapB . coidl
+-}
 
 instance Bifunctor p => Functor (SwapB p a) where
 	fmap = bimap id
@@ -120,21 +124,24 @@ instance (Functor f, Braided p) => Braided (FunctorB f p) where
 
 instance (Functor f, Symmetric p) => Symmetric (FunctorB f p) 
 
+{-
 instance (Functor f, Associative p) => Associative (FunctorB f p) where
-	associate = liftFunctorB associate
+	associate = FunctorB . fmap associate . runFunctorB 
 
 instance (Functor f, Coassociative p) => Coassociative (FunctorB f p) where
-	coassociate = liftFunctorB coassociate
+	coassociate = FunctorB . fmap f . runFunctorB
 
 instance (Functor f, HasIdentity p i) => HasIdentity (FunctorB f p) i
 
+
 instance (Copointed f, Monoidal p i) => Monoidal (FunctorB f p) i where
-	idr = idr . extract . runFunctorB
-	idl = idl . extract . runFunctorB
+	idr = idr . copoint . runFunctorB
+	idl = idl . copoint . runFunctorB
 	
 instance (Pointed f, Comonoidal p i) => Comonoidal (FunctorB f p) i where
-	coidr = FunctorB . return . coidr
-	coidl = FunctorB . return . coidl
+	coidr = FunctorB . point . coidr
+	coidl = FunctorB . point . coidl
+-}
 
 instance (Functor f, Bifunctor p) => Functor (FunctorB f p a) where
 	fmap = bimap id

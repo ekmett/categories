@@ -31,7 +31,7 @@ instance (Comonad w, Copointed f, PostUnfold w f) => Comonad (PostCompF w f) whe
 -- preDuplicate = preUnfold . fmap duplicate
 
 instance (Copointed f, Comonad w, PreUnfold f w) => Comonad (PreCompF f w) where
-	extract = extract . copoint . decompose
+	extract = extract . copoint .  decompose
 	duplicate = compose . fmap (liftW compose) . preUnfold . fmap (duplicate) . decompose
 
 instance (Comonad f, Comonad g, Distributes f g) => Comonad (DistCompF f g) where

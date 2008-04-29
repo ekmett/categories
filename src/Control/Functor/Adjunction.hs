@@ -46,16 +46,16 @@ class (Functor f, Functor g) => Adjunction f g where
 -- adjunction-oriented composition
 newtype ACompF f g a = ACompF (CompF f g a) deriving (Functor, ExpFunctor, Full, Composition)
 
-instance Adjunction f g => Pointed (CompF g f) where
+instance Adjunction f g => Pointed (ACompF g f) where
         point = compose . unit
 
-instance Adjunction f g => Copointed (CompF f g) where
+instance Adjunction f g => Copointed (ACompF f g) where
         copoint = counit . decompose
 
-instance Adjunction f g => Monad (CompF g f) where
+instance Adjunction f g => Monad (ACompF g f) where
         return = point
         m >>= f = compose . fmap (rightAdjunct (decompose . f)) $ decompose m
 
-instance Adjunction f g => Comonad (CompF f g) where
+instance Adjunction f g => Comonad (ACompF f g) where
         extract = copoint
         extend f = compose . fmap (leftAdjunct (f . compose)) . decompose

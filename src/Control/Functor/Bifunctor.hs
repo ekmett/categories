@@ -16,10 +16,12 @@
 module Control.Functor.Bifunctor where
 
 import Control.Bifunctor
+import Control.Bifunctor.Instances
 import Control.Functor.Contravariant
 import Control.Functor.Exponential
 import Control.Functor.Full
 import Control.Functor.Pointed
+import Control.Arrow ((***),(&&&),(|||),(+++))
 
 -- * Bifunctor functor transformer
 
@@ -29,7 +31,7 @@ instance (Bifunctor p, Functor f ,Functor g) => Functor (BifunctorF p f g) where
         fmap f = BifunctorF . bimap (fmap f) (fmap f) . runBifunctorF
 
 instance (Bifunctor p, ContravariantFunctor f ,ContravariantFunctor g) => ContravariantFunctor (BifunctorF p f g) where
-        contrafmap f = BifunctorF . bimap (contrafmap f) (contrafmap f) . runBifunctorF
+        contramap f = BifunctorF . bimap (contramap f) (contramap f) . runBifunctorF
 
 instance (Bifunctor p, ExpFunctor f ,ExpFunctor g) => ExpFunctor (BifunctorF p f g) where
         xmap f g = BifunctorF . bimap (xmap f g) (xmap f g) . runBifunctorF
@@ -60,9 +62,3 @@ runCoproductF = runBifunctorF
 instance (Copointed f, Copointed g) => Copointed (BifunctorF Either f g) where
         copoint = (copoint ||| copoint) . runBifunctorF
 
-
-instance (Pointed f, Pointed g) => Pointed (BifunctorF (,) f g) where
-        point = BifunctorF . (point &&& point)
-
-instance (Copointed f, Copointed g) => Copointed (BifunctorF Either f g) where
-        copoint = (copoint ||| copoint) . runBifunctorF

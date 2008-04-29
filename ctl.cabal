@@ -3,14 +3,14 @@ category:		Control, Monads, Comonads
 version:		0.1
 license:		BSD3
 license-file:		LICENSE
-build-depends:		base -any, mtl -any
+build-depends:		base -any, mtl -any, array -any
 author:			Edward A. Kmett
 maintainer:		ekmett@gmail.com
 stability:		experimental
 homepage:		http://comonad.com/
 synopsis:		Comonad Transformer Library
 copyright:		Copyright (C) 2008 Edward A. Kmett
-description: 		Defines comonads, a few missing monads and constructive algorithmic morphisms
+description: 		Defines comonads, a few missing monads and a bunch of constructive algorithmic morphisms
 
 extensions:		
 	CPP, 
@@ -37,20 +37,30 @@ exposed-modules:
 	Control.Comonad,
 	Control.Comonad.Cofree,
 	Control.Comonad.Cofree.Alt,
+	Control.Comonad.Composition,
 	Control.Comonad.Identity,
 	Control.Comonad.Instances,
-	Control.Comonad.State,
-	Control.Comonad.State.Class,
+	Control.Comonad.Context,
+	Control.Comonad.Context.Class,
+	Control.Comonad.Pointer,
 	Control.Comonad.Reader,
 	Control.Comonad.Reader.Class,
 	Control.Functor.Adjunction,
 	Control.Functor.Algebra,
+	Control.Functor.Bifunctor,
 	Control.Functor.Composition
+	Control.Functor.Composition.Class
+	Control.Functor.Contravariant,
+	Control.Functor.Constant,
+	Control.Functor.Derivative,
 	Control.Functor.Extras,
+	Control.Functor.Exponential,
 	Control.Functor.Fix,
 	Control.Functor.Full,
 	Control.Functor.Pointed,
+	Control.Functor.Pointed.Composition,
 	Control.Functor.Representable,
+	Control.Monad.Composition,
 	Control.Monad.Free,
 	Control.Monad.Either,
 	Control.Morphism.Hylo,

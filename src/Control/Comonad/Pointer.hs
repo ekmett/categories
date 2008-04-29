@@ -13,23 +13,24 @@
 ----------------------------------------------------------------------------
 module Control.Comonad.Pointer where
 
+import Control.Functor.Extras
 import Control.Arrow ((&&&), first)
 import Data.Array
 import Data.Foldable
 import Control.Monad
 import Control.Comonad
 
-data Pointer i a = Pointer { index :: i, array :: Array i e } deriving (Show,Read)
+data Pointer i a = Pointer { index :: i, array :: Array i a } deriving (Show,Read)
 
 instance Ix i => Functor (Pointer i) where
 	fmap f (Pointer i a) = Pointer i (fmap f a)
 
 instance Ix i => Comonad (Pointer i) where
 	extract (Pointer i a) = a ! i
-	extend f (Pointer i a) = Pointer i $ listArray bds (fmap (f . flip Pointer a) (range bds) where
+	extend f (Pointer i a) = Pointer i . listArray bds $ fmap (f . flip Pointer a) (range bds) where
 		bds = bounds a
 
-distPointer :: (Monad m, Ix i) => Dist m (Pointer i)
+distPointer :: (Monad m, Ix i) => Dist (Pointer i) m 
 distPointer (Pointer i ma) = do
 	let bds = bounds ma
 	a <- sequence (elems ma)

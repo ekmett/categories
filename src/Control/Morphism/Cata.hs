@@ -12,12 +12,13 @@
 ----------------------------------------------------------------------------
 module Control.Morphism.Cata where
 
+import Control.Bifunctor
+import Control.Comonad
+import Control.Comonad.Identity
 import Control.Functor.Algebra 
 import Control.Functor.Extras
 import Control.Functor.Fix
-import Control.Comonad
 import Control.Monad.Identity
-import Control.Comonad.Identity
 
 cata :: Functor f => Alg f a -> Mu f -> a
 -- cata f = g_cata distCata (liftAlg f)
@@ -29,3 +30,9 @@ g_cata k g = extract . c where c = liftW g . k . fmap (duplicate . c) . outF
 
 distCata :: Functor f => Dist f Identity
 distCata = Identity . fmap runIdentity
+
+cataB :: Bifunctor f => Alg (f b) a -> MuB b f -> a
+cataB f = f . bimap id (cataB f) . outF
+
+g_cataB :: (Bifunctor f, Comonad w) => Dist (f b) w -> AlgW (f b) w a -> MuB b f -> a
+g_cataB k g = extract . c where c = liftW g . k . bimap id (duplicate . c) . outF

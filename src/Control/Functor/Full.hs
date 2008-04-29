@@ -12,19 +12,20 @@
 
 module Control.Functor.Full where
 
+
 {- |
 	A 'Full' 'Functor' @F : C -> D@ provides for every pair of objects @c@, @c'@ in @C@
 	and every morphism @g : F c -> F c'l@ in @D@, a morphism @g' : c -> c'@ in @C@. In short
 	map has a right-inverse under composition.
 
-> fmap . prefmap = id
+> fmap . premap = id
 -}
 
 class Functor f => Full f where
-	prefmap :: (f a -> f b) -> a -> b
+	premap :: (f a -> f b) -> a -> b
 	
 {-# RULES
-	"fmap/prefmap" 	map . prefmap = id
+	"fmap/premap" 	map . prefmap = id
  #-}
 
 class Functor f => Faithful f
@@ -36,12 +37,15 @@ For every pair of objects @a@ and @b@ in @C@ a 'Full' 'Faithful' 'Functor' @F : 
 @g : T a -> T b@ can be obtained from some @f@. (It maps Hom-sets bijectively, or in short @fmap@ has both
 a left and right inverse under composition.
 
-> unfmap . fmap = id
+> unmap . fmap = id
 -}
 
-unfmap :: (Full f, Faithful f) => (f a -> f b) -> a -> b
-unfmap = prefmap
+unmap :: (Full f, Faithful f) => (f a -> f b) -> a -> b
+unmap = premap
 
 {-# RULES
-	"unfmap/fmap"	unfmap . fmap = id
+	"unmap/fmap"	unmap . fmap = id
  #-}
+
+
+

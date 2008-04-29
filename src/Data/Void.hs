@@ -13,3 +13,6 @@
 module Data.Void where
 
 data Void
+
+void :: Void -> a
+void = undefined

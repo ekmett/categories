@@ -13,6 +13,14 @@
 
 module Control.Functor.Adjunction where
 
+import Control.Comonad
+import Control.Functor.Composition
+import Control.Functor.Composition.Class
+import Control.Functor.Exponential
+import Control.Functor.Full
+import Control.Functor.Pointed
+import Control.Monad
+
 -- | An 'Adjunction' formed by the 'Functor' f and 'Functor' g. 
 
 -- Minimal definition:
@@ -31,3 +39,23 @@ class (Functor f, Functor g) => Adjunction f g where
 	counit = rightAdjunct id
 	leftAdjunct f = fmap f . unit
 	rightAdjunct f = counit . fmap f
+
+
+
+
+-- adjunction-oriented composition
+newtype ACompF f g a = ACompF (CompF f g a) deriving (Functor, ExpFunctor, Full, Composition)
+
+instance Adjunction f g => Pointed (CompF g f) where
+        point = compose . unit
+
+instance Adjunction f g => Copointed (CompF f g) where
+        copoint = counit . decompose
+
+instance Adjunction f g => Monad (CompF g f) where
+        return = point
+        m >>= f = compose . fmap (rightAdjunct (decompose . f)) $ decompose m
+
+instance Adjunction f g => Comonad (CompF f g) where
+        extract = copoint
+        extend f = compose . fmap (leftAdjunct (f . compose)) . decompose

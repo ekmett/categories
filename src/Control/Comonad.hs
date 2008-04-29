@@ -24,3 +24,6 @@ class Functor w => Comonad w where
 
 liftW :: Comonad w => (a -> b) -> w a -> w b
 liftW f = extend (f . extract)
+
+liftCtx :: Comonad w => (a -> b) -> w a -> b
+liftCtx f = extract . fmap f

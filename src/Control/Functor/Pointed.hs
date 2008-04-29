@@ -24,3 +24,4 @@ class Functor f => Copointed f where
         "copoint/point" copoint . point = id
         "point/copoint" point . copoint = id
  #-}
+

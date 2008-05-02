@@ -1,6 +1,6 @@
 name:			category-extras
 category:		Control, Monads, Comonads
-version:		0.3
+version:		0.4
 license:		BSD3
 license-file:		LICENSE
 build-depends:		base -any, mtl -any, array -any
@@ -36,6 +36,7 @@ exposed-modules:
 	Control.Bifunctor.Braided,
 	Control.Bifunctor.Associative,
 	Control.Bifunctor.Instances,
+	Control.Bifunctor.HigherOrder,
 	Control.Bifunctor.Monoidal,
 	Control.Bifunctor.Composition,
 	Control.Comonad,
@@ -63,6 +64,7 @@ exposed-modules:
 	Control.Functor.Fix,
 	Control.Functor.Full,
 	Control.Functor.HigherOrder,
+	Control.Functor.KanExtension,
 	Control.Functor.Pointed,
 	Control.Functor.Pointed.Composition,
 	Control.Functor.Representable,
@@ -83,5 +85,5 @@ exposed-modules:
 	Control.Morphism.Histo,
 	Data.Void
 
-ghc-options:		-O2 -funbox-strict-fields -Wall
+ghc-options:		-O2 -funbox-strict-fields 
 hs-source-dirs:		src

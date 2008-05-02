@@ -8,7 +8,8 @@
 -- Stability   :  experimental
 -- Portability :  non-portable (rank-2 polymorphism)
 --
--- Neil Ghani and Particia Johann' HFunctor <http://crab.rutgers.edu/~pjohann/tlca07-rev.pdf>
+-- Neil Ghani and Particia Johann''s higher order functors from
+-- <http://crab.rutgers.edu/~pjohann/tlca07-rev.pdf>
 ----------------------------------------------------------------------------
 module Control.Functor.HigherOrder where
 

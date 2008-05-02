@@ -14,6 +14,7 @@
 module Control.Morphism.Hylo where
 
 import Control.Bifunctor
+import Control.Bifunctor.HigherOrder
 import Control.Comonad
 import Control.Monad
 import Control.Functor.Algebra
@@ -38,6 +39,12 @@ g_hyloB :: (Comonad w, Bifunctor f, Monad m) =>
           Dist (g d) w -> Dist m (f c) -> AlgW (g d) w b -> Natural (f c) (g d) -> CoAlgM (f c) m a -> a -> b
 g_hyloB w m f e g = extract . h . return where h = liftW f . w . e . bimap id (duplicate . h . join) . m . liftM g
 
+
 -- | higher order hylomorphisms for use in building up and tearing down higher order functors
 hyloH :: HFunctor f => AlgH f b -> CoAlgH f a -> Natural a b
 hyloH f g = f . hfmap (hyloH f g) . g
+
+{-
+hyloHB :: HBifunctor p => (p q c b -> b) -> (a -> p q c a) -> a -> b
+hyloHB f g = f . hbimap id (hyloHB f g) . g
+-}

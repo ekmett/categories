@@ -10,19 +10,24 @@
 -- Portability :  portable
 --
 -- Incompatible with Control.Monad.Error, but removes the Error restriction
--- that prevents a natural encoding of Apomorphisms
+-- that prevents a natural encoding of Apomorphisms. This module is 
+-- therefore incompatible with Control.Monad.Error
 ----------------------------------------------------------------------------
 module Control.Monad.Either where
 
+import Data.Either
 import Control.Monad
-import Control.Arrow ((|||), (&&&), (+++), (***))
 
 newtype EitherT a m b = EitherT { runEitherT :: m (Either a b) }
+
+instance Functor (Either e) where
+	fmap _ (Left a) = Left a
+	fmap f (Right a) = Right (f a)
 
 instance Monad (Either e) where
         return = Right
         Right m >>= k = k m
-        Left e  >>= k = Left e
+        Left e  >>= _ = Left e
 
 instance Functor f => Functor (EitherT b f) where
         fmap f = EitherT . fmap (fmap f) . runEitherT

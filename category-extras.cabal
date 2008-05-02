@@ -1,16 +1,21 @@
-name:			ctl
+name:			category-extras
 category:		Control, Monads, Comonads
-version:		0.2
+version:		0.3
 license:		BSD3
 license-file:		LICENSE
 build-depends:		base -any, mtl -any, array -any
-author:			Edward A. Kmett
+author:			Edward A. Kmett, Dave Menendez
 maintainer:		ekmett@gmail.com
 stability:		experimental
-homepage:		http://comonad.com/
-synopsis:		Comonad Transformer Library
+homepage:		http://comonad.com/reader/
+synopsis:		Various modules and constructs inspired by category theory.
 copyright:		Copyright (C) 2008 Edward A. Kmett
-description: 		Defines comonads, a few missing monads and a bunch of constructive algorithmic morphisms
+			Copyright (C) 2004--2008 Dave Menendez
+description: 		A collection of modules implementing various ideas from
+			category theory. Notable bits include: comonads, adjunctions,
+			functor fixedpoints and various recursion operaters ala
+			/Functional Programming with Bananas, Lenses, Envelopes
+			and Barbed Wire/. 
 
 extensions:		
 	CPP, 
@@ -19,11 +24,10 @@ extensions:
 	FlexibleInstances,
 	FunctionalDependencies, 
 	MultiParamTypeClasses, 
-	TypeFamilies, 
-	TypeSynonymInstances,
 	TypeOperators,
 	UndecidableInstances,
-	GADTs
+	ExistentialQuantification,
+	Rank2Types
 
 
 exposed-modules:
@@ -40,6 +44,7 @@ exposed-modules:
 	Control.Comonad.Composition,
 	Control.Comonad.Identity,
 	Control.Comonad.Instances,
+	Control.Comonad.HigherOrder,
 	Control.Comonad.Context,
 	Control.Comonad.Context.Class,
 	Control.Comonad.Pointer,
@@ -57,11 +62,13 @@ exposed-modules:
 	Control.Functor.Exponential,
 	Control.Functor.Fix,
 	Control.Functor.Full,
+	Control.Functor.HigherOrder,
 	Control.Functor.Pointed,
 	Control.Functor.Pointed.Composition,
 	Control.Functor.Representable,
 	Control.Monad.Composition,
 	Control.Monad.Free,
+	Control.Monad.HigherOrder,
 	Control.Monad.Either,
 	Control.Morphism.Hylo,
 	Control.Morphism.Cata,
@@ -76,5 +83,5 @@ exposed-modules:
 	Control.Morphism.Histo,
 	Data.Void
 
-ghc-options:		-O2 -funbox-strict-fields
+ghc-options:		-O2 -funbox-strict-fields -Wall
 hs-source-dirs:		src

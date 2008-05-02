@@ -17,6 +17,7 @@ import Control.Bifunctor.Fix
 import Control.Comonad
 import Control.Comonad.Identity
 import Control.Functor.Algebra 
+import Control.Functor.HigherOrder
 import Control.Functor.Extras
 import Control.Functor.Fix
 import Control.Monad.Identity
@@ -37,3 +38,6 @@ cataB f = f . bimap id (cataB f) . outB
 
 g_cataB :: (Bifunctor f, Comonad w) => Dist (f b) w -> AlgW (f b) w a -> MuB f b -> a
 g_cataB k g = extract . c where c = liftW g . k . bimap id (duplicate . c) . outB
+
+cataH :: HFunctor f => AlgH f a -> Natural (MuH f) a
+cataH f = f . hfmap (cataH f) . outH

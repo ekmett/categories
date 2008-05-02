@@ -14,7 +14,7 @@ module Control.Monad.Free where
 
 import Control.Arrow ((|||), (+++))
 import Control.Functor.Exponential
-import Control.Functor.Contravariant
+-- import Control.Functor.Contravariant
 import Control.Monad
 
 -- | The free monad of a functor

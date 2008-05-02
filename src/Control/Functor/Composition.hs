@@ -38,4 +38,8 @@ instance (ExpFunctor f, ExpFunctor g) => ExpFunctor (CompF f g) where
 instance (Full f, Full g) => Full (CompF f g) where
         premap f = premap . premap $ decompose . f . compose
 
+associateComp :: (Functor f, Composition c) => (c (c f g) h) a -> (c f (c g h)) a
+associateComp = compose . fmap compose . decompose . decompose
 
+coassociateComp :: (Functor f, Composition c) => (c f (c g h)) a -> (c (c f g) h) a
+coassociateComp = compose . compose . fmap decompose . decompose

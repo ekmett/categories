@@ -13,7 +13,7 @@
 module Control.Monad.Composition where
 
 import Control.Monad
-import Control.Functor.Composition
+-- import Control.Functor.Composition
 import Control.Functor.Composition.Class
 import Control.Functor.Extras
 import Control.Functor.Pointed

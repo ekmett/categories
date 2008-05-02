@@ -19,21 +19,21 @@ import Control.Bifunctor
 
 {- | A category with an associative bifunctor satisfying Mac Lane\'s pentagonal coherence identity law:
 
-> second associate . associate . first associate = associate . associate
+> bimap id associate . associate . bimap associate id = associate . associate
 -}
 class Bifunctor p => Associative p where
 	associate :: p (p a b) c -> p a (p b c)
 
 {- | A category with a coassociative bifunctor satisyfing the dual of Mac Lane's pentagonal coherence identity law:
 
-> first coassociate . coassociate . second coassociate = coassociate . coassociate
+> bimap coassociate id . coassociate . bimap id coassociate = coassociate . coassociate
 -}
 class Bifunctor s => Coassociative s where
 	coassociate :: s a (s b c) -> s (s a b) c
 
 {-# RULES
-	"copentagonal coherence"
-		first coassociate . coassociate . second coassociate = coassociate . coassociate
-	"pentagonal coherence"
-		second associate . associate . first associate = associate . associate
+"copentagonal coherence" bimap coassociate id . coassociate . bimap id coassociate = coassociate . coassociate
+"pentagonal coherence" bimap id associate . associate . bimap associate id = associate . associate
  #-}
+
+

@@ -1,3 +1,4 @@
+{-# OPTIONS -fglasgow-exts #-}
 -------------------------------------------------------------------------------------------
 -- |
 -- Module	: Control.Functor.Representable
@@ -17,6 +18,7 @@ class Functor f => Representable f x where
 	unrep :: f a -> (x -> a)
 
 {-# RULES
-  "rep/unrep"       	rep . unrep = id
-  "unrep/rep"   	unrep . rep = id
+"rep/unrep" rep . unrep = id
+"unrep/rep" unrep . rep = id
  #-}
+

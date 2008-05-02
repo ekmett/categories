@@ -21,7 +21,7 @@ class Functor f => Copointed f where
         copoint :: f a -> a
 
 {-# RULES
-        "copoint/point" copoint . point = id
-        "point/copoint" point . copoint = id
+"copoint/point" copoint . point = id
+"point/copoint" point . copoint = id
  #-}
 

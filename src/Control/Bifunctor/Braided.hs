@@ -12,6 +12,7 @@
 module Control.Bifunctor.Braided where
 
 import Control.Bifunctor
+import Control.Bifunctor.Associative
 
 {- | A braided (co)(monoidal or associative) category can commute the arguments of its bi-endofunctor. Obeys the laws:
 
@@ -27,15 +28,6 @@ import Control.Bifunctor
 class Bifunctor p => Braided p where
 	braid :: p a b -> p b a
 
-{-# RULES 
-	"idr/braid" 			idr . braid = idl
-	"idl/braid" 			idl . braid = idr
-	"braid/coidr" 			braid . coidr = coidl
-	"braid/coidl" 			braid . coidl = coidr
-	"braid/associate/braid" 	second braid . associate . first braid = associate . braid . associate
-	"braid/coassociate/braid" 	first braid . coassociate . second braid = coassociate . braid . coassociate
- #-}
-
 {- |
 If we have a symmetric (co)'Monoidal' category, you get the additional law:
 
@@ -47,5 +39,7 @@ swap :: Symmetric p => p a b -> p b a
 swap = braid
 
 {-# RULES
-	"swap/swap" swap . swap = id
+"swap/swap" swap . swap = id
+"braid/associate/braid"         bimap id braid . associate . bimap braid id = associate . braid . associate
+"braid/coassociate/braid"       bimap braid id . coassociate . bimap id braid = coassociate . braid . coassociate
  #-}

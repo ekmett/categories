@@ -25,7 +25,7 @@ class Functor f => Full f where
 	premap :: (f a -> f b) -> a -> b
 	
 {-# RULES
-	"fmap/premap" 	map . prefmap = id
+	"fmap/premap" 	map . premap = id
  #-}
 
 class Functor f => Faithful f

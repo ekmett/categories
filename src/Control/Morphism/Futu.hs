@@ -16,7 +16,7 @@ module Control.Morphism.Futu where
 import Control.Functor.Algebra
 import Control.Functor.Extras
 import Control.Functor.Fix
-import Control.Comonad
+import Control.Comonad ()
 import Control.Monad.Free
 import Control.Morphism.Ana
 

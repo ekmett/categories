@@ -20,10 +20,10 @@ import Control.Comonad ()
 import Control.Monad.Free
 import Control.Morphism.Ana
 
-futu :: Functor f => CoAlgM f (Free f) a -> a -> Nu f
+futu :: Functor f => CoAlgM f (Free f) a -> a -> Fix f
 futu = g_ana (distFutu id)
 
-g_futu :: (Functor f, Functor h) => Dist h f -> CoAlgM f (Free h) a -> a -> Nu f
+g_futu :: (Functor f, Functor h) => Dist h f -> CoAlgM f (Free h) a -> a -> Fix f
 g_futu k = g_ana (distFutu k)
 
 distFutu :: (Functor f, Functor h) => Dist h f -> Dist (Free h) f

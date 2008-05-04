@@ -17,3 +17,10 @@ import Control.Functor.HigherOrder
 class HFunctor m => HMonad m where
 	hreturn :: Functor f => Natural f (m f)
 	hbind   :: (Functor f, Functor g) => Natural f (m g) -> Natural (m f) (m g)
+	--hbind k = hjoin . hfmap k
+
+hjoin :: (HMonad m, Functor (m g), Functor g) => Natural (m (m g)) (m g)
+hjoin = hbind id
+
+(>>**=) :: (HMonad m, Functor f, Functor g) => m f a -> Natural f (m g) -> m g a
+m >>**= k = hbind k m 

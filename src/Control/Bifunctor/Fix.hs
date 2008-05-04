@@ -13,9 +13,7 @@ module Control.Bifunctor.Fix where
 
 import Control.Bifunctor
 
-newtype MuB s a = InB { outB :: s a (MuB s a) }
-type NuB s a = MuB s a 
+newtype FixB s a = InB { outB :: s a (FixB s a) }
 
-instance Bifunctor s => Functor (MuB s) where
+instance Bifunctor s => Functor (FixB s) where
         fmap f = InB . bimap f (fmap f) . outB
-

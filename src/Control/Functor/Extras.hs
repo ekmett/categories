@@ -29,3 +29,16 @@ class PreUnfold f w where
 
 class Distributes f g where
         dist :: f (g a) -> g (f a)
+
+
+
+class FunctorZero f where
+	fzero :: f a
+
+-- monoid
+class FunctorZero f => FunctorPlus f where
+	fplus :: f a -> f a -> f a
+
+class FunctorSplit f where
+	fsplit :: f a -> (f a, f a)
+	

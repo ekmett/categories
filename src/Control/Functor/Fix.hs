@@ -15,12 +15,11 @@ import Control.Monad
 import Control.Comonad
 import Control.Functor.Algebra
 
-newtype Mu f = InF { outF :: f (Mu f) }
-type Nu f = Mu f
+newtype Fix f = InF { outF :: f (Fix f) }
 
-outM :: (Functor f, Monad m) => CoAlgM f m (Nu f)
+outM :: (Functor f, Monad m) => CoAlgM f m (Fix f)
 outM = liftCoAlg outF
 
-inW :: (Functor f, Comonad w) => AlgW f w (Mu f)
+inW :: (Functor f, Comonad w) => AlgW f w (Fix f)
 inW = liftAlg InF
 

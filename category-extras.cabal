@@ -1,6 +1,6 @@
 name:			category-extras
 category:		Control, Monads, Comonads
-version:		0.4
+version:		0.41
 license:		BSD3
 license-file:		LICENSE
 build-depends:		base -any, mtl -any, array -any
@@ -11,11 +11,12 @@ homepage:		http://comonad.com/reader/
 synopsis:		Various modules and constructs inspired by category theory.
 copyright:		Copyright (C) 2008 Edward A. Kmett
 			Copyright (C) 2004--2008 Dave Menendez
-description: 		A collection of modules implementing various ideas from
-			category theory. Notable bits include: comonads, adjunctions,
-			functor fixedpoints and various recursion operaters ala
-			/Functional Programming with Bananas, Lenses, Envelopes
-			and Barbed Wire/. 
+			Copyright (C) 2007 Iavor Diatchki
+description: 		A vastly expanded collection of modules implementing various 
+			ideas from category theory. Notable bits include: comonads, 
+			adjunctions, functor fixedpoints and various recursion 
+			operaters ala /Functional Programming with Bananas, Lenses, 
+			Envelopes and Barbed Wire/. 
 
 extensions:		
 	CPP, 
@@ -36,6 +37,7 @@ exposed-modules:
 	Control.Bifunctor.Braided,
 	Control.Bifunctor.Associative,
 	Control.Bifunctor.Instances,
+	Control.Bifunctor.Fix,
 	Control.Bifunctor.HigherOrder,
 	Control.Bifunctor.Monoidal,
 	Control.Bifunctor.Composition,
@@ -48,9 +50,12 @@ exposed-modules:
 	Control.Comonad.HigherOrder,
 	Control.Comonad.Context,
 	Control.Comonad.Context.Class,
+	Control.Comonad.Parameterized,
+	Control.Comonad.Parameterized.Class,
 	Control.Comonad.Pointer,
 	Control.Comonad.Reader,
 	Control.Comonad.Reader.Class,
+	Control.Comonad.Supply
 	Control.Functor.Adjunction,
 	Control.Functor.Algebra,
 	Control.Functor.Bifunctor,
@@ -71,6 +76,8 @@ exposed-modules:
 	Control.Monad.Composition,
 	Control.Monad.Free,
 	Control.Monad.HigherOrder,
+	Control.Monad.Parameterized,
+	Control.Monad.Parameterized.Class,
 	Control.Monad.Either,
 	Control.Morphism.Hylo,
 	Control.Morphism.Cata,

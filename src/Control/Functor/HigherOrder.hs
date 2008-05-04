@@ -22,5 +22,4 @@ class HFunctor f where
 	ffmap :: Functor g => (a -> b) -> f g a -> f g b
 	hfmap :: Natural g h -> Natural (f g) (f h)
 
-newtype MuH f a = InH { outH :: f (MuH f) a }
-type NuH f a = MuH f a
+newtype FixH f a = InH { outH :: f (FixH f) a }

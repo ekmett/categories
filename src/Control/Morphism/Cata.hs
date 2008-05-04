@@ -22,22 +22,22 @@ import Control.Functor.Extras
 import Control.Functor.Fix
 import Control.Monad.Identity
 
-cata :: Functor f => Alg f a -> Mu f -> a
+cata :: Functor f => Alg f a -> Fix f -> a
 -- cata f = g_cata distCata (liftAlg f)
 cata f = f . fmap (cata f) . outF
 
-g_cata :: (Functor f, Comonad w) => Dist f w -> AlgW f w a -> Mu f -> a
+g_cata :: (Functor f, Comonad w) => Dist f w -> AlgW f w a -> Fix f -> a
 -- g_cata k f = g_hylo k distAna f id outM
 g_cata k g = extract . c where c = liftW g . k . fmap (duplicate . c) . outF
 
 distCata :: Functor f => Dist f Identity
 distCata = Identity . fmap runIdentity
 
-cataB :: Bifunctor f => Alg (f b) a -> MuB f b -> a
-cataB f = f . bimap id (cataB f) . outB
+bicata :: Bifunctor f => Alg (f b) a -> FixB f b -> a
+bicata f = f . bimap id (bicata f) . outB
 
-g_cataB :: (Bifunctor f, Comonad w) => Dist (f b) w -> AlgW (f b) w a -> MuB f b -> a
-g_cataB k g = extract . c where c = liftW g . k . bimap id (duplicate . c) . outB
+g_bicata :: (Bifunctor f, Comonad w) => Dist (f b) w -> AlgW (f b) w a -> FixB f b -> a
+g_bicata k g = extract . c where c = liftW g . k . bimap id (duplicate . c) . outB
 
-cataH :: HFunctor f => AlgH f a -> Natural (MuH f) a
-cataH f = f . hfmap (cataH f) . outH
+hcata :: HFunctor f => AlgH f a -> Natural (FixH f) a
+hcata f = f . hfmap (hcata f) . outH

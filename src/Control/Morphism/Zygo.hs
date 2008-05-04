@@ -24,10 +24,10 @@ import Control.Arrow ((&&&))
 
 type Zygo b a = (b,a)
 
-zygo :: Functor f => Alg f b -> AlgW f (Zygo b) a -> Mu f -> a
+zygo :: Functor f => Alg f b -> AlgW f (Zygo b) a -> Fix f -> a
 zygo f = g_cata (distZygo f)
 
-g_zygo :: (Functor f, Comonad w) => AlgW f w b -> Dist f w -> AlgW f (ReaderCT b w) a -> Mu f -> a
+g_zygo :: (Functor f, Comonad w) => AlgW f w b -> Dist f w -> AlgW f (ReaderCT b w) a -> Fix f -> a
 g_zygo f w = g_cata (distZygoT f w)
 
 -- * Distributive Law Combinators

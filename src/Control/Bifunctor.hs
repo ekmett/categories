@@ -11,7 +11,9 @@
 -------------------------------------------------------------------------------------------
 module Control.Bifunctor where
 
-import Prelude hiding (id)
-
 class Bifunctor f where
 	bimap :: (a -> c) -> (b -> d) -> f a b -> f c d
+	first :: (a -> c) -> f a b -> f c b
+	first f = bimap f id
+	second :: (b -> d) -> f a b -> f a d
+	second = bimap id

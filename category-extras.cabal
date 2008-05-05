@@ -1,6 +1,6 @@
 name:			category-extras
 category:		Control, Monads, Comonads
-version:		0.41
+version:		0.44.1
 license:		BSD3
 license-file:		LICENSE
 build-depends:		base -any, mtl -any, array -any
@@ -9,6 +9,7 @@ maintainer:		ekmett@gmail.com
 stability:		experimental
 homepage:		http://comonad.com/reader/
 synopsis:		Various modules and constructs inspired by category theory.
+build-type: 		Simple
 copyright:		Copyright (C) 2008 Edward A. Kmett
 			Copyright (C) 2004--2008 Dave Menendez
 			Copyright (C) 2007 Iavor Diatchki
@@ -32,24 +33,25 @@ extensions:
 
 
 exposed-modules:
---	Control.Arrow.CoKleisli,
+	Control.Arrow.BiKleisli,
+	Control.Arrow.CoKleisli,
 	Control.Bifunctor,
-	Control.Bifunctor.Braided,
 	Control.Bifunctor.Associative,
-	Control.Bifunctor.Instances,
+	Control.Bifunctor.Braided,
+	Control.Bifunctor.Composition,
+	Control.Bifunctor.Either,
 	Control.Bifunctor.Fix,
 	Control.Bifunctor.HigherOrder,
 	Control.Bifunctor.Monoidal,
-	Control.Bifunctor.Composition,
+	Control.Bifunctor.Pair,
 	Control.Comonad,
 	Control.Comonad.Cofree,
-	Control.Comonad.Cofree.Alt,
 	Control.Comonad.Composition,
-	Control.Comonad.Identity,
-	Control.Comonad.Instances,
-	Control.Comonad.HigherOrder,
 	Control.Comonad.Context,
 	Control.Comonad.Context.Class,
+	Control.Comonad.Identity,
+	Control.Comonad.Indexed,
+	Control.Comonad.HigherOrder,
 	Control.Comonad.Parameterized,
 	Control.Comonad.Parameterized.Class,
 	Control.Comonad.Pointer,
@@ -69,15 +71,23 @@ exposed-modules:
 	Control.Functor.Fix,
 	Control.Functor.Full,
 	Control.Functor.HigherOrder,
+	Control.Functor.Indexed,
 	Control.Functor.KanExtension,
+	Control.Functor.Strong,
 	Control.Functor.Pointed,
 	Control.Functor.Pointed.Composition,
 	Control.Functor.Representable,
+	Control.Functor.Zip,
+	Control.Functor.Zap,
 	Control.Monad.Composition,
 	Control.Monad.Free,
 	Control.Monad.HigherOrder,
+	Control.Monad.Indexed,
+	Control.Monad.Indexed.State,
+	Control.Monad.Indexed.Cont,
 	Control.Monad.Parameterized,
 	Control.Monad.Parameterized.Class,
+	Control.Monad.Hyper,
 	Control.Monad.Either,
 	Control.Morphism.Hylo,
 	Control.Morphism.Cata,

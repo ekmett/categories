@@ -1,4 +1,17 @@
+-------------------------------------------------------------------------------------------
+-- |
+-- Module	: Control.Bifunctor.Composition
+-- Copyright 	: 2008 Edward Kmett
+-- License	: BSD3
+--
+-- Maintainer	: Edward Kmett <ekmett@gmail.com>
+-- Stability	: experimental
+-- Portability	: portable
+--
+-------------------------------------------------------------------------------------------
+
 module Control.Bifunctor.Composition where
+
 
 import Control.Comonad
 import Control.Bifunctor
@@ -19,7 +32,6 @@ instance Bifunctor (ConstB t) where
 	bimap f g = ConstB . runConstB
 instance Functor (ConstB t a) where
 	fmap f = ConstB . runConstB
-
 
 
 
@@ -73,6 +85,8 @@ instance (Bifunctor p, Bifunctor f, Bifunctor g) => Functor (CompB p f g a) wher
 
 
 
+
+
 newtype SwapB p a b = SwapB { runSwapB :: p b a } 
 
 liftSwapB :: Bifunctor p => (p a b -> p c d) -> SwapB p b a -> SwapB p d c
@@ -81,33 +95,16 @@ liftSwapB f = SwapB . f . runSwapB
 instance Bifunctor p => Bifunctor (SwapB p) where
 	bimap f g = liftSwapB (bimap g f)
 
-{-
-instance Coassociative p => Associative (SwapB p) where
-	associate = liftSwapB coassociate
-
-instance Associative p => Coassociative (SwapB p) where
-	coassociate = liftSwapB associate
--}
-
 instance Braided p => Braided (SwapB p) where
 	braid = liftSwapB braid
 
 instance Symmetric p => Symmetric (SwapB p)
 
-{-
-instance HasIdentity p i => HasIdentity (SwapB p) i
-
-instance Monoidal p i => Monoidal (SwapB p) i where
-	idl = idr . runSwapB
-	idr = idl . runSwapB
-
-instance Comonoidal p i => Comonoidal (SwapB p) i where
-	coidl = SwapB . coidr
-	coidr = SwapB . coidl
--}
-
 instance Bifunctor p => Functor (SwapB p a) where
 	fmap = bimap id
+
+
+
 
 -- a functor composed around a bifunctor
 
@@ -124,24 +121,21 @@ instance (Functor f, Braided p) => Braided (FunctorB f p) where
 
 instance (Functor f, Symmetric p) => Symmetric (FunctorB f p) 
 
-{-
-instance (Functor f, Associative p) => Associative (FunctorB f p) where
-	associate = FunctorB . fmap associate . runFunctorB 
-
-instance (Functor f, Coassociative p) => Coassociative (FunctorB f p) where
-	coassociate = FunctorB . fmap f . runFunctorB
-
-instance (Functor f, HasIdentity p i) => HasIdentity (FunctorB f p) i
-
-
-instance (Copointed f, Monoidal p i) => Monoidal (FunctorB f p) i where
-	idr = idr . copoint . runFunctorB
-	idl = idl . copoint . runFunctorB
-	
-instance (Pointed f, Comonoidal p i) => Comonoidal (FunctorB f p) i where
-	coidr = FunctorB . point . coidr
-	coidl = FunctorB . point . coidl
--}
-
 instance (Functor f, Bifunctor p) => Functor (FunctorB f p a) where
 	fmap = bimap id
+
+
+-- a bifunctor wrapping a pair of functors with different values
+
+newtype BiffB p f g a b = BiffB { runBiffB :: p (f a) (g b) } 
+
+instance (Functor f, Bifunctor p, Functor g) => Bifunctor (BiffB p f g) where
+	bimap f g = BiffB . bimap (fmap f) (fmap g) . runBiffB
+
+instance (Functor f, Braided p) => Braided (BiffB p f f) where
+	braid = BiffB . braid . runBiffB
+
+instance (Functor f, Symmetric p) => Symmetric (BiffB p f f) 
+
+instance (Functor f, Bifunctor p, Functor g) => Functor (BiffB p f g a) where
+	fmap f = bimap id f

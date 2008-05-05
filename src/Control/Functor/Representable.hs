@@ -22,3 +22,12 @@ class Functor f => Representable f x where
 "unrep/rep" unrep . rep = id
  #-}
 
+data EitherF a b c = EitherF (a -> c) (b -> c)
+
+instance Functor (EitherF a b) where
+        fmap f (EitherF l r) = EitherF (f . l) (f . r)
+
+instance Representable (EitherF a b) (Either a b) where
+        rep f = EitherF (f . Left) (f . Right)
+        unrep (EitherF l r) = either l r
+

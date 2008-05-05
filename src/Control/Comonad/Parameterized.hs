@@ -18,7 +18,6 @@ import Control.Comonad
 import Control.Comonad.Parameterized.Class
 import Control.Morphism.Ana
 
--- this does not seem to be nicely quantifiable
 copaugment :: PComonad f => ((FixB f a -> f b (FixB f a)) -> FixB f b) -> (FixB f a -> b) -> FixB f b
 copaugment g k = g (pextend (k . InB) . outB)
 

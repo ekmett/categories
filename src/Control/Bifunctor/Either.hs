@@ -1,7 +1,7 @@
 {-# OPTIONS -fglasgow-exts #-}
 -----------------------------------------------------------------------------
 -- |
--- Module      :  Control.Bifunctor.Instances
+-- Module      :  Control.Bifunctor.Either
 -- Copyright   :  (C) 2008 Edward Kmett
 -- License     :  BSD-style (see the file LICENSE)
 --
@@ -10,7 +10,7 @@
 -- Portability :  portable
 --
 ----------------------------------------------------------------------------
-module Control.Bifunctor.Instances where
+module Control.Bifunctor.Either where
 
 import Control.Bifunctor
 import Control.Bifunctor.Associative
@@ -18,26 +18,6 @@ import Control.Bifunctor.Monoidal
 import Control.Bifunctor.Braided
 import Data.Void
 import Control.Arrow ((***), (+++))
-
-instance Bifunctor (,) where
-        bimap = (***)
-
-instance Associative (,) where
-	associate ((a,b),c) = (a,(b,c))
-
-instance Coassociative (,) where
-	coassociate (a,(b,c)) = ((a,b),c)
-
-instance HasIdentity (,) Void
-
-instance Monoidal (,) Void where
-	idl = snd
-	idr = fst
-
-instance Braided (,) where
-	braid ~(a,b) = (b,a)
-
-instance Symmetric (,)
 
 instance Bifunctor Either where
 	bimap = (+++)
@@ -57,5 +37,3 @@ instance Braided Either where
 	braid (Right b) = Left b
 
 instance Symmetric Either
-
--- Either is NOT Comonoidal! bottom inhabits every type

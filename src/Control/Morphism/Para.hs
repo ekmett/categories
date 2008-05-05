@@ -14,7 +14,6 @@ module Control.Morphism.Para where
 
 import Control.Comonad
 import Control.Comonad.Reader
-import Control.Comonad.Instances
 import Control.Functor.Algebra
 import Control.Functor.Extras
 import Control.Functor.Fix
@@ -26,11 +25,11 @@ import Control.Morphism.Zygo
 para :: Functor f => AlgW f (Para f) a -> Fix f -> a
 para = zygo InF
 
-g_para :: (Functor f, Comonad w) => Dist f w -> AlgW f (ParaT f w) a -> Fix f -> a
+g_para :: (Functor f, Comonad w) => Dist f w -> AlgW f (ParaT w f) a -> Fix f -> a
 g_para f = g_cata (distParaT f)
 
 type Para f a 		= (Fix f, a)
-type ParaT f w a 	= ReaderCT (Fix f) w a
+type ParaT w f a 	= ReaderCT w (Fix f) a
 
-distParaT :: (Functor f, Comonad w) => Dist f w -> Dist f (ParaT f w)
+distParaT :: (Functor f, Comonad w) => Dist f w -> Dist f (ParaT w f)
 distParaT = distZygoT (liftAlg InF)

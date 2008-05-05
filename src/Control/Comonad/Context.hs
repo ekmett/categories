@@ -9,7 +9,7 @@
 -- Stability   :  experimental
 -- Portability :  non-portable (MPTCs)
 --
--- The 'state-in-context' comonad and comonad transformer
+-- The state-in-context comonad and comonad transformer
 ----------------------------------------------------------------------------
 module Control.Comonad.Context where
 
@@ -37,15 +37,15 @@ instance Comonad (Context s) where
 
 
 
-newtype ContextT s w a = ContextT { runContextT :: w (s -> a, s) }
+newtype ContextT s w a = ContextT { runContextT :: (w s -> a, w s) }
 
 instance Comonad w => ComonadContext s (ContextT s w) where
-	getC = snd . extract . runContextT 
-	modifyC = undefined
+	getC = extract . snd . runContextT 
+	modifyC m (ContextT (f,c)) = f (fmap m c)
 
-instance Functor f => Functor (ContextT b f) where
-        fmap f = ContextT . fmap (first (f .)) . runContextT
+instance Functor (ContextT b f) where
+        fmap f = ContextT . first (f .) . runContextT
 
 instance Comonad w => Comonad (ContextT b w) where
-        extract = uncurry id . extract . runContextT
-        duplicate = undefined -- ContextT . liftW (fst . extract &&& ContextT) . duplicate . runContextT
+        extract = uncurry id . runContextT
+        duplicate (ContextT (f,ws)) = ContextT (ContextT . (,) f, ws)

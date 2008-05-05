@@ -12,11 +12,11 @@ config:
 html:
 	@runhaskell Setup.lhs haddock
 
+sdist:
+	@runhaskell Setup.lhs sdist
+
 install:
 	@runhaskell Setup.lhs install
-
-run:
-	$(GHCI) Control.Comonad.State
 
 test:
 	find . -name "*.hs" | egrep -v '_darcs' | xargs qc

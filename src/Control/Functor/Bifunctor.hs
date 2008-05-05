@@ -16,7 +16,8 @@
 module Control.Functor.Bifunctor where
 
 import Control.Bifunctor
-import Control.Bifunctor.Instances
+import Control.Bifunctor.Pair
+import Control.Bifunctor.Either
 import Control.Functor.Contravariant
 import Control.Functor.Exponential
 import Control.Functor.Full

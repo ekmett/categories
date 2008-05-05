@@ -16,3 +16,7 @@ module Control.Functor.Contravariant where
 class ContravariantFunctor f where
 	contramap :: (a -> b)  -> f b -> f a
 
+newtype ContraF a b = ContraF { runContraF :: b -> a }
+
+instance ContravariantFunctor (ContraF a) where
+        contramap g (ContraF f) = ContraF (f . g)

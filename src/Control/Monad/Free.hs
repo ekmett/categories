@@ -13,29 +13,35 @@
 module Control.Monad.Free where
 
 import Control.Arrow ((|||), (+++))
+import Control.Bifunctor
+import Control.Bifunctor.Either
+import Control.Bifunctor.Fix
+import Control.Bifunctor.Composition
+import Control.Functor.Extras
 import Control.Functor.Exponential
--- import Control.Functor.Contravariant
+import Control.Functor.Contravariant
 import Control.Monad
+import Control.Monad.Identity
+import Control.Monad.Parameterized
+import Control.Monad.Parameterized.Class
+import Control.Comonad.Parameterized
+import Control.Comonad.Parameterized.Class
 
--- | The free monad of a functor
-data Free f a = Free { runFree :: Either a (f (Free f a)) }
+instance Functor f => PMonad (BiffB Either Identity f) where
+        preturn = BiffB . Left . Identity
+        pbind k = (k . runIdentity ||| BiffB . Right) . runBiffB
 
-instance Functor f => Functor (Free f) where
-        fmap f = Free . (f +++ fmap (fmap f)) . runFree
-
---instance ContravariantFunctor f => ContravariantFunctor (Free f) where
---        contramap f = Free . (f +++ contramap (fmap f)) . runFree
-
-instance ExpFunctor f => ExpFunctor (Free f) where
-        xmap f g = Free . (f +++ xmap (xmap f g) (xmap g f)) . runFree
-
-instance Functor f => Monad (Free f) where
-        return = Free . Left
-        m >>= k = (k ||| (inFree . fmap (>>= k))) (runFree m)
+type FreeB f a b = BiffB Either Identity f a b
+type Free f a = FixB (BiffB Either Identity f) a
 
 inFree :: f (Free f a) -> Free f a
-inFree = Free . Right
+inFree = InB . BiffB . Right
+
+runFree :: Free f a -> Either a (f (Free f a))
+runFree = first runIdentity . runBiffB . outB
 
 cataFree :: Functor f => (c -> a) -> (f a -> a) -> Free f c -> a
-cataFree l r = (l ||| r . fmap (cataFree l r)) . runFree
+cataFree l r = (l . runIdentity ||| r . fmap (cataFree l r)) . runBiffB . outB
 
+free :: Either a (f (Free f a)) -> Free f a
+free = InB . BiffB . first Identity

@@ -32,13 +32,12 @@ class Distributes f g where
 
 
 
-class FunctorZero f where
+class Functor f => FunctorZero f where
 	fzero :: f a
 
 -- monoid
 class FunctorZero f => FunctorPlus f where
 	fplus :: f a -> f a -> f a
 
-class FunctorSplit f where
+class Functor f => FunctorSplit f where
 	fsplit :: f a -> (f a, f a)
-	

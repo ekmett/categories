@@ -1,4 +1,4 @@
-{-# OPTIONS -fglasgow-exts -fallow-undecidable-instances #-}
+{-# OPTIONS_GHC -cpp -fglasgow-exts -fallow-undecidable-instances #-}
 -------------------------------------------------------------------------------------------
 -- |
 -- Module	: Control.Functor.Bifunctor

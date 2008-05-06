@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -cpp #-}
+
 -------------------------------------------------------------------------------------------
 -- |
 -- Module	: Control.Arrow.CoKleisli
@@ -11,14 +13,14 @@
 -------------------------------------------------------------------------------------------
 module Control.Arrow.CoKleisli where
 
-#if __GLASGOW_HASKELL__ >= 609 
+#if __GLASGOW_HASKELL__ >= 609
 import Prelude hiding (id,(.))
 import Control.Category
 #endif
 import Control.Comonad
 import Control.Arrow
 
-newtype CoKleisli w a b = CoKleisli { runCoKleisli :: w a -> b } 
+newtype CoKleisli w a b = CoKleisli { runCoKleisli :: w a -> b }
 
 instance Functor (CoKleisli w a) where
 	fmap f (CoKleisli g) = CoKleisli (f . g)

@@ -1,4 +1,4 @@
-{-# OPTIONS -fglasgow-exts #-}
+{-# OPTIONS_GHC -cpp -fglasgow-exts #-}
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Control.Comonad.Parameterized.Class
@@ -25,8 +25,8 @@ class Bifunctor f => PComonad f where
 > pextend pextract = id
 > pextract . pextend g = g
 > pextend (g . pextend j) = pextend g . pextend j
-> pextract . second g = pextract 
-> second g . pextend (j . second g) = pextend j . second g 
+> pextract . second g = pextract
+> second g . pextend (j . second g) = pextend j . second g
 
 -}
 

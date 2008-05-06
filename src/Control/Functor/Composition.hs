@@ -1,4 +1,4 @@
-{-# OPTIONS -fglasgow-exts #-}
+{-# OPTIONS_GHC -cpp -fglasgow-exts #-}
 -------------------------------------------------------------------------------------------
 -- |
 -- Module	: Control.Functor.Composition

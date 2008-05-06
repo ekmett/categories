@@ -13,19 +13,19 @@ build-type: 		Simple
 copyright:		Copyright (C) 2008 Edward A. Kmett
 			Copyright (C) 2004--2008 Dave Menendez
 			Copyright (C) 2007 Iavor Diatchki
-description: 		A vastly expanded collection of modules implementing various 
-			ideas from category theory. Notable bits include: comonads, 
-			adjunctions, functor fixedpoints and various recursion 
-			operaters ala /Functional Programming with Bananas, Lenses, 
-			Envelopes and Barbed Wire/. 
+description: 		A vastly expanded collection of modules implementing various
+			ideas from category theory. Notable bits include: comonads,
+			adjunctions, functor fixedpoints and various recursion
+			operaters ala /Functional Programming with Bananas, Lenses,
+			Envelopes and Barbed Wire/.
 
-extensions:		
-	CPP, 
-	EmptyDataDecls, 
+extensions:
+	CPP,
+	EmptyDataDecls,
 	FlexibleContexts,
 	FlexibleInstances,
-	FunctionalDependencies, 
-	MultiParamTypeClasses, 
+	FunctionalDependencies,
+	MultiParamTypeClasses,
 	TypeOperators,
 	UndecidableInstances,
 	ExistentialQuantification,
@@ -102,5 +102,5 @@ exposed-modules:
 	Control.Morphism.Histo,
 	Data.Void
 
-ghc-options:		-O2 -funbox-strict-fields 
+ghc-options:		-funbox-strict-fields
 hs-source-dirs:		src

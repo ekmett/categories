@@ -102,5 +102,5 @@ exposed-modules:
 	Control.Morphism.Histo,
 	Data.Void
 
-ghc-options:		-funbox-strict-fields
+ghc-options:		-Wall -funbox-strict-fields
 hs-source-dirs:		src

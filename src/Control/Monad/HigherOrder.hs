@@ -26,7 +26,7 @@ infixr 1 =**<<
 class HPointed m => HMonad m where
 	hbind   :: (Functor f, Functor g) => Natural f (m g) -> Natural (m f) (m g)
 
-hjoin :: (HMonad m, Functor (m g), Functor g) => Natural (m (m g)) (m g)
+hjoin :: (HMonad m, Functor (m g), Functor g) => m (m g) a -> m g a
 hjoin = hbind id
 
 (>>**=) :: (HMonad m, Functor f, Functor g) => m f a -> Natural f (m g) -> m g a

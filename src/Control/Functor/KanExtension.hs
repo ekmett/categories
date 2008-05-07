@@ -9,12 +9,17 @@
 -- Portability :  non-portable (rank-2 polymorphism)
 --
 ----------------------------------------------------------------------------
-module Control.Functor.KanExtension where
+module Control.Functor.KanExtension 
+	( Ran(..)
+	, toRan, fromRan
+	, Lan(..)
+	, toLan, fromLan
+	) where
 
 import Control.Functor.Composition
 import Control.Functor.Extras
 
--- Right Kan Extension
+-- | Right Kan Extension
 newtype Ran g h a = Ran { runRan :: forall b. (a -> g b) -> h b }
 
 toRan :: (Composition c, Functor k) => Natural (c k g) h -> Natural k (Ran g h)
@@ -23,7 +28,7 @@ toRan s t = Ran (s . compose . flip fmap t)
 fromRan :: Composition c => Natural k (Ran g h) -> Natural (c k g) h
 fromRan s = flip runRan id . s . decompose
 
--- Left Kan Extension
+-- | Left Kan Extension
 data Lan g h a = forall b. Lan (g b -> a) (h b)
 
 toLan :: (Composition c, Functor f) => Natural h (c f g) -> Natural (Lan g h) f

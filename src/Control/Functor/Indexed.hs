@@ -29,6 +29,5 @@ class IxFunctor w => IxCopointed w where
 	iextract :: w i i a -> a
 
 {-# RULES
-"ireturn/iextract" ireturn . iextract = id
 "iextract/ireturn" iextract . ireturn = id
  #-}

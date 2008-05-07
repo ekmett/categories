@@ -14,7 +14,7 @@ config:
 	@runhaskell Setup.lhs configure
 
 html:
-	@runhaskell Setup.lhs haddock --hyperlink-source
+	@runhaskell Setup.lhs haddock
 
 sdist:
 	@runhaskell Setup.lhs sdist

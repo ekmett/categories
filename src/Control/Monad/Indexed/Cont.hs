@@ -7,7 +7,7 @@
 --
 -- Maintainer	: Edward Kmett <ekmett@gmail.com>
 -- Stability	: experimental
--- Portability	: portable
+-- Portability	: Rank-2 Types
 --
 -------------------------------------------------------------------------------------------
 
@@ -18,7 +18,7 @@ import Control.Monad.Indexed
 
 class IxMonad m => IxMonadCont m where
 	reset :: m a o o -> m r r a
-	shift :: ((a -> m i i o) -> m r j j) -> m r o a
+	shift :: (forall i. (a -> m i i o) -> m r j j) -> m r o a
 
 newtype IxContT m r o a = IxContT { runIxContT :: (a -> m o) -> m r }
 

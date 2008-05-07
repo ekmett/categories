@@ -41,7 +41,7 @@ class (Functor f, Functor g) => Adjunction f g where
 	rightAdjunct f = counit . fmap f
 
 
--- adjunction-oriented composition
+-- | Adjunction-oriented composition, yields monads and comonads from adjunctions
 newtype ACompF f g a = ACompF (CompF f g a) deriving (Functor, ExpFunctor, Full, Composition)
 
 instance Adjunction f g => Pointed (ACompF g f) where

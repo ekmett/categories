@@ -14,6 +14,7 @@ module Control.Comonad.HigherOrder
 	( HFunctor(..)
 	, HCopointed(..)
 	, HComonad(..)
+	, hduplicate
 	) where
 
 import Control.Functor.Extras (Natural)
@@ -21,3 +22,7 @@ import Control.Functor.HigherOrder
 
 class HCopointed w => HComonad w where
 	hextend  :: (Functor f, Functor g) => Natural (w f) g -> Natural (w f) (w g)
+
+
+hduplicate :: (HComonad w, Functor (w g), Functor g) => w g a -> w (w g) a
+hduplicate = hextend id

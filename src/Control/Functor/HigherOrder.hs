@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -fglasgow-exts #-}
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Control.Functor.HigherOrder
@@ -18,8 +19,10 @@ module Control.Functor.HigherOrder
 	, AlgH
 	, CoAlgH
 	, FixH(..)
+	, LowerH(..)
 	) where
 
+import Control.Functor.Pointed
 import Control.Functor.Extras
 
 type AlgH f g = Natural (f g) g
@@ -37,3 +40,20 @@ class HFunctor m => HPointed m where
 class HFunctor w => HCopointed w where
 	hextract :: Functor f => Natural (w f) f
 
+newtype LowerH 
+	(h :: (* -> *) -> * -> *)
+	(f :: * -> *)
+	(a :: *) = LowerH { liftH :: h f a }
+
+instance (HFunctor h, Functor f) => Functor (LowerH h f) where
+	fmap f = LowerH . ffmap f . liftH 
+
+instance (HPointed h, Pointed f) => Pointed (LowerH h f) where
+	point = LowerH . hreturn . point
+
+instance (HCopointed h, Copointed f) => Copointed (LowerH h f) where
+	extract = extract . hextract . liftH
+
+{-# RULES
+"hextract/hreturn" hextract . hreturn = id
+ #-}

@@ -26,7 +26,6 @@ class Functor f => Copointed f where
 
 {-# RULES
 "extract/point" extract . point = id
-"point/extract" point . extract = id
  #-}
 
 instance Pointed Identity where

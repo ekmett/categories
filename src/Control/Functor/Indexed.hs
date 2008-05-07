@@ -9,23 +9,26 @@
 -- Portability :  portable
 --
 ----------------------------------------------------------------------------
-module Control.Functor.Indexed where
-
-import Control.Comonad
-import Control.Arrow
-import Control.Functor.Extras
-import Control.Functor.HigherOrder
-import Control.Monad
+module Control.Functor.Indexed 
+	( IxFunctor(..)
+	, IxCopointed(..)
+	, IxPointed(..)
+	, IxApplicative(..)
+	) where
 
 class IxFunctor f where
 	imap :: (a -> b) -> f j k a -> f j k b
 
-newtype LiftIx m i j a = LiftIx { lowerIx :: m a }
+class IxPointed m => IxApplicative m where
+	iap :: m i j (a -> b) -> m j k a -> m i k b
 
-instance Functor f => IxFunctor (LiftIx f) where
-        imap f = LiftIx . fmap f . lowerIx
+class IxFunctor m => IxPointed m where
+        ireturn :: a -> m i i a
 
-newtype LowerIx m i a = LowerIx { liftIx :: m i i a } 
+class IxFunctor w => IxCopointed w where
+	iextract :: w i i a -> a
 
-instance IxFunctor f => Functor (LowerIx f i) where
-	fmap f = LowerIx . imap f . liftIx
+{-# RULES
+"ireturn/iextract" ireturn . iextract = id
+"iextract/ireturn" iextract . ireturn = id
+ #-}

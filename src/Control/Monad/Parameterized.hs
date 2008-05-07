@@ -10,19 +10,44 @@
 -- Portability :  portable
 --
 ----------------------------------------------------------------------------
-module Control.Monad.Parameterized where
+module Control.Monad.Parameterized 
+	( Bifunctor(..)
+	, PPointed(..)
+	, PApplicative(..)
+	, PMonad(..)
+	, (>>*=), (=*<<), (>>*)
+	, papPMonad
+	) where
 
-import Control.Arrow ((|||), (+++))
-import Control.Monad
 import Control.Bifunctor
-import Control.Bifunctor.Fix
-import Control.Monad.Parameterized.Class
-import Control.Morphism.Cata
+import Control.Applicative.Parameterized
 
-paugment :: PMonad f => (forall c. (f a c -> c) -> c) -> (a -> FixB f b) -> FixB f b
-paugment g k = g (InB . pbind (outB . k))
+infixl 1 >>*=, >>*
+infixr 1 =*<< 
 
-instance PMonad f => Monad (FixB f) where
-	return = InB . preturn
-	m >>= k = paugment (flip bicata m) k
+class PApplicative f => PMonad f where
+	pbind :: (a -> f b c) -> f a c -> f b c
+	pbind f = pjoin . bimap f id
+	pjoin :: f (f a b) b -> f a b
+	pjoin = pbind id
+
+papPMonad :: PMonad f => f (a -> b) c -> f a c -> f b c
+papPMonad f x = f >>*= \ f' -> x >>*= \x' -> preturn (f' x')
+
+(>>*=) :: PMonad f => f a c -> (a -> f b c) -> f b c
+(>>*=) = flip pbind
+
+(=*<<) :: PMonad f => (a -> f b c) -> f a c -> f b c
+(=*<<) = pbind
+
+(>>*) :: PMonad f => f a c -> f b c -> f b c 
+m >>* n = m >>*= const n
+
+{- Parameterized monad laws (from <http://crab.rutgers.edu/~pjohann/f14-ghani.pdf>)
+> pbind preturn = id
+> pbind g . preturn = g
+> pbind (pbind g . j) = pbind g . pbind j
+> pmap g . preturn = preturn
+> pbind (pmap g . j) . pmap g = pmap g . pbind j 
+-}
 

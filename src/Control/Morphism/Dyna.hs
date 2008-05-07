@@ -14,8 +14,6 @@ module Control.Morphism.Dyna where
 
 import Control.Functor.Algebra
 import Control.Functor.Extras
-import Control.Functor.Fix
-import Control.Comonad
 import Control.Comonad.Cofree
 import Control.Morphism.Hylo
 import Control.Morphism.Histo

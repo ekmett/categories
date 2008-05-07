@@ -10,26 +10,22 @@
 -- Portability :  portable
 --
 ----------------------------------------------------------------------------
-module Control.Monad.Free where
+module Control.Monad.Free 
+	( module Control.Monad.Parameterized
+	, module Control.Monad.Identity
+	, FreeB
+	, Free
+	, inFree
+	, runFree
+	, cataFree
+	, free
+	) where
 
-import Control.Arrow ((|||), (+++))
-import Control.Bifunctor
-import Control.Bifunctor.Either
+import Control.Arrow ((|||))
+import Control.Bifunctor.Biff
 import Control.Bifunctor.Fix
-import Control.Bifunctor.Composition
-import Control.Functor.Extras
-import Control.Functor.Exponential
-import Control.Functor.Contravariant
-import Control.Monad
-import Control.Monad.Identity
 import Control.Monad.Parameterized
-import Control.Monad.Parameterized.Class
-import Control.Comonad.Parameterized
-import Control.Comonad.Parameterized.Class
-
-instance Functor f => PMonad (BiffB Either Identity f) where
-        preturn = BiffB . Left . Identity
-        pbind k = (k . runIdentity ||| BiffB . Right) . runBiffB
+import Control.Monad.Identity
 
 type FreeB f a b = BiffB Either Identity f a b
 type Free f a = FixB (BiffB Either Identity f) a

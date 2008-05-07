@@ -9,18 +9,28 @@
 -- Portability :  non-portable (rank-2 polymorphism)
 --
 ----------------------------------------------------------------------------
-module Control.Monad.HigherOrder where
+module Control.Monad.HigherOrder 
+	( HFunctor(..)
+	, HPointed(..)
+	, HMonad(..)
+	, hjoin
+	, (>>**=), (=**<<)
+	) where
 
-import Control.Functor.Extras
+import Control.Functor.Extras (Natural)
 import Control.Functor.HigherOrder
 
-class HFunctor m => HMonad m where
-	hreturn :: Functor f => Natural f (m f)
+infixl 1 >>**=
+infixr 1 =**<<
+
+class HPointed m => HMonad m where
 	hbind   :: (Functor f, Functor g) => Natural f (m g) -> Natural (m f) (m g)
-	--hbind k = hjoin . hfmap k
 
 hjoin :: (HMonad m, Functor (m g), Functor g) => Natural (m (m g)) (m g)
 hjoin = hbind id
 
 (>>**=) :: (HMonad m, Functor f, Functor g) => m f a -> Natural f (m g) -> m g a
 m >>**= k = hbind k m 
+
+(=**<<) :: (HMonad m, Functor f, Functor g) => Natural f (m g) -> Natural (m f) (m g)
+(=**<<) = hbind

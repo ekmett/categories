@@ -9,7 +9,11 @@
 -- Portability	: non-portable (functional-dependencies)
 --
 -------------------------------------------------------------------------------------------
-module Control.Bifunctor where
+module Control.Bifunctor 
+	( Bifunctor(..) 
+	) where
+
+import Control.Arrow ((+++), (***))
 
 class Bifunctor f where
 	bimap :: (a -> c) -> (b -> d) -> f a b -> f c d
@@ -17,3 +21,9 @@ class Bifunctor f where
 	first f = bimap f id
 	second :: (b -> d) -> f a b -> f a d
 	second = bimap id
+
+instance Bifunctor Either where
+        bimap = (+++)
+
+instance Bifunctor (,) where
+	bimap = (***)

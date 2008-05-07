@@ -12,10 +12,21 @@
 --
 -- This module declares the 'Comonad' class
 ----------------------------------------------------------------------------
-module Control.Comonad where
+module Control.Comonad 
+	( module Control.Functor.Pointed
+	, Comonad(..)
+	, liftW
+	, (=>>)
+	, (.>>)
+	, liftCtx
+	, mapW
+	, parallelW
+	, unfoldW
+	, sequenceW
+	) where
 
-import Control.Monad
-import Control.Arrow ((|||), (&&&), (+++), (***))
+import Control.Monad.Identity
+import Control.Functor.Pointed
 
 infixl 1 =>>, .>>
 
@@ -50,10 +61,9 @@ must also satisfy these laws:
 and the third is the definition of 'liftW'.)
 -}
 
-class Functor w => Comonad w where
+class Copointed w => Comonad w where
         duplicate :: w a -> w (w a)
         extend :: (w a -> b) -> w a -> w b
-        extract :: w a -> a
         extend f = fmap f . duplicate
         duplicate = extend id
 
@@ -88,4 +98,11 @@ unfoldW f w = fst (f w) : unfoldW f (w =>> snd . f)
 sequenceW :: Comonad w => [w a -> b] -> w a -> [b]
 sequenceW []     _ = []
 sequenceW (f:fs) w = f w : sequenceW fs w
+
+instance Comonad Identity where
+        extend f x = Identity (f x)
+        duplicate = Identity
+
+instance Comonad ((,)e) where
+        duplicate ~(e,a) = (e,(e,a))
 

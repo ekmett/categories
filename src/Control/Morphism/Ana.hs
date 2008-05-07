@@ -20,7 +20,6 @@ import Control.Bifunctor
 import Control.Bifunctor.Fix
 import Control.Comonad ()
 import Control.Monad.Identity
-import Control.Comonad.Identity ()
 
 -- | Anamorphisms are a generalized form of 'unfoldr'
 ana :: Functor f => CoAlg f a -> a -> Fix f

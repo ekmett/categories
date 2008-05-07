@@ -16,11 +16,17 @@
 -- monoidal. This lets us reuse the same Bifunctor over different categories without 
 -- painful type annotations.
 -------------------------------------------------------------------------------------------
-module Control.Bifunctor.Monoidal where
 
-import Control.Bifunctor
-import Control.Bifunctor.Associative
+module Control.Bifunctor.Monoidal 
+	( module Control.Bifunctor.Braided
+	, module Data.Void
+	, HasIdentity
+	, Monoidal(..)
+	, Comonoidal(..)
+	) where
+
 import Control.Bifunctor.Braided
+import Data.Void
 
 -- | Denotes that we have some reasonable notion of 'Identity' for a particular 'Bifunctor' in this 'Category'. This
 -- notion is currently used by both 'Monoidal' and 'Comonoidal'
@@ -69,4 +75,10 @@ class (Coassociative p, HasIdentity p i) => Comonoidal p i | p -> i where
 "braid/coidr"                   braid . coidr = coidl
 "braid/coidl"                   braid . coidl = coidr
  #-}
+
+instance HasIdentity (,) Void
+
+instance Monoidal (,) Void where
+        idl = snd
+        idr = fst
 

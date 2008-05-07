@@ -11,30 +11,48 @@
 --
 -- The state-in-context comonad and comonad transformer
 ----------------------------------------------------------------------------
-module Control.Comonad.Context where
+module Control.Comonad.Context 
+	( module Control.Comonad
+	, ComonadContext(..)
+	, putC
+	, experiment
+	, Context(..)
+	, runContext
+	, ContextT(..)
+	) where
 
-import Control.Arrow ((&&&), first)
+import Control.Bifunctor (first)
 import Control.Comonad
-import Control.Comonad.Context.Class
 
+class Comonad w => ComonadContext s w | w -> s where
+	getC :: w a -> s
+	modifyC :: (s -> s) -> w a -> a 
+
+putC :: ComonadContext s w => s -> w a -> a
+putC = modifyC . const 
+
+experiment :: (ComonadContext s w, Functor f) => f (s -> s) -> w a -> f a
+experiment ms a = fmap (flip modifyC a) ms
 
 data Context s a = Context (s -> a) s
 
+
+runContext :: (Context s s -> Context s b) -> s -> (b, s)
 runContext f s = (a b, b) where
 	Context a b = f (Context id s)
 
 instance ComonadContext s (Context s) where
-	getC (Context f s) = s
+	getC (Context _ s) = s
 	modifyC m (Context f c) = f (m c)
 	
 instance Functor (Context s) where
 	fmap f (Context f' s) = Context (f . f') s
 
-instance Comonad (Context s) where
+instance Copointed (Context s) where
 	extract   (Context f a) = f a
+
+instance Comonad (Context s) where
 	duplicate (Context f a) = Context (Context f) a
-
-
 
 
 newtype ContextT s w a = ContextT { runContextT :: (w s -> a, w s) }
@@ -46,6 +64,8 @@ instance Comonad w => ComonadContext s (ContextT s w) where
 instance Functor (ContextT b f) where
         fmap f = ContextT . first (f .) . runContextT
 
-instance Comonad w => Comonad (ContextT b w) where
+instance Copointed (ContextT b w) where
         extract = uncurry id . runContextT
+
+instance Comonad w => Comonad (ContextT b w) where
         duplicate (ContextT (f,ws)) = ContextT (ContextT . (,) f, ws)

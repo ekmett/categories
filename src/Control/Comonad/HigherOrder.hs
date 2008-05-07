@@ -10,11 +10,14 @@
 --
 -- extending Neil Ghani and Patrician Johann's HFunctor to higher order comonads
 ----------------------------------------------------------------------------
-module Control.Comonad.HigherOrder where
+module Control.Comonad.HigherOrder 
+	( HFunctor(..)
+	, HCopointed(..)
+	, HComonad(..)
+	) where
 
-import Control.Functor.Extras
+import Control.Functor.Extras (Natural)
 import Control.Functor.HigherOrder
 
-class HFunctor w => HComonad w where
-	hextract :: Functor f => Natural (w f) f
+class HCopointed w => HComonad w where
 	hextend  :: (Functor f, Functor g) => Natural (w f) g -> Natural (w f) (w g)

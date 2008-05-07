@@ -9,9 +9,13 @@
 -- Portability	: portable
 --
 -------------------------------------------------------------------------------------------
-module Control.Bifunctor.Braided where
+module Control.Bifunctor.Braided 
+	( module Control.Bifunctor.Associative
+	, Braided(..)
+	, Symmetric
+	, swap
+	) where
 
-import Control.Bifunctor
 import Control.Bifunctor.Associative
 
 {- | A braided (co)(monoidal or associative) category can commute the arguments of its bi-endofunctor. Obeys the laws:
@@ -43,3 +47,17 @@ swap = braid
 "braid/associate/braid"         bimap id braid . associate . bimap braid id = associate . braid . associate
 "braid/coassociate/braid"       bimap braid id . coassociate . bimap id braid = coassociate . braid . coassociate
  #-}
+
+
+instance Braided Either where
+        braid (Left a) = Right a
+        braid (Right b) = Left b
+
+instance Symmetric Either
+
+
+instance Braided (,) where
+        braid ~(a,b) = (b,a)
+
+instance Symmetric (,)
+

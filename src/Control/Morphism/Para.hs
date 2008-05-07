@@ -12,7 +12,6 @@
 ----------------------------------------------------------------------------
 module Control.Morphism.Para where
 
-import Control.Comonad
 import Control.Comonad.Reader
 import Control.Functor.Algebra
 import Control.Functor.Extras

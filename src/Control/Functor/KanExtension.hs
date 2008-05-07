@@ -11,7 +11,7 @@
 ----------------------------------------------------------------------------
 module Control.Functor.KanExtension where
 
-import Control.Functor.Composition.Class
+import Control.Functor.Composition
 import Control.Functor.Extras
 
 -- Right Kan Extension

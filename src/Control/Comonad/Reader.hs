@@ -10,16 +10,26 @@
 -- Portability :  portable
 --
 ----------------------------------------------------------------------------
-module Control.Comonad.Reader where
+module Control.Comonad.Reader 
+	( module Control.Bifunctor
+	, module Control.Comonad
+	, ReaderC(..)
+	, runReaderC
+	, ReaderCT(..)
+	, ComonadReader(..)
+	) where
 
-import Control.Bifunctor
-import Control.Bifunctor.Pair
-import Control.Monad.Instances -- for Functor ((,)e)
-import Control.Comonad.Reader.Class
-import Control.Comonad
 import Control.Arrow ((&&&))
+import Control.Bifunctor
+import Control.Comonad
+import Control.Monad.Instances
+
+class Comonad w => ComonadReader r w | w -> r where
+        askC :: w a -> r
 
 data ReaderC r a = ReaderC r a 
+
+runReaderC :: ReaderC r a -> (r, a)
 runReaderC (ReaderC r a) = (r,a)
 
 instance ComonadReader r (ReaderC r) where
@@ -28,8 +38,10 @@ instance ComonadReader r (ReaderC r) where
 instance Functor (ReaderC r) where
 	fmap f = uncurry ReaderC . second f . runReaderC
 
-instance Comonad (ReaderC r) where
+instance Copointed (ReaderC r) where
 	extract (ReaderC _ a) = a
+
+instance Comonad (ReaderC r) where
 	duplicate (ReaderC e a) = ReaderC e (ReaderC e a)
 
 instance Bifunctor ReaderC where
@@ -44,24 +56,15 @@ instance Comonad w => ComonadReader r (ReaderCT w r) where
 instance Functor f => Functor (ReaderCT f b) where
         fmap f = ReaderCT . fmap (fmap f) . runReaderCT
 
-instance Comonad w => Comonad (ReaderCT w b) where
+instance Copointed w => Copointed (ReaderCT w b) where
         extract = snd . extract . runReaderCT
+
+instance Comonad w => Comonad (ReaderCT w b) where
         duplicate = ReaderCT . liftW (fst . extract &&& ReaderCT) . duplicate . runReaderCT
 
 instance Functor f => Bifunctor (ReaderCT f) where
 	bimap f g = ReaderCT . fmap (bimap f g) . runReaderCT
 
 
-instance Comonad ((,)e) where
-        extract = snd
-        duplicate ~(e,a) = (e,(e,a))
-
 instance ComonadReader e ((,)e) where
         askC = fst
-
--- instance Functor ((,)e) where
---        fmap f = second f 
-
--- instance Bifunctor (,) where
---        bimap f g = uncurry ReaderC . bimap f g . runReaderC
-

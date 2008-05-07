@@ -8,15 +8,20 @@
 -- Stability	: experimental
 -- Portability	: portable
 --
+-- Described in <http://comonad.com/reader/2008/zipping-and-unzipping-functors/> and
+-- <http://comonad.com/reader/2008/cozipping/>
 -------------------------------------------------------------------------------------------
 
-module Control.Functor.Zip where
+module Control.Functor.Zip 
+	( unfzip, unbizip
+	, counzip, counbizip
+	, Zip(..)
+	, Bizip(..)
+	, Cozip(..)
+	) where
 
-import Control.Arrow ((&&&))
-import Control.Bifunctor
-import Control.Bifunctor.Composition
-import Control.Bifunctor.Pair -- Bifunctor (,)
-import Control.Bifunctor.Fix
+import Control.Arrow ((&&&),(|||))
+import Control.Bifunctor.Functor
 import Control.Comonad.Cofree
 import Control.Monad.Free
 import Control.Monad.Identity
@@ -65,7 +70,7 @@ instance Zip [] where
 
 instance Zip Maybe where
 	fzipWith f (Just a) (Just b) = Just (f a b)
-	fzipWith f _ _ = Nothing
+	fzipWith _ _ _ = Nothing
 
 instance Monoid a => Zip ((,)a) where
 	fzipWith f (a, c) (b, d) = (mappend a b, f c d)
@@ -87,9 +92,9 @@ instance Bizip p => Zip (FixB p) where
 	fzipWith f as bs = InB $ bizipWith f (fzipWith f) (outB as) (outB bs)
 
 instance Monoid a => Zip (Either a) where
-	fzipWith f (Left a) (Left b) = Left (mappend a b)
-	fzipWith f (Right a) (Left b) = Left b
-	fzipWith f (Left a) (Right b) = Left a
+	fzipWith _ (Left a) (Left b) = Left (mappend a b)
+	fzipWith _ (Right _) (Left b) = Left b
+	fzipWith _ (Left a) (Right _) = Left a
 	fzipWith f (Right a) (Right b) = Right (f a b)
 
 
@@ -97,3 +102,28 @@ instance Monoid a => Zip (Either a) where
 instance Zip f => Bizip (FreeB f) where
 	bizipWith f g (FreeB as) (FreeB bs) = FreeB $ bizipWith f (fzipWith g) as bs
 -}
+
+counzip :: Functor f => Either (f a) (f b) -> f (Either a b)
+counzip = fmap Left ||| fmap Right
+ 
+counbizip :: Bifunctor f => Either (f a c) (f b d) -> f (Either a b) (Either c d)
+counbizip = bimap Left Left ||| bimap Right Right
+
+class Functor f => Cozip f where
+   cozip :: f (Either a b) -> Either (f a) (f b)
+ 
+instance Cozip Identity where
+   cozip = bimap Identity Identity . runIdentity
+
+instance Cozip ((,)c) where
+   cozip (c,ab) = bimap ((,)c) ((,)c) ab
+ 
+-- ambiguous choice
+instance Cozip Maybe where
+   cozip = maybe (Left Nothing) (bimap Just Just)
+-- cozip = maybe (Right Nothing) (bimap Just Just)
+ 
+-- ambiguous choice
+instance Cozip (Either c) where
+   cozip = (Left . Left) ||| bimap Right Right
+-- cozip = (Right . Left) ||| bimap Right Right

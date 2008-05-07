@@ -14,13 +14,9 @@
 
 module Control.Functor.Zap where
 
-import Control.Bifunctor
-import Control.Bifunctor.Composition
 import Control.Comonad.Cofree
-import Control.Monad.Either
-import Control.Monad.Free
+import Control.Monad.Either ()
 import Control.Monad.Identity
-import Data.Traversable
 
 {- | Minimum definition: zapWith -}
 

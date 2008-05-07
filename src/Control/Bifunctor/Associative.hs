@@ -13,7 +13,11 @@
 -- where the pentagonal condition does not hold, but for which there is an identity.
 --
 -------------------------------------------------------------------------------------------
-module Control.Bifunctor.Associative where
+module Control.Bifunctor.Associative 
+	( module Control.Bifunctor
+	, Associative(..)
+	, Coassociative(..)
+	) where
 
 import Control.Bifunctor
 
@@ -36,4 +40,18 @@ class Bifunctor s => Coassociative s where
 "pentagonal coherence" bimap id associate . associate . bimap associate id = associate . associate
  #-}
 
+instance Associative (,) where
+        associate ((a,b),c) = (a,(b,c))
 
+instance Coassociative (,) where
+        coassociate (a,(b,c)) = ((a,b),c)
+
+instance Associative Either where
+        associate (Left (Left a)) = Left a
+        associate (Left (Right b)) = Right (Left b)
+        associate (Right c) = Right (Right c)
+
+instance Coassociative Either where
+        coassociate (Left a) = Left (Left a)
+        coassociate (Right (Left b)) = Left (Right b)
+        coassociate (Right (Right c)) = Right c

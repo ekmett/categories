@@ -1,7 +1,7 @@
-{-# OPTIONS_GHC -fglasgow-exts #-}
+{-# OPTIONS -fglasgow-exts #-}
 -----------------------------------------------------------------------------
 -- |
--- Module      :  Control.Comonad.Identity
+-- Module      :  Control.Applicative.Paramterized
 -- Copyright   :  (C) 2008 Edward Kmett
 -- License     :  BSD-style (see the file LICENSE)
 --
@@ -10,12 +10,12 @@
 -- Portability :  portable
 --
 ----------------------------------------------------------------------------
-module Control.Comonad.Identity where
+module Control.Applicative.Parameterized 
+	( PApplicative(..)
+	, PPointed(..)
+	) where
 
-import Control.Monad.Identity
-import Control.Comonad
+import Control.Bifunctor.Pointed
 
-instance Comonad Identity where
-        extract = runIdentity
-        extend f x = Identity (f x)
-        duplicate = Identity
+class PPointed f => PApplicative f where
+	pap :: f (a -> b) c -> f a c -> f b c

@@ -9,22 +9,18 @@
 -- Portability :  portable 
 --
 ----------------------------------------------------------------------------
-module Control.Comonad.Indexed where
+module Control.Comonad.Indexed 
+	( IxFunctor(..)
+	, IxCopointed(..)
+	, IxComonad(..)
+	, iduplicate
+	) where
 
-import Control.Comonad
-import Control.Arrow
-import Control.Functor.Extras
-import Control.Functor.HigherOrder
 import Control.Functor.Indexed
-import Control.Monad
 
-class IxFunctor w => IxComonad w where
-	iextract :: w i i a -> a
+class IxCopointed w => IxComonad w where
 	iextend :: (w j k a -> b) -> w i k a -> w i j b
 
 iduplicate :: IxComonad w => w i k a -> w i j (w j k a)
 iduplicate = iextend id
 
-instance Comonad w => IxComonad (LiftIx w) where
-	iextract = extract . lowerIx 
-	iextend f = LiftIx . extend (f . LiftIx) . lowerIx

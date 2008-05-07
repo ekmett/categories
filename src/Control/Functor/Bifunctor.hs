@@ -16,13 +16,11 @@
 module Control.Functor.Bifunctor where
 
 import Control.Bifunctor
-import Control.Bifunctor.Pair
-import Control.Bifunctor.Either
 import Control.Functor.Contravariant
 import Control.Functor.Exponential
 import Control.Functor.Full
 import Control.Functor.Pointed
-import Control.Arrow ((***),(&&&),(|||),(+++))
+import Control.Arrow ((&&&),(|||))
 
 -- * Bifunctor functor transformer
 
@@ -61,5 +59,5 @@ runCoproductF :: BifunctorF Either f g a -> Either (f a) (g a)
 runCoproductF = runBifunctorF
 
 instance (Copointed f, Copointed g) => Copointed (BifunctorF Either f g) where
-        copoint = (copoint ||| copoint) . runBifunctorF
+        extract = (extract ||| extract) . runBifunctorF
 

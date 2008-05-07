@@ -12,11 +12,20 @@
 -- Generalized functor composeosition.
 -------------------------------------------------------------------------------------------
 
-module Control.Functor.Composition where
+module Control.Functor.Composition
+	( CompF(..)
+	, Composition(..)
+	, associateComp
+	, coassociateComp
+	, (:.:)
+	) where
 
-import Control.Functor.Composition.Class
 import Control.Functor.Exponential
 import Control.Functor.Full
+
+class Composition c where
+    decompose  :: c f g x -> f (g x)
+    compose    :: f (g x) -> c f g x
 
 newtype CompF f g a = CompF { runCompF :: f (g a) }
 
@@ -24,9 +33,7 @@ instance Composition CompF where
 	compose = CompF
 	decompose = runCompF
 
-#ifndef __HADDOCK__
 type (f :.: g) a = CompF f g a
-#endif
 
 -- common functor composition traits
 instance (Functor f, Functor g) => Functor (CompF f g) where

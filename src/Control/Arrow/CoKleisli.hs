@@ -11,7 +11,9 @@
 -- Portability	: portable
 --
 -------------------------------------------------------------------------------------------
-module Control.Arrow.CoKleisli where
+module Control.Arrow.CoKleisli 
+	( CoKleisli(..)
+	) where
 
 #if __GLASGOW_HASKELL__ >= 609
 import Prelude hiding (id,(.))

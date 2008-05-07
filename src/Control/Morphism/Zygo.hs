@@ -13,8 +13,6 @@
 module Control.Morphism.Zygo where
 
 import Control.Arrow ((&&&))
-import Control.Bifunctor.Pair
-import Control.Comonad
 import Control.Comonad.Reader
 import Control.Functor.Algebra
 import Control.Functor.Extras

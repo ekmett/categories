@@ -9,31 +9,31 @@
 -- Portability :  non-portable (rank-2 polymorphism)
 --
 ----------------------------------------------------------------------------
-module Control.Monad.Indexed where
+module Control.Monad.Indexed 
+	( IxFunctor(..)
+	, IxPointed(..)
+	, IxApplicative(..)
+	, IxMonad(..)
+	, ijoin, (>>>=), (=<<<)
+	, iapIxMonad
+	) where
 
-import Control.Comonad
-import Control.Arrow
-import Control.Functor.Extras
-import Control.Functor.HigherOrder
 import Control.Functor.Indexed
-import Control.Monad
 
-class IxFunctor m => IxMonad m where
-	ireturn :: a -> m i i a
+class IxApplicative m => IxMonad m where
 	ibind :: (a -> m j k b) -> m i j a -> m i k b
 
 ijoin :: IxMonad m => m i j (m j k a) -> m i k a 
 ijoin = ibind id
 
+infixr 1 =<<<
 infixl 1 >>>=
 
 (>>>=) :: IxMonad m => m i j a -> (a -> m j k b) -> m i k b
 m >>>= k = ibind k m 
 
-instance (Functor m, Monad m) => IxMonad (LiftIx m) where
-	ireturn = LiftIx . return
-	ibind f m = LiftIx (lowerIx m >>= lowerIx . f)
+(=<<<) :: IxMonad m => (a -> m j k b) -> m i j a -> m i k b
+(=<<<) = ibind
 
-instance (IxMonad m) => Monad (LowerIx m i) where
-	return = LowerIx . ireturn
-	m >>= f = LowerIx (liftIx m >>>= liftIx . f)
+iapIxMonad :: IxMonad m => m i j (a -> b) -> m j k a -> m i k b
+iapIxMonad f x = f >>>= \ f' -> x >>>= \x' -> ireturn (f' x')

@@ -11,7 +11,14 @@
 -- Neil Ghani and Particia Johann''s higher order functors from
 -- <http://crab.rutgers.edu/~pjohann/tlca07-rev.pdf>
 ----------------------------------------------------------------------------
-module Control.Functor.HigherOrder where
+module Control.Functor.HigherOrder 
+	( HFunctor(..)
+	, HPointed(..)
+	, HCopointed(..)
+	, AlgH
+	, CoAlgH
+	, FixH(..)
+	) where
 
 import Control.Functor.Extras
 
@@ -23,3 +30,10 @@ class HFunctor f where
 	hfmap :: Natural g h -> Natural (f g) (f h)
 
 newtype FixH f a = InH { outH :: f (FixH f) a }
+
+class HFunctor m => HPointed m where
+	hreturn  :: Functor f => Natural f (m f)
+
+class HFunctor w => HCopointed w where
+	hextract :: Functor f => Natural (w f) f
+

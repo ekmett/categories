@@ -15,7 +15,7 @@ module Control.Morphism.Cata where
 import Control.Bifunctor
 import Control.Bifunctor.Fix
 import Control.Comonad
-import Control.Comonad.Identity
+import Control.Functor.Pointed
 import Control.Functor.Algebra 
 import Control.Functor.HigherOrder
 import Control.Functor.Extras

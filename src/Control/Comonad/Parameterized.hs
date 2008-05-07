@@ -10,17 +10,32 @@
 -- Portability :  portable
 --
 ----------------------------------------------------------------------------
-module Control.Comonad.Parameterized where
+module Control.Comonad.Parameterized 
+	( Bifunctor(..)
+	, PCopointed(..)
+	, PComonad(..)
+	) where
 
 import Control.Bifunctor
-import Control.Bifunctor.Fix
-import Control.Comonad
-import Control.Comonad.Parameterized.Class
-import Control.Morphism.Ana
+import Control.Bifunctor.Pointed
 
-copaugment :: PComonad f => ((FixB f a -> f b (FixB f a)) -> FixB f b) -> (FixB f a -> b) -> FixB f b
-copaugment g k = g (pextend (k . InB) . outB)
+class PCopointed f => PComonad f where
+	pextend :: (f b c -> a) -> f b c -> f a c
 
-instance PComonad f => Comonad (FixB f) where
-        extract = pextract . outB
-        extend k w = copaugment (flip biana w) k
+{- Parameterized comonad laws:
+
+> pextend pextract = id
+> pextract . pextend g = g
+> pextend (g . pextend j) = pextend g . pextend j
+> pextract . second g = pextract 
+> second g . pextend (j . second g) = pextend j . second g 
+
+-}
+
+{-# RULES
+"pextend pextract" 		pextend pextract = id
+"pextract . pextend g" 		forall g. pextract . pextend g = g
+"bimap _ _ . pextract" 		forall j g. bimap id g . pextend (j . bimap id g) = pextend j . bimap id g
+ #-}
+
+	

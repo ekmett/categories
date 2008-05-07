@@ -15,7 +15,7 @@ module Control.Functor.Strong where
 
 import Prelude hiding (sequence)
 import Data.Traversable
-import Control.Monad.Either
+import Control.Monad.Either ()
 
 strength :: Functor f => f a -> b -> f (a,b)
 strength fa b = fmap (\a -> (a,b)) fa

@@ -14,12 +14,10 @@
 module Control.Morphism.Hylo where
 
 import Control.Bifunctor
-import Control.Bifunctor.HigherOrder
 import Control.Comonad
 import Control.Monad
 import Control.Functor.Algebra
 import Control.Functor.Extras
-import Control.Functor.Fix
 import Control.Functor.HigherOrder
 
 hylo :: Functor f => Alg g b -> Natural f g -> CoAlg f a -> a -> b

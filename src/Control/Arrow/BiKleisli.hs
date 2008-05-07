@@ -11,7 +11,9 @@
 --
 -------------------------------------------------------------------------------------------
 
-module Control.Arrow.BiKleisli where
+module Control.Arrow.BiKleisli
+	( BiKleisli(..)
+	) where
 
 #if __GLASGOW_HASKELL__ >= 609
 import Prelude hiding (id,(.))

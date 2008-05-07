@@ -19,10 +19,11 @@
 --------------------------------------------------------------------
 
 module Control.Comonad.Supply
-  (
+  ( module Control.Comonad
+
 
   -- * Creating supplies
-  Supply
+  , Supply
   , newSupply
   , newEnumSupply
   , newNumSupply
@@ -94,7 +95,7 @@ newSupply x f = fmap (gen True) (newMVar (iterate f x))
 modifySupply :: Supply a -> (Supply a -> b) -> Supply b
 modifySupply = flip extend
 
--- (Supply, supplyValue, modifySupply) form a comonad:
+-- (Supply, supplyValue, modifySupply) forms a comonad:
 {-
 law1 s      = [ modifySupply s supplyValue, s ]
 law2 s f    = [ supplyValue (modifySupply s f), f s ]
@@ -136,8 +137,10 @@ split4         :: Supply a -> (Supply a, Supply a, Supply a, Supply a)
 split4 s        = let s1 : s2 : s3 : s4 : _ = split s
                   in (s1,s2,s3,s4)
 
-instance Comonad Supply where
+instance Copointed Supply where
     extract = supplyValue
+
+instance Comonad Supply where
     extend f s = Node { supplyValue = f s
                       , supplyLeft  = modifySupply (supplyLeft s) f
                       , supplyRight = modifySupply (supplyRight s) f

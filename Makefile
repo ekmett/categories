@@ -2,15 +2,19 @@
 
 build: all
 
-
 all:
 	@runhaskell Setup.lhs build
+
+over: clean config all html
+
+clean:
+	@runhaskell Setup.lhs clean
 
 config:
 	@runhaskell Setup.lhs configure
 
 html:
-	@runhaskell Setup.lhs haddock
+	@runhaskell Setup.lhs haddock --hyperlink-source
 
 sdist:
 	@runhaskell Setup.lhs sdist

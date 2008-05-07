@@ -6,22 +6,43 @@
 --
 -- Maintainer	: Edward Kmett <ekmett@gmail.com>
 -- Stability	: experimental
--- Portability	: non-portable (functional-dependencies)
+-- Portability	: portable
 --
 -------------------------------------------------------------------------------------------
 
-module Control.Functor.Pointed where
+module Control.Functor.Pointed 
+	( Pointed(..)
+	, Copointed(..)
+	) where
+
+import Control.Monad.Identity
 
 -- return
 class Functor f => Pointed f where
         point :: a -> f a
 
--- extract
 class Functor f => Copointed f where
-        copoint :: f a -> a
+        extract :: f a -> a
 
 {-# RULES
-"copoint/point" copoint . point = id
-"point/copoint" point . copoint = id
+"extract/point" extract . point = id
+"point/extract" point . extract = id
  #-}
 
+instance Pointed Identity where
+	point = Identity
+
+instance Pointed Maybe where
+	point = Just
+
+instance Pointed (Either a) where
+	point = Right
+
+instance Pointed [] where
+	point a = [a]
+
+instance Copointed Identity where
+        extract = runIdentity
+
+instance Copointed ((,)e) where
+	extract = snd

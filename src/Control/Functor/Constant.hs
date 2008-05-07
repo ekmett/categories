@@ -22,12 +22,12 @@ import Data.Void
 newtype ConstantF a b = ConstantF a
 
 instance Functor (ConstantF a) where
-	fmap f (ConstantF a) = ConstantF a
+	fmap _ (ConstantF a) = ConstantF a
 
 instance ContravariantFunctor (ConstantF a) where
-	contramap f (ConstantF a) = ConstantF a
+	contramap _ (ConstantF a) = ConstantF a
 
 instance ExpFunctor (ConstantF a) where
-	xmap f g (ConstantF a) = ConstantF a
+	xmap _ _ (ConstantF a) = ConstantF a
 
 type VoidF a = ConstantF Void a

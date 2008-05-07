@@ -10,31 +10,26 @@
 -- Portability :  rank-2 types 
 --
 ----------------------------------------------------------------------------
-module Control.Comonad.Cofree where
+module Control.Comonad.Cofree 
+	( BiffB(..)
+	, FixB(..)
+	, PCopointed(..)
+	, PComonad(..)
+	, Identity(..)
+	, CofreeB
+	, Cofree
+	, outCofree, runCofree, anaCofree, cofree
+	) where
 
 import Control.Arrow ((&&&))
-import Control.Bifunctor
 import Control.Bifunctor.Fix
-import Control.Bifunctor.Composition
-import Control.Bifunctor.Pair
-import Control.Comonad
+import Control.Bifunctor.Biff
 import Control.Comonad.Parameterized
-import Control.Comonad.Parameterized.Class
-import Control.Functor.Extras
 import Control.Monad.Identity
 import Control.Monad.Parameterized
-import Control.Monad.Parameterized.Class
 
 type CofreeB f a b = BiffB (,) Identity f a b
 type Cofree f a = FixB (BiffB (,) Identity f) a
-
-instance Functor f => PComonad (BiffB (,) Identity f) where
-	pextract = runIdentity . fst . runBiffB
-	pextend f = BiffB . (Identity . f &&& snd . runBiffB)
-
-instance FunctorPlus f => PMonad (BiffB (,) Identity f) where
-	preturn a = BiffB (Identity a,fzero)
-	pbind k (BiffB ~(Identity a,as)) = BiffB (ib, fplus as bs) where BiffB (ib,bs) = k a 
 
 outCofree :: Cofree f a -> f (Cofree f a)
 outCofree = snd . runBiffB . outB

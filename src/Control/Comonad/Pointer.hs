@@ -7,17 +7,18 @@
 --
 -- Maintainer  :  Edward Kmett <ekmett@gmail.com>
 -- Stability   :  experimental
--- Portability :  non-portable (MPTCs)
+-- Portability :  portable
 --
 -- SIGFPE (Dan Piponi)'s Pointer Comonad
 ----------------------------------------------------------------------------
-module Control.Comonad.Pointer where
+module Control.Comonad.Pointer 
+	( module Control.Comonad
+	, Pointer(..)
+	, distPointer
+	) where
 
 import Control.Functor.Extras
-import Control.Arrow ((&&&), first)
 import Data.Array
-import Data.Foldable
-import Control.Monad
 import Control.Comonad
 
 data Pointer i a = Pointer { index :: i, array :: Array i a } deriving (Show,Read)
@@ -25,8 +26,10 @@ data Pointer i a = Pointer { index :: i, array :: Array i a } deriving (Show,Rea
 instance Ix i => Functor (Pointer i) where
 	fmap f (Pointer i a) = Pointer i (fmap f a)
 
-instance Ix i => Comonad (Pointer i) where
+instance Ix i => Copointed (Pointer i) where
 	extract (Pointer i a) = a ! i
+
+instance Ix i => Comonad (Pointer i) where
 	extend f (Pointer i a) = Pointer i . listArray bds $ fmap (f . flip Pointer a) (range bds) where
 		bds = bounds a
 

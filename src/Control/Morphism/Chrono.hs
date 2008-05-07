@@ -16,7 +16,6 @@ module Control.Morphism.Chrono where
 import Control.Comonad.Cofree
 import Control.Functor.Algebra
 import Control.Functor.Extras
-import Control.Functor.Fix
 import Control.Monad.Free
 import Control.Morphism.Hylo
 import Control.Morphism.Futu

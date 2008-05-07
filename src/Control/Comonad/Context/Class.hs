@@ -10,7 +10,12 @@
 -- Portability :  portable
 --
 ----------------------------------------------------------------------------
-module Control.Comonad.Context.Class where
+module Control.Comonad.Context.Class 
+	( module Control.Comonad
+	, ComonadContext(..)
+	, putC
+	, experiment
+	) where
 
 import Control.Comonad
 

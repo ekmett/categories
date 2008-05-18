@@ -30,7 +30,7 @@ import Control.Monad.Parameterized
 import Control.Monad.Identity
 
 
-type Free f a = FixB (PFree f) a
+type Free f a = Fix (PFree f) a
 
 inFree :: f (Free f a) -> Free f a
 inFree = InB . Biff . Right

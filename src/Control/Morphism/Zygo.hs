@@ -22,10 +22,10 @@ import Control.Morphism.Cata
 
 type Zygo b a = (b,a)
 
-zygo :: Functor f => Alg f b -> AlgW f (Zygo b) a -> Fix f -> a
+zygo :: Functor f => Alg f b -> AlgW f (Zygo b) a -> FixF f -> a
 zygo f = g_cata (distZygo f)
 
-g_zygo :: (Functor f, Comonad w) => AlgW f w b -> Dist f w -> AlgW f (CoreaderT w b) a -> Fix f -> a
+g_zygo :: (Functor f, Comonad w) => AlgW f w b -> Dist f w -> AlgW f (CoreaderT w b) a -> FixF f -> a
 g_zygo f w = g_cata (distZygoT f w)
 
 -- * Distributive Law Combinators

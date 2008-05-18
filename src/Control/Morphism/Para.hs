@@ -22,14 +22,14 @@ import Control.Morphism.Zygo
 
 -- * Refold Sugar
 
-para :: Functor f => AlgW f (Para f) a -> Fix f -> a
+para :: Functor f => AlgW f (Para f) a -> FixF f -> a
 para = zygo InF
 
-g_para :: (Functor f, Comonad w) => Dist f w -> AlgW f (ParaT w f) a -> Fix f -> a
+g_para :: (Functor f, Comonad w) => Dist f w -> AlgW f (ParaT w f) a -> FixF f -> a
 g_para f = g_cata (distParaT f)
 
-type Para f a 		= (Fix f, a)
-type ParaT w f a 	= CoreaderT w (Fix f) a
+type Para f a 		= (FixF f, a)
+type ParaT w f a 	= CoreaderT w (FixF f) a
 
 distParaT :: (Functor f, Comonad w) => Dist f w -> Dist f (ParaT w f)
 distParaT = distZygoT (liftAlg InF)

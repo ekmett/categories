@@ -24,10 +24,9 @@ import Control.Morphism.Cata
 
 
 meta :: (Functor f, Functor g) => 
-	  CoAlg f b -> (a -> b) -> Alg g a -> Fix g -> Fix f
+	  CoAlg f b -> (a -> b) -> Alg g a -> FixF g -> FixF f
 meta f e g = ana f . e . cata g
 
 g_meta :: (Monad m, Functor f, Comonad w, Functor g) => 
-	  Dist m f -> Dist g w -> CoAlgM f m b -> (a -> b) -> AlgW g w a -> Fix g -> Fix f
+	  Dist m f -> Dist g w -> CoAlgM f m b -> (a -> b) -> AlgW g w a -> FixF g -> FixF f
 g_meta m w f e g = g_ana m f . e . g_cata w g
-

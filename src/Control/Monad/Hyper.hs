@@ -16,7 +16,7 @@ module Control.Monad.Hyper
 	( ContraFunctor(..)
 	, Hyper
 	, Hyp
-	, HyperB(..)
+	, PHyper(..)
 	) where
 
 import Control.Category.Hask
@@ -26,29 +26,28 @@ import Control.Functor.Contra
 import Control.Monad.Instances
 import Control.Monad.Parameterized
 
-newtype HyperB h a b = HyperB { runHyperB :: h b -> a } 
+newtype PHyper h a b = PHyper { runPHyper :: h b -> a } 
 
-instance PFunctor (HyperB h) Hask Hask where
-	first f h = HyperB (f . runHyperB h)
+instance PFunctor (PHyper h) Hask Hask where
+	first f h = PHyper (f . runPHyper h)
 
-instance ContraFunctor h => QFunctor (HyperB h) Hask Hask where
-	second g h = HyperB (runHyperB h . contramap g)
+instance ContraFunctor h => QFunctor (PHyper h) Hask Hask where
+	second g h = PHyper (runPHyper h . contramap g)
 
-instance ContraFunctor h => Bifunctor (HyperB h) Hask Hask Hask where
-	bimap f g h = HyperB (f . runHyperB h . contramap g)
+instance ContraFunctor h => Bifunctor (PHyper h) Hask Hask Hask where
+	bimap f g h = PHyper (f . runPHyper h . contramap g)
 
-instance ContraFunctor h => PPointed (HyperB h) where
-	preturn = HyperB . const
+instance ContraFunctor h => PPointed (PHyper h) where
+	preturn = PHyper . const
 
-instance ContraFunctor h => PApplicative (HyperB h) where
+instance ContraFunctor h => PApplicative (PHyper h) where
 	pap = papPMonad
 
-instance ContraFunctor h => PMonad (HyperB h) where
-	pbind k (HyperB h) = HyperB (k . h >>= runHyperB)
+instance ContraFunctor h => PMonad (PHyper h) where
+	pbind k (PHyper h) = PHyper (k . h >>= runPHyper)
 
 -- | A generic recursive hyperfunction-like combinator
-type Hyper h a = FixB (HyperB h)
+type Hyper h a = Fix (PHyper h)
 
 -- | Traditional Hyper functions
 type Hyp e a = Hyper (ContraF e) a
-

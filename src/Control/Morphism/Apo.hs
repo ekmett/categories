@@ -24,14 +24,14 @@ import Control.Arrow ((|||))
 
 -- * Unfold Sugar
 
-apo :: Functor f => CoAlgM f (Apo f) a -> a -> Fix f
+apo :: Functor f => CoAlgM f (Apo f) a -> a -> FixF f
 apo = g_apo outF
 
-g_apo :: Functor f => CoAlg f b -> CoAlgM f (GApo b) a -> a -> Fix f
+g_apo :: Functor f => CoAlg f b -> CoAlgM f (GApo b) a -> a -> FixF f
 g_apo g = g_ana (distGApo g)
 
-type Apo f a 		= Either (Fix f) a
-type ApoT f m a 	= EitherT (Fix f) m a
+type Apo f a 		= Either (FixF f) a
+type ApoT f m a 	= EitherT (FixF f) m a
 
 type GApo b a 		= Either b a
 type GApoT b m a 	= EitherT b m a 

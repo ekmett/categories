@@ -86,7 +86,7 @@ instance Bizip (,) where
 instance (Bizip p, Zip f, Zip g) => Bizip (Biff p f g) where
 	bizipWith f g as bs = Biff $ bizipWith (fzipWith f) (fzipWith g) (runBiff as) (runBiff bs)
 
-instance Bizip p => Zip (FixB p) where
+instance Bizip p => Zip (Fix p) where
 	fzipWith f as bs = InB $ bizipWith f (fzipWith f) (outB as) (outB bs)
 
 instance Monoid a => Zip (Either a) where

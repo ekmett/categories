@@ -20,7 +20,7 @@ import Control.Functor.Fix
 import Control.Functor.Combinators.Biff
 import Control.Monad.Identity
 
-type Cofree f = FixB (PCofree f)
+type Cofree f = Fix (PCofree f)
 
 outCofree :: Cofree f a -> f (Cofree f a)
 outCofree = snd . runCofree

@@ -1,0 +1,5 @@
+0.44.5
+------
+
+* Added Monad, Applicative, etc. and monad transformer instances to Control.Monad.Indexed.Cont and Control.Monad.Indexed.State
+* Created Control.Monad.Indexed.Trans and Control.Monad.Indexed.Fix

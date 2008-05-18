@@ -19,7 +19,7 @@ module Control.Monad.Parameterized
 	, papPMonad
 	) where
 
-import Control.Bifunctor
+import Control.Functor
 import Control.Applicative.Parameterized
 
 infixl 1 >>*=, >>*
@@ -27,7 +27,7 @@ infixr 1 =*<<
 
 class PApplicative f => PMonad f where
 	pbind :: (a -> f b c) -> f a c -> f b c
-	pbind f = pjoin . bimap f id
+	pbind f = pjoin . first f
 	pjoin :: f (f a b) b -> f a b
 	pjoin = pbind id
 

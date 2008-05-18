@@ -1,57 +1,57 @@
 -- {-# OPTIONS_GHC -fglasgow-exts -fallow-undecidable-instances #-}
 -------------------------------------------------------------------------------------------
 -- |
--- Module	: Control.Bifunctor.Associative
+-- Module	: Control.Category.Associative
 -- Copyright 	: 2008 Edward Kmett
 -- License	: BSD
 --
 -- Maintainer	: Edward Kmett <ekmett@gmail.com>
 -- Stability	: experimental
--- Portability	: non-portable (class-associated types)
+-- Portability	: portable
 --
 -- NB: this contradicts another common meaning for an 'Associative' 'Category', which is one 
 -- where the pentagonal condition does not hold, but for which there is an identity.
 --
 -------------------------------------------------------------------------------------------
-module Control.Bifunctor.Associative 
-	( module Control.Bifunctor
-	, Associative(..)
+module Control.Category.Associative 
+	( Associative(..)
 	, Coassociative(..)
 	) where
 
-import Control.Bifunctor
+import Control.Functor
+import Control.Category.Hask
 
 {- | A category with an associative bifunctor satisfying Mac Lane\'s pentagonal coherence identity law:
 
 > bimap id associate . associate . bimap associate id = associate . associate
 -}
-class Bifunctor p => Associative p where
-	associate :: p (p a b) c -> p a (p b c)
+class Bifunctor p k k k => Associative p k where
+	associate :: k (p (p a b) c) (p a (p b c))
 
 {- | A category with a coassociative bifunctor satisyfing the dual of Mac Lane's pentagonal coherence identity law:
 
 > bimap coassociate id . coassociate . bimap id coassociate = coassociate . coassociate
 -}
-class Bifunctor s => Coassociative s where
-	coassociate :: s a (s b c) -> s (s a b) c
+class Bifunctor s k k k => Coassociative s k where
+	coassociate :: k (s a (s b c)) (s (s a b) c)
 
 {-# RULES
 "copentagonal coherence" bimap coassociate id . coassociate . bimap id coassociate = coassociate . coassociate
 "pentagonal coherence" bimap id associate . associate . bimap associate id = associate . associate
  #-}
 
-instance Associative (,) where
+instance Associative (,) Hask where
         associate ((a,b),c) = (a,(b,c))
 
-instance Coassociative (,) where
+instance Coassociative (,) Hask where
         coassociate (a,(b,c)) = ((a,b),c)
 
-instance Associative Either where
+instance Associative Either Hask where
         associate (Left (Left a)) = Left a
         associate (Left (Right b)) = Right (Left b)
         associate (Right c) = Right (Right c)
 
-instance Coassociative Either where
+instance Coassociative Either Hask where
         coassociate (Left a) = Left (Left a)
         coassociate (Right (Left b)) = Left (Right b)
         coassociate (Right (Right c)) = Right c

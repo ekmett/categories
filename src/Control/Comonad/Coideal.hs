@@ -1,7 +1,6 @@
-{-# OPTIONS -fglasgow-exts #-}
 -----------------------------------------------------------------------------
 -- |
--- Module      :  Control.Applicative.Paramterized
+-- Module      :  Control.Comonad.Coideal
 -- Copyright   :  (C) 2008 Edward Kmett
 -- License     :  BSD-style (see the file LICENSE)
 --
@@ -10,12 +9,9 @@
 -- Portability :  portable
 --
 ----------------------------------------------------------------------------
-module Control.Applicative.Parameterized 
-	( PApplicative(..)
-	, PPointed(..)
+module Control.Comonad.Coideal
+	( module Control.Monad.Ideal
 	) where
 
-import Control.Functor.Pointed
+import Control.Monad.Ideal
 
-class PPointed f => PApplicative f where
-	pap :: f (a -> b) c -> f a c -> f b c

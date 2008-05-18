@@ -9,7 +9,12 @@
 -- Stability   :  experimental
 -- Portability :  non-portable (MPTCs)
 --
--- The state-in-context comonad and comonad transformer
+-- The Context Comonad Transformer is related to the left Kan Extension 'Lan' of 
+-- a comonad along itself, except the type of the context is fixed, and 
+-- not existentially quantified.
+
+-- The context comonad can more traditionally be derived from the 'hom-prod' 
+-- adjunction between (->) and (,)
 ----------------------------------------------------------------------------
 module Control.Comonad.Context 
 	( module Control.Comonad
@@ -21,7 +26,7 @@ module Control.Comonad.Context
 	, ContextT(..)
 	) where
 
-import Control.Bifunctor (first)
+import Control.Functor (first)
 import Control.Comonad
 
 class Comonad w => ComonadContext s w | w -> s where

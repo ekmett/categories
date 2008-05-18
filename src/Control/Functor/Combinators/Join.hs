@@ -1,7 +1,7 @@
-{-# OPTIONS -fglasgow-exts #-}
+{-# OPTIONS_GHC -fglasgow-exts #-}
 -----------------------------------------------------------------------------
 -- |
--- Module      :  Control.Applicative.Paramterized
+-- Module      :  Control.Functor.Combinators.Join
 -- Copyright   :  (C) 2008 Edward Kmett
 -- License     :  BSD-style (see the file LICENSE)
 --
@@ -10,12 +10,14 @@
 -- Portability :  portable
 --
 ----------------------------------------------------------------------------
-module Control.Applicative.Parameterized 
-	( PApplicative(..)
-	, PPointed(..)
+module Control.Functor.Combinators.Join
+	( Join(..)
 	) where
 
-import Control.Functor.Pointed
+import Control.Functor
+import Control.Category.Hask
 
-class PPointed f => PApplicative f where
-	pap :: f (a -> b) c -> f a c -> f b c
+newtype Join p a = Join { runJoin :: p a a } 
+
+instance Bifunctor p Hask Hask Hask => Functor (Join p) where
+	fmap f = Join . bimap f f . runJoin

@@ -41,6 +41,9 @@ instance (HFunctor f, HFunctor g) => HFunctor (CompH f g) where
 	hfmap f = hcompose . hfmap (hfmap f) . hdecompose
 	ffmap f = hcompose . hfmap liftH . ffmap f . hfmap LowerH . hdecompose
 
+instance (HFunctor f, HFunctor g, Functor h) => Functor (CompH f g h) where
+	fmap = ffmap
+
 hassociateComp :: (HFunctor f, HComposition c) => c (c f g) h a b -> c f (c g h) a b
 hassociateComp = hcompose . hfmap hcompose . hdecompose . hdecompose
 

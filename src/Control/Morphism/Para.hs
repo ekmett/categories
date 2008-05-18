@@ -12,6 +12,7 @@
 ----------------------------------------------------------------------------
 module Control.Morphism.Para where
 
+import Control.Comonad
 import Control.Comonad.Reader
 import Control.Functor.Algebra
 import Control.Functor.Extras
@@ -28,7 +29,7 @@ g_para :: (Functor f, Comonad w) => Dist f w -> AlgW f (ParaT w f) a -> Fix f ->
 g_para f = g_cata (distParaT f)
 
 type Para f a 		= (Fix f, a)
-type ParaT w f a 	= ReaderCT w (Fix f) a
+type ParaT w f a 	= CoreaderT w (Fix f) a
 
 distParaT :: (Functor f, Comonad w) => Dist f w -> Dist f (ParaT w f)
 distParaT = distZygoT (liftAlg InF)

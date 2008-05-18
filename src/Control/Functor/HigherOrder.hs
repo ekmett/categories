@@ -35,10 +35,10 @@ class HFunctor f where
 newtype FixH f a = InH { outH :: f (FixH f) a }
 
 class HFunctor m => HPointed m where
-	hreturn  :: Functor f => Natural f (m f)
+	hreturn  :: Functor f => f a -> m f a
 
 class HFunctor w => HCopointed w where
-	hextract :: Functor f => Natural (w f) f
+	hextract :: Functor f => w f a -> f a
 
 newtype LowerH 
 	(h :: (* -> *) -> * -> *)

@@ -12,8 +12,14 @@
 -- Exponential functors, see <http://comonad.com/reader/2008/rotten-bananas/>
 -------------------------------------------------------------------------------------------
 
-module Control.Functor.Exponential where
+module Control.Functor.Exponential 
+	( ExpFunctor(xmap)
+	) where
+
+import Control.Applicative (Const(..))
 
 class ExpFunctor f where
 	xmap :: (a -> b) -> (b -> a) -> f a -> f b
 
+instance ExpFunctor (Const a) where
+        xmap _ _ (Const a) = Const a

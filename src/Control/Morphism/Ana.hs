@@ -12,12 +12,12 @@
 ----------------------------------------------------------------------------
 module Control.Morphism.Ana where
 
+import Control.Category.Hask
+import Control.Functor
 import Control.Functor.Algebra
 import Control.Functor.Extras
 import Control.Functor.Fix
 import Control.Functor.HigherOrder
-import Control.Bifunctor
-import Control.Bifunctor.Fix
 import Control.Comonad ()
 import Control.Monad.Identity
 
@@ -35,10 +35,10 @@ g_ana k g = a . return where a = InF . fmap (a . join) . k . liftM g
 distAna :: Functor f => Dist Identity f
 distAna = fmap Identity . runIdentity
 
-biana :: Bifunctor f => CoAlg (f b) a -> a -> FixB f b
+biana :: Bifunctor f Hask Hask Hask => CoAlg (f b) a -> a -> FixB f b
 biana g = InB . bimap id (biana g) . g
 
-g_biana :: (Bifunctor f, Monad m) => Dist m (f b) -> CoAlgM (f b) m a -> a -> FixB f b
+g_biana :: (Bifunctor f Hask Hask Hask, Monad m) => Dist m (f b) -> CoAlgM (f b) m a -> a -> FixB f b
 g_biana k g = a . return where a = InB . bimap id (a . join) . k . liftM g
 
 -- | A higher-order anamorphism for constructing higher order functors.

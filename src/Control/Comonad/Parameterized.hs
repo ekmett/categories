@@ -11,13 +11,12 @@
 --
 ----------------------------------------------------------------------------
 module Control.Comonad.Parameterized 
-	( Bifunctor(..)
-	, PCopointed(..)
+	( PCopointed(..)
 	, PComonad(..)
 	) where
 
-import Control.Bifunctor
-import Control.Bifunctor.Pointed
+import Control.Functor
+import Control.Functor.Pointed
 
 class PCopointed f => PComonad f where
 	pextend :: (f b c -> a) -> f b c -> f a c
@@ -37,5 +36,3 @@ class PCopointed f => PComonad f where
 "pextract . pextend g" 		forall g. pextract . pextend g = g
 "bimap _ _ . pextract" 		forall j g. bimap id g . pextend (j . bimap id g) = pextend j . bimap id g
  #-}
-
-	

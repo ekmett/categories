@@ -12,9 +12,9 @@
 ----------------------------------------------------------------------------
 module Control.Morphism.Cata where
 
-import Control.Bifunctor
-import Control.Bifunctor.Fix
 import Control.Comonad
+import Control.Category.Hask
+import Control.Functor
 import Control.Functor.Pointed
 import Control.Functor.Algebra 
 import Control.Functor.HigherOrder
@@ -33,10 +33,10 @@ g_cata k g = extract . c where c = liftW g . k . fmap (duplicate . c) . outF
 distCata :: Functor f => Dist f Identity
 distCata = Identity . fmap runIdentity
 
-bicata :: Bifunctor f => Alg (f b) a -> FixB f b -> a
+bicata :: Bifunctor f Hask Hask Hask => Alg (f b) a -> FixB f b -> a
 bicata f = f . bimap id (bicata f) . outB
 
-g_bicata :: (Bifunctor f, Comonad w) => Dist (f b) w -> AlgW (f b) w a -> FixB f b -> a
+g_bicata :: (Bifunctor f Hask Hask Hask, Comonad w) => Dist (f b) w -> AlgW (f b) w a -> FixB f b -> a
 g_bicata k g = extract . c where c = liftW g . k . bimap id (duplicate . c) . outB
 
 hcata :: HFunctor f => AlgH f a -> Natural (FixH f) a

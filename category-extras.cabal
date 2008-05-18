@@ -1,9 +1,9 @@
 name:                   category-extras
 category:               Control, Monads, Comonads
-version:                0.44.4
+version:                0.50.0
 license:                BSD3
 license-file:           LICENSE
-build-depends:          base > 3, mtl, array
+build-depends:          base > 3, mtl, array, ghc > 6.9
 author:                 Edward A. Kmett, Dave Menendez
 maintainer:             Edward A. Kmett <ekmett@gmail.com>
 stability:              experimental
@@ -27,6 +27,7 @@ extensions:
         FunctionalDependencies,
         MultiParamTypeClasses,
         TypeOperators,
+	TypeSynonymInstances,
         UndecidableInstances,
         ExistentialQuantification,
         Rank2Types
@@ -35,20 +36,19 @@ exposed-modules:
 	Control.Applicative.Parameterized,
 	Control.Arrow.BiKleisli,
 	Control.Arrow.CoKleisli,
-	Control.Bifunctor,
-	Control.Bifunctor.Associative,
-	Control.Bifunctor.Biff,
-	Control.Bifunctor.Braided,
-	Control.Bifunctor.Composition,
-	Control.Bifunctor.Constant,
-	Control.Bifunctor.Functor,
-	Control.Bifunctor.Fix,
-	Control.Bifunctor.Monoidal,
-	Control.Bifunctor.Pointed,
-	Control.Bifunctor.Swap,
+	Control.Category.Associative,
+	Control.Category.Monoidal,
+	Control.Category.Braided,
+	Control.Category.Cartesian,
+	Control.Category.Cartesian.Closed,
+	Control.Category.Distributive,
+	Control.Category.Dual,
+	Control.Category.Hask,
+	Control.Category.Object,
 	Control.Comonad,
 	Control.Comonad.Cofree,
 	Control.Comonad.Context,
+	Control.Comonad.Coideal,
 	Control.Comonad.Fix,
 	Control.Comonad.Indexed,
 	Control.Comonad.HigherOrder,
@@ -59,10 +59,14 @@ exposed-modules:
 	Control.Functor.Adjunction,
 	Control.Functor.Adjunction.HigherOrder,
 	Control.Functor.Algebra,
-	Control.Functor.Bifunctor,
-	Control.Functor.Composition
-	Control.Functor.Contravariant,
-	Control.Functor.Constant,
+	Control.Functor.Composition,
+	Control.Functor.Combinators.Const,
+	Control.Functor.Combinators.Lift,
+	Control.Functor.Combinators.Join,
+	Control.Functor.Combinators.Biff,
+	Control.Functor.Combinators.Flip,
+	Control.Functor.Combinators.Of,
+	Control.Functor.Contra,
 	Control.Functor.Extras,
 	Control.Functor.Exponential,
 	Control.Functor.Fix,
@@ -80,8 +84,10 @@ exposed-modules:
 	Control.Monad.Free,
 	Control.Monad.HigherOrder,
 	Control.Monad.Indexed,
-	Control.Monad.Indexed.State,
 	Control.Monad.Indexed.Cont,
+	Control.Monad.Indexed.Fix,
+	Control.Monad.Indexed.State,
+	Control.Monad.Indexed.Trans,
 	Control.Monad.Parameterized,
 	Control.Monad.Hyper,
 	Control.Monad.Either,

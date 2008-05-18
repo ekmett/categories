@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------------------
 -- |
--- Module	: Control.Bifunctor.Braided
+-- Module	: Control.Category.Braided
 -- Copyright 	: 2008 Edward Kmett
 -- License	: BSD
 --
@@ -9,14 +9,15 @@
 -- Portability	: portable
 --
 -------------------------------------------------------------------------------------------
-module Control.Bifunctor.Braided 
-	( module Control.Bifunctor.Associative
-	, Braided(..)
+module Control.Category.Braided 
+	( Braided(..)
 	, Symmetric
 	, swap
 	) where
 
-import Control.Bifunctor.Associative
+import Control.Functor
+import Control.Category.Associative
+import Control.Category.Hask
 
 {- | A braided (co)(monoidal or associative) category can commute the arguments of its bi-endofunctor. Obeys the laws:
 
@@ -29,17 +30,17 @@ import Control.Bifunctor.Associative
 
 -}
 
-class Bifunctor p => Braided p where
-	braid :: p a b -> p b a
+class Braided p k where
+	braid :: k (p a b) (p b a)
 
 {- |
 If we have a symmetric (co)'Monoidal' category, you get the additional law:
 
 > swap . swap = id
  -}
-class Braided p => Symmetric p
+class Braided p k => Symmetric p k
 
-swap :: Symmetric p => p a b -> p b a
+swap :: Symmetric p k => k (p a b) (p b a)
 swap = braid
 
 {-# RULES
@@ -48,16 +49,14 @@ swap = braid
 "braid/coassociate/braid"       bimap braid id . coassociate . bimap id braid = coassociate . braid . coassociate
  #-}
 
-
-instance Braided Either where
+instance Braided Either Hask where
         braid (Left a) = Right a
         braid (Right b) = Left b
 
-instance Symmetric Either
+instance Symmetric Either Hask
 
-
-instance Braided (,) where
+instance Braided (,) Hask where
         braid ~(a,b) = (b,a)
 
-instance Symmetric (,)
+instance Symmetric (,) Hask
 

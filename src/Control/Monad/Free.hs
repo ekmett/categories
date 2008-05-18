@@ -12,8 +12,7 @@
 ----------------------------------------------------------------------------
 module Control.Monad.Free 
 	( module Control.Monad.Parameterized
-	, module Control.Monad.Identity
-	, FreeB
+	, PFree
 	, Free
 	, inFree
 	, runFree
@@ -21,23 +20,26 @@ module Control.Monad.Free
 	, free
 	) where
 
-import Control.Arrow ((|||))
-import Control.Bifunctor.Biff
-import Control.Bifunctor.Fix
+import Prelude hiding ((.),id)
+import Control.Category
+import Control.Category.Cartesian
+import Control.Functor
+import Control.Functor.Combinators.Biff
+import Control.Functor.Fix
 import Control.Monad.Parameterized
 import Control.Monad.Identity
 
-type FreeB f a b = BiffB Either Identity f a b
-type Free f a = FixB (BiffB Either Identity f) a
+
+type Free f a = FixB (PFree f) a
 
 inFree :: f (Free f a) -> Free f a
-inFree = InB . BiffB . Right
+inFree = InB . Biff . Right
 
 runFree :: Free f a -> Either a (f (Free f a))
-runFree = first runIdentity . runBiffB . outB
+runFree = first runIdentity . runBiff . outB
 
 cataFree :: Functor f => (c -> a) -> (f a -> a) -> Free f c -> a
-cataFree l r = (l . runIdentity ||| r . fmap (cataFree l r)) . runBiffB . outB
+cataFree l r = (l . runIdentity ||| r . fmap (cataFree l r)) . runBiff . outB
 
 free :: Either a (f (Free f a)) -> Free f a
-free = InB . BiffB . first Identity
+free = InB . Biff . first Identity

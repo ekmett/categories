@@ -13,6 +13,7 @@
 module Control.Morphism.Zygo where
 
 import Control.Arrow ((&&&))
+import Control.Comonad
 import Control.Comonad.Reader
 import Control.Functor.Algebra
 import Control.Functor.Extras
@@ -24,7 +25,7 @@ type Zygo b a = (b,a)
 zygo :: Functor f => Alg f b -> AlgW f (Zygo b) a -> Fix f -> a
 zygo f = g_cata (distZygo f)
 
-g_zygo :: (Functor f, Comonad w) => AlgW f w b -> Dist f w -> AlgW f (ReaderCT w b) a -> Fix f -> a
+g_zygo :: (Functor f, Comonad w) => AlgW f w b -> Dist f w -> AlgW f (CoreaderT w b) a -> Fix f -> a
 g_zygo f w = g_cata (distZygoT f w)
 
 -- * Distributive Law Combinators
@@ -32,6 +33,6 @@ g_zygo f w = g_cata (distZygoT f w)
 distZygo :: Functor f => Alg f b -> Dist f (Zygo b)
 distZygo g = g . fmap fst &&& fmap snd
 
-distZygoT :: (Functor f, Comonad w) => AlgW f w b -> Dist f w -> Dist f (ReaderCT w b)
-distZygoT g k = ReaderCT . liftW (g . fmap (liftW fst) &&& fmap (snd . extract)) . k . fmap (duplicate . runReaderCT)
+distZygoT :: (Functor f, Comonad w) => AlgW f w b -> Dist f w -> Dist f (CoreaderT w b)
+distZygoT g k = CoreaderT . liftW (g . fmap (liftW fst) &&& fmap (snd . extract)) . k . fmap (duplicate . runCoreaderT)
 

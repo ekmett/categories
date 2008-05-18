@@ -14,6 +14,8 @@ module Control.Monad.Indexed
 	, IxPointed(..)
 	, IxApplicative(..)
 	, IxMonad(..)
+	, IxMonadZero(..)
+	, IxMonadPlus(..)
 	, ijoin, (>>>=), (=<<<)
 	, iapIxMonad
 	) where
@@ -37,3 +39,9 @@ m >>>= k = ibind k m
 
 iapIxMonad :: IxMonad m => m i j (a -> b) -> m j k a -> m i k b
 iapIxMonad f x = f >>>= \ f' -> x >>>= \x' -> ireturn (f' x')
+
+class IxMonad m => IxMonadZero m where
+	imzero :: m i j a
+
+class IxMonadZero m => IxMonadPlus m where
+	implus :: m i j a -> m i j a -> m i j a

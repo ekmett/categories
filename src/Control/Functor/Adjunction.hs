@@ -13,13 +13,14 @@
 
 module Control.Functor.Adjunction where
 
-import Control.Comonad
 import Control.Functor.Composition
 import Control.Functor.Exponential
 import Control.Functor.Full
-import Control.Functor.Pointed
-import Control.Monad
 import Control.Applicative
+import Control.Monad.Reader
+import Control.Monad.Instances
+import Control.Comonad
+import Control.Comonad.Reader
 
 -- | An 'Adjunction' formed by the 'Functor' f and 'Functor' g. 
 
@@ -60,3 +61,13 @@ instance Adjunction f g => Monad (ACompF g f) where
 
 instance Adjunction f g => Comonad (ACompF f g) where
         extend f = compose . fmap (leftAdjunct (f . compose)) . decompose
+
+instance Adjunction ((,)e) ((->)e) where
+	unit a e = (e,a)
+	counit (x,f) = f x
+
+instance Adjunction (Coreader e) (Reader e) where
+	unit a = Reader (\e -> Coreader e a)
+	counit (Coreader x f) = runReader f x
+
+-- instance Adjunction f g => Adjunction (CoreaderT e f) (ReaderT e g) where

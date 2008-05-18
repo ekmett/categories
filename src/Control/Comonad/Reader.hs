@@ -9,62 +9,78 @@
 -- Stability   :  experimental
 -- Portability :  portable
 --
+-- If you look at the reader arrow:
+-- @(e, a) -> a@ you can see that all the interesting bits are bunched
+-- on the left. This is that comonad. Flipping the pair and currying the 
+-- arguments yields @a -> (e -> a)@, and you can recognize the (e -> a) as 
+-- the reader monad. In more technical language the Reader comonad is 
+-- left adjoint to the Reader monad.
 ----------------------------------------------------------------------------
 module Control.Comonad.Reader 
-	( module Control.Bifunctor
-	, module Control.Comonad
-	, ReaderC(..)
-	, runReaderC
-	, ReaderCT(..)
+	( Coreader(..)
+	, runCoreader
+	, CoreaderT(..)
 	, ComonadReader(..)
 	) where
 
 import Control.Arrow ((&&&))
-import Control.Bifunctor
+import Control.Functor
+import Control.Category.Hask
 import Control.Comonad
 import Control.Monad.Instances
 
 class Comonad w => ComonadReader r w | w -> r where
         askC :: w a -> r
 
-data ReaderC r a = ReaderC r a 
+data Coreader r a = Coreader r a 
 
-runReaderC :: ReaderC r a -> (r, a)
-runReaderC (ReaderC r a) = (r,a)
+runCoreader :: Coreader r a -> (r, a)
+runCoreader (Coreader r a) = (r,a)
 
-instance ComonadReader r (ReaderC r) where
-	askC (ReaderC r _) = r
+instance ComonadReader r (Coreader r) where
+	askC (Coreader r _) = r
 
-instance Functor (ReaderC r) where
-	fmap f = uncurry ReaderC . second f . runReaderC
+instance Functor (Coreader r) where
+	fmap f = uncurry Coreader . second f . runCoreader
 
-instance Copointed (ReaderC r) where
-	extract (ReaderC _ a) = a
+instance Copointed (Coreader r) where
+	extract (Coreader _ a) = a
 
-instance Comonad (ReaderC r) where
-	duplicate (ReaderC e a) = ReaderC e (ReaderC e a)
+instance Comonad (Coreader r) where
+	duplicate (Coreader e a) = Coreader e (Coreader e a)
 
-instance Bifunctor ReaderC where
-	bimap f g = uncurry ReaderC . bimap f g . runReaderC
+instance PFunctor Coreader Hask Hask where
+	first = first'
+
+instance QFunctor Coreader Hask Hask where
+	second = second'
+
+instance Bifunctor Coreader Hask Hask Hask where
+	bimap f g = uncurry Coreader . bimap f g . runCoreader
 
 
-newtype ReaderCT w r a = ReaderCT { runReaderCT :: w (r, a) }
+newtype CoreaderT w r a = CoreaderT { runCoreaderT :: w (r, a) }
 
-instance Comonad w => ComonadReader r (ReaderCT w r) where
-	askC = fst . extract . runReaderCT
+instance Comonad w => ComonadReader r (CoreaderT w r) where
+	askC = fst . extract . runCoreaderT
 
-instance Functor f => Functor (ReaderCT f b) where
-        fmap f = ReaderCT . fmap (fmap f) . runReaderCT
+instance Functor f => Functor (CoreaderT f b) where
+        fmap f = CoreaderT . fmap (fmap f) . runCoreaderT
 
-instance Copointed w => Copointed (ReaderCT w b) where
-        extract = snd . extract . runReaderCT
+instance Copointed w => Copointed (CoreaderT w b) where
+        extract = snd . extract . runCoreaderT
 
-instance Comonad w => Comonad (ReaderCT w b) where
-        duplicate = ReaderCT . liftW (fst . extract &&& ReaderCT) . duplicate . runReaderCT
+instance Comonad w => Comonad (CoreaderT w b) where
+        duplicate = CoreaderT . liftW (fst . extract &&& CoreaderT) . duplicate . runCoreaderT
 
-instance Functor f => Bifunctor (ReaderCT f) where
-	bimap f g = ReaderCT . fmap (bimap f g) . runReaderCT
+instance Functor f => PFunctor (CoreaderT f) Hask Hask where
+	first = first'
 
+instance Functor f => QFunctor (CoreaderT f) Hask Hask where
+	second = second'
+
+instance Functor f => Bifunctor (CoreaderT f) Hask Hask Hask where
+	bimap f g = CoreaderT . fmap (bimap f g) . runCoreaderT
 
 instance ComonadReader e ((,)e) where
         askC = fst

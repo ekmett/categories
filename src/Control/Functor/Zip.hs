@@ -20,17 +20,22 @@ module Control.Functor.Zip
 	, Cozip(..)
 	) where
 
-import Control.Arrow ((&&&),(|||))
-import Control.Bifunctor.Functor
-import Control.Comonad.Cofree
-import Control.Monad.Free
+import Prelude hiding ((.),id,fst,snd)
+import Control.Category
+import Control.Category.Hask
+import Control.Category.Cartesian
+import Control.Functor
+import Control.Functor.Fix
+import Control.Functor.Combinators.Biff
 import Control.Monad.Identity
-import Data.Monoid
+import Data.Monoid (Monoid(..))
 
 unfzip :: Functor f => f (a, b) -> (f a, f b)
 unfzip = fmap fst &&& fmap snd
 
-unbizip :: Bifunctor p => p (a, c) (b, d) -> (p a b, p c d)
+unbizip :: (PreCartesian r, PreCartesian s, PreCartesian t, Bifunctor p r s t) => 
+	t (p (Prod r a c) (Prod s b d)) 
+	  (Prod t (p a b) (p c d))
 unbizip = bimap fst fst &&& bimap snd snd
 
 {- | Minimum definition:
@@ -55,7 +60,7 @@ class Functor f => Zip f where
 
 -}
 
-class Bifunctor p => Bizip p where
+class Bifunctor p Hask Hask Hask => Bizip p where
 	bizip :: p a c -> p b d -> p (a,b) (c,d)
 	bizip = bizipWith (,) (,)
 	bizipWith :: (a -> b -> e) -> (c -> d -> f) -> p a c -> p b d -> p e f 
@@ -78,15 +83,8 @@ instance Monoid a => Zip ((,)a) where
 instance Bizip (,) where 
 	bizipWith f g (a,b) (c,d) = (f a c, g b d)
 
--- comes for free with BiffB
--- instance Zip f => Bizip (CofreeB f) where
---	bizipWith f g (CofreeB as) (CofreeB bs) = CofreeB $ bizipWith f (fzipWith g) as bs
-
-instance (Bizip p, Zip f, Zip g) => Bizip (BiffB p f g) where
-	bizipWith f g as bs = BiffB $ bizipWith (fzipWith f) (fzipWith g) (runBiffB as) (runBiffB bs)
-
-instance (Zip f, Bizip p) => Bizip (FunctorB f p) where
-	bizipWith f g as bs = FunctorB $ fzipWith (bizipWith f g) (runFunctorB as) (runFunctorB bs)
+instance (Bizip p, Zip f, Zip g) => Bizip (Biff p f g) where
+	bizipWith f g as bs = Biff $ bizipWith (fzipWith f) (fzipWith g) (runBiff as) (runBiff bs)
 
 instance Bizip p => Zip (FixB p) where
 	fzipWith f as bs = InB $ bizipWith f (fzipWith f) (outB as) (outB bs)
@@ -106,8 +104,9 @@ instance Zip f => Bizip (FreeB f) where
 counzip :: Functor f => Either (f a) (f b) -> f (Either a b)
 counzip = fmap Left ||| fmap Right
  
-counbizip :: Bifunctor f => Either (f a c) (f b d) -> f (Either a b) (Either c d)
-counbizip = bimap Left Left ||| bimap Right Right
+counbizip :: (PreCoCartesian r, PreCoCartesian s, PreCoCartesian t, Bifunctor q r s t) => 
+	t (Sum t (q a c) (q b d)) (q (Sum r a b) (Sum s c d))
+counbizip = bimap inl inl ||| bimap inr inr
 
 class Functor f => Cozip f where
    cozip :: f (Either a b) -> Either (f a) (f b)

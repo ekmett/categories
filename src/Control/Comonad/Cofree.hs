@@ -11,35 +11,26 @@
 --
 ----------------------------------------------------------------------------
 module Control.Comonad.Cofree 
-	( BiffB(..)
-	, FixB(..)
-	, PCopointed(..)
-	, PComonad(..)
-	, Identity(..)
-	, CofreeB
-	, Cofree
+	( Cofree
 	, outCofree, runCofree, anaCofree, cofree
 	) where
 
 import Control.Arrow ((&&&))
-import Control.Bifunctor.Fix
-import Control.Bifunctor.Biff
-import Control.Comonad.Parameterized
+import Control.Functor.Fix
+import Control.Functor.Combinators.Biff
 import Control.Monad.Identity
-import Control.Monad.Parameterized
 
-type CofreeB f a b = BiffB (,) Identity f a b
-type Cofree f a = FixB (BiffB (,) Identity f) a
+type Cofree f = FixB (PCofree f)
 
 outCofree :: Cofree f a -> f (Cofree f a)
-outCofree = snd . runBiffB . outB
+outCofree = snd . runCofree
 
 runCofree :: Cofree f a -> (a, f (Cofree f a))
-runCofree = first runIdentity . runBiffB . outB
+runCofree = runPCofree . outB
 
 anaCofree :: Functor f => (a -> c) -> (a -> f a) -> a -> Cofree f c
-anaCofree h t = InB . BiffB . (Identity . h &&& fmap (anaCofree h t) . t)
+anaCofree h t = InB . Biff . (Identity . h &&& fmap (anaCofree h t) . t)
 
 cofree :: a -> f (Cofree f a) -> Cofree f a 
-cofree a as = InB $ BiffB (Identity a,as)
+cofree a as = InB $ Biff (Identity a,as)
 

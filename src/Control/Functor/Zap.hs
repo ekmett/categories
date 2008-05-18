@@ -9,12 +9,15 @@
 -- Stability	: experimental
 -- Portability	: non-portable (functional-dependencies)
 --
--- Dual Functors
+-- Dual (bi)Functors
 -------------------------------------------------------------------------------------------
 
-module Control.Functor.Zap where
+module Control.Functor.Zap 
+	( Zap(..), (>$<)
+	, Bizap(..), (>>$<<)
+	) where
 
-import Control.Comonad.Cofree
+import Control.Functor.Combinators.Biff
 import Control.Monad.Either ()
 import Control.Monad.Identity
 
@@ -33,28 +36,22 @@ instance Zap Identity Identity where
 
 {- | Minimum definition: bizapWith -}
 
-class BiZap p q | p -> q, q -> p where
+class Bizap p q | p -> q, q -> p where
 	bizapWith :: (a -> c -> e) -> (b -> d -> e) -> p a b -> q c d -> e
 
 	bizap :: p (a -> c) (b -> c) -> q a b -> c
 	bizap = bizapWith id id
 
-(>>$<<) :: BiZap p q => p (a -> c) (b -> c) -> q a b -> c
+(>>$<<) :: Bizap p q => p (a -> c) (b -> c) -> q a b -> c
 (>>$<<) = bizap
 
-instance BiZap (,) Either where
+instance Bizap (,) Either where
 	bizapWith l _ (f,_) (Left a) = l f a
 	bizapWith _ r (_,g) (Right b) = r g b 
 
-instance BiZap Either (,) where
+instance Bizap Either (,) where
 	bizapWith l _ (Left f) (a,_) = l f a
 	bizapWith _ r (Right g) (_,b) = r g b
 
--- instance (Functor f, Functor g, Zap f g) => BiZap (CofreeB f) (FreeB g) where
---	bizapWith l r (CofreeB fs) (FreeB as) = bizapWith l (zapWith r) fs as
-
--- instance (Functor f, Functor g, Zap f g) => BiZap (FreeB f) (CofreeB g) where
---	bizapWith l r (FreeB fs) (CofreeB as) = bizapWith l (zapWith r) fs as
-
-instance (BiZap p q, Zap f g, Zap i j) => BiZap (BiffB p f i) (BiffB q g j) where
-	bizapWith l r fs as = bizapWith (zapWith l) (zapWith r) (runBiffB fs) (runBiffB as)
+instance (Bizap p q, Zap f g, Zap i j) => Bizap (Biff p f i) (Biff q g j) where
+	bizapWith l r fs as = bizapWith (zapWith l) (zapWith r) (runBiff fs) (runBiff as)

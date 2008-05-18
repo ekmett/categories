@@ -1,6 +1,7 @@
+{-# OPTIONS_GHC -fglasgow-exts #-}
 -------------------------------------------------------------------------------------------
 -- |
--- Module	: Control.Bifunctor.Monoidal
+-- Module	: Control.Category.Monoidal
 -- Copyright 	: 2008 Edward Kmett
 -- License	: BSD
 --
@@ -15,22 +16,28 @@
 -- use to enrich their structure, we choose here to think of the bifunctor as being 
 -- monoidal. This lets us reuse the same Bifunctor over different categories without 
 -- painful type annotations.
+
+-- The use of class associated types here makes Control.Category.Cartesian FAR more palatable
 -------------------------------------------------------------------------------------------
 
-module Control.Bifunctor.Monoidal 
-	( module Control.Bifunctor.Braided
-	, module Data.Void
-	, HasIdentity
+module Control.Category.Monoidal 
+	( module Control.Category.Braided
+	, Void
+	, HasIdentity(..)
 	, Monoidal(..)
 	, Comonoidal(..)
 	) where
 
-import Control.Bifunctor.Braided
+import Control.Category.Hask
+import Control.Category.Associative
+import Control.Category.Braided
+import Control.Functor
 import Data.Void
 
 -- | Denotes that we have some reasonable notion of 'Identity' for a particular 'Bifunctor' in this 'Category'. This
 -- notion is currently used by both 'Monoidal' and 'Comonoidal'
-class Bifunctor p => HasIdentity p i | p -> i 
+class Bifunctor p k k k => HasIdentity p k where
+	type Id p k :: *
 
 {- | A monoidal category. 'idl' and 'idr' are traditionally denoted lambda and rho
  the triangle identity holds:
@@ -39,9 +46,9 @@ class Bifunctor p => HasIdentity p i | p -> i
 > bimap id idl = bimap idr id . associate
 -}
 
-class (Associative p, HasIdentity p i) => Monoidal p i | p -> i where
-	idl :: p i a -> a
-	idr :: p a i -> a
+class (Associative p k , HasIdentity p k) => Monoidal p k where
+	idl :: k (p (Id p k) a) a
+	idr :: k (p a (Id p k)) a
 
 {- | A comonoidal category satisfies the dual form of the triangle identities
 
@@ -57,9 +64,9 @@ A strict (co)monoidal category is one that is both 'Monoidal' and 'Comonoidal' a
 > coidr . idr = id 
 
 -}
-class (Coassociative p, HasIdentity p i) => Comonoidal p i | p -> i where
-	coidl :: a -> p i a
-	coidr :: a -> p a i
+class (Coassociative p k, HasIdentity p k) => Comonoidal p k where
+	coidl :: k a (p (Id p k) a)
+	coidr :: k a (p a (Id p k))
 
 {-# RULES
 -- "bimap id idl/associate" 		bimap id idl . associate = bimap idr id
@@ -76,9 +83,9 @@ class (Coassociative p, HasIdentity p i) => Comonoidal p i | p -> i where
 "braid/coidl"                   braid . coidl = coidr
  #-}
 
-instance HasIdentity (,) Void
+instance HasIdentity (,) Hask where
+	type Id (,) Hask = Void
 
-instance Monoidal (,) Void where
+instance Monoidal (,) Hask where
         idl = snd
         idr = fst
-

@@ -1,7 +1,6 @@
-{-# OPTIONS -fglasgow-exts #-}
 -----------------------------------------------------------------------------
 -- |
--- Module      :  Control.Applicative.Paramterized
+-- Module      :  Control.Monad.Indexed.Fix
 -- Copyright   :  (C) 2008 Edward Kmett
 -- License     :  BSD-style (see the file LICENSE)
 --
@@ -10,12 +9,12 @@
 -- Portability :  portable
 --
 ----------------------------------------------------------------------------
-module Control.Applicative.Parameterized 
-	( PApplicative(..)
-	, PPointed(..)
+module Control.Monad.Indexed.Fix
+	( IxMonadFix(..)
 	) where
 
-import Control.Functor.Pointed
+import Control.Monad.Indexed
 
-class PPointed f => PApplicative f where
-	pap :: f (a -> b) c -> f a c -> f b c
+class IxMonad m => IxMonadFix m where
+	imfix :: (a -> m i i a) -> m i i a
+

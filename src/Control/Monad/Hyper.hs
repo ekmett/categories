@@ -13,29 +13,37 @@
 -------------------------------------------------------------------------------------------
 
 module Control.Monad.Hyper 
-	( ContravariantFunctor(..)
+	( ContraFunctor(..)
 	, Hyper
 	, Hyp
 	, HyperB(..)
 	) where
 
-import Control.Bifunctor.Fix
-import Control.Monad.Parameterized
-import Control.Functor.Contravariant
+import Control.Category.Hask
+import Control.Functor
+import Control.Functor.Fix
+import Control.Functor.Contra
 import Control.Monad.Instances
+import Control.Monad.Parameterized
 
 newtype HyperB h a b = HyperB { runHyperB :: h b -> a } 
 
-instance ContravariantFunctor h => Bifunctor (HyperB h) where
+instance PFunctor (HyperB h) Hask Hask where
+	first f h = HyperB (f . runHyperB h)
+
+instance ContraFunctor h => QFunctor (HyperB h) Hask Hask where
+	second g h = HyperB (runHyperB h . contramap g)
+
+instance ContraFunctor h => Bifunctor (HyperB h) Hask Hask Hask where
 	bimap f g h = HyperB (f . runHyperB h . contramap g)
 
-instance ContravariantFunctor h => PPointed (HyperB h) where
+instance ContraFunctor h => PPointed (HyperB h) where
 	preturn = HyperB . const
 
-instance ContravariantFunctor h => PApplicative (HyperB h) where
+instance ContraFunctor h => PApplicative (HyperB h) where
 	pap = papPMonad
 
-instance ContravariantFunctor h => PMonad (HyperB h) where
+instance ContraFunctor h => PMonad (HyperB h) where
 	pbind k (HyperB h) = HyperB (k . h >>= runHyperB)
 
 -- | A generic recursive hyperfunction-like combinator

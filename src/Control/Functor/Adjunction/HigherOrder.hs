@@ -18,10 +18,10 @@ import Control.Functor.HigherOrder
 import Control.Functor.Extras
 
 class (HFunctor f, HFunctor g) => HAdjunction f g where
-        hunit   :: Natural a (g (f a))
-        hcounit :: Natural (f (g b)) b
-        hleftAdjunct  :: Natural (f a) b -> Natural a (g b)
-        hrightAdjunct :: Natural a (g b) -> Natural (f a) b
+        hunit   :: a :~> g (f a)
+        hcounit :: f (g b) :~> b
+        hleftAdjunct  :: (f a :~> b) -> a :~> g b
+        hrightAdjunct :: (a :~> g b) -> f a :~> b
 
         hunit = hleftAdjunct id
         hcounit = hrightAdjunct id

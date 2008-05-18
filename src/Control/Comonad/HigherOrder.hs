@@ -17,12 +17,12 @@ module Control.Comonad.HigherOrder
 	, hduplicate
 	) where
 
-import Control.Functor.Extras (Natural)
+import Control.Functor.Extras
 import Control.Functor.HigherOrder
 
 class HCopointed w => HComonad w where
-	hextend  :: (Functor f, Functor g) => Natural (w f) g -> Natural (w f) (w g)
+	hextend  :: (Functor f, Functor g) => (w f :~> g) -> w f :~> w g
 
 
-hduplicate :: (HComonad w, Functor (w g), Functor g) => w g a -> w (w g) a
+hduplicate :: (HComonad w, Functor (w g), Functor g) => w g :~> w (w g)
 hduplicate = hextend id

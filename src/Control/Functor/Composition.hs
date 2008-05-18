@@ -30,9 +30,9 @@ import Control.Functor.Full
 import Control.Category.Hask
 import Control.Category.Braided
 
-class Composition c where
-	decompose  :: c f g x -> f (g x)
-	compose    :: f (g x) -> c f g x
+class Composition o where
+	decompose  :: (f `o` g) x -> f (g x)
+	compose    :: f (g x) -> (f `o` g) x
 
 newtype CompF f g a = CompF { runCompF :: f (g a) }
 

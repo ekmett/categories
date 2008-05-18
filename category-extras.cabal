@@ -1,6 +1,6 @@
 name:                   category-extras
 category:               Control, Monads, Comonads
-version:                0.50.1
+version:                0.50.2
 license:                BSD3
 cabal-version:          >= 1.2
 license-file:           LICENSE
@@ -35,7 +35,7 @@ flag Optimize {
 }
 
 library { 
-        build-depends:  base > 3, mtl, array, ghc > 6.9
+        build-depends:  base > 3, mtl, array
         extensions:
                 CPP,
                 EmptyDataDecls,

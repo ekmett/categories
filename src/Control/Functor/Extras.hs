@@ -12,8 +12,12 @@
 ----------------------------------------------------------------------------
 module Control.Functor.Extras where
 
+infixr 0 :~>, :~~> -- to match ->
+
 type Dist f g = forall a. f (g a) -> g (f a)
-type Natural f g = forall a. f a -> g a
+-- A natural transformation between functors f and g.
+type f :~> g = forall a. f a -> g a
+type f :~~> g = forall a b. f a b -> g a b
 
 class PostFold m f where
         postFold :: f (m (f a)) -> m (f a)

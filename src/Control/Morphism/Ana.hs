@@ -42,5 +42,5 @@ g_biana :: (Bifunctor f Hask Hask Hask, Monad m) => Dist m (f b) -> CoAlgM (f b)
 g_biana k g = a . return where a = InB . bimap id (a . join) . k . liftM g
 
 -- | A higher-order anamorphism for constructing higher order functors.
-hana :: HFunctor f => CoAlgH f a -> Natural a (FixH f)
+hana :: HFunctor f => CoAlgH f a -> a :~> FixH f
 hana g = InH . hfmap (hana g) . g

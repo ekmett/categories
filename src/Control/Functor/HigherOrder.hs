@@ -25,12 +25,12 @@ module Control.Functor.HigherOrder
 import Control.Functor.Pointed
 import Control.Functor.Extras
 
-type AlgH f g = Natural (f g) g
-type CoAlgH f g = Natural g (f g)
+type AlgH f g = f g :~> g
+type CoAlgH f g = g :~> f g
 
 class HFunctor f where
 	ffmap :: Functor g => (a -> b) -> f g a -> f g b
-	hfmap :: Natural g h -> Natural (f g) (f h)
+	hfmap :: g :~> h -> f g :~> f h
 
 newtype FixH f a = InH { outH :: f (FixH f) a }
 

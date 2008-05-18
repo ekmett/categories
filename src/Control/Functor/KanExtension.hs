@@ -31,10 +31,10 @@ import Control.Monad.Cont
 -- | Right Kan Extension
 newtype Ran g h a = Ran { runRan :: forall b. (a -> g b) -> h b }
 
-toRan :: (Composition c, Functor k) => Natural (c k g) h -> Natural k (Ran g h)
+toRan :: (Composition o, Functor k) => (k `o` g :~> h) -> k :~> Ran g h
 toRan s t = Ran (s . compose . flip fmap t)
 
-fromRan :: Composition c => Natural k (Ran g h) -> Natural (c k g) h
+fromRan :: Composition o => (k :~> Ran g h) -> (k `o` g) :~> h
 fromRan s = flip runRan id . s . decompose
 
 instance HFunctor (Ran g) where
@@ -54,10 +54,10 @@ instance Monad (Ran f f) where
 -- | Left Kan Extension
 data Lan g h a = forall b. Lan (g b -> a) (h b)
 
-toLan :: (Composition c, Functor f) => Natural h (c f g) -> Natural (Lan g h) f
+toLan :: (Composition o, Functor f) => (h :~> (f `o` g)) -> Lan g h :~> f
 toLan s (Lan f v) = fmap f . decompose $ s v
 
-fromLan :: Composition c => Natural (Lan g h) f -> Natural h (c f g)
+fromLan :: Composition o => (Lan g h :~> f) -> h :~> (f `o` g)
 fromLan s = compose . s . Lan id
 
 instance Functor g => HFunctor (Lan g) where

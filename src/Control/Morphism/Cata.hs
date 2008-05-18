@@ -39,5 +39,5 @@ bicata f = f . bimap id (bicata f) . outB
 g_bicata :: (Bifunctor f Hask Hask Hask, Comonad w) => Dist (f b) w -> AlgW (f b) w a -> Fix f b -> a
 g_bicata k g = extract . c where c = liftW g . k . bimap id (duplicate . c) . outB
 
-hcata :: HFunctor f => AlgH f a -> Natural (FixH f) a
+hcata :: HFunctor f => AlgH f a -> FixH f :~> a
 hcata f = f . hfmap (hcata f) . outH

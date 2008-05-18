@@ -15,18 +15,18 @@
 module Control.Functor.HigherOrder.Composition
 	( CompH(..)
 	, HComposition(..)
-	, hassociateComp
-	, hcoassociateComp
+	, hassociateComposition
+	, hcoassociateComposition
 	) where
 
 import Control.Functor.HigherOrder
 
 class HComposition 
-	(c :: ((* -> *) -> * -> *) -> 
+	(o :: ((* -> *) -> * -> *) -> 
 	      ((* -> *) -> * -> *) -> 
 	      ((* -> *) -> * -> *)) where
-	hcompose :: f (g x) a ->  c f g x a
-	hdecompose :: c f g x a -> f (g x) a
+	hcompose :: f (g h) a ->  (f `o` g) h a
+	hdecompose :: (f `o` g) h a -> f (g h) a
 
 newtype CompH 
 	(f :: ((* -> *) -> * -> *))
@@ -44,8 +44,8 @@ instance (HFunctor f, HFunctor g) => HFunctor (CompH f g) where
 instance (HFunctor f, HFunctor g, Functor h) => Functor (CompH f g h) where
 	fmap = ffmap
 
-hassociateComp :: (HFunctor f, HComposition c) => c (c f g) h a b -> c f (c g h) a b
-hassociateComp = hcompose . hfmap hcompose . hdecompose . hdecompose
+hassociateComposition :: (HFunctor f, HComposition o) => ((f `o` g) `o` h) a b -> (f `o` (g `o` h)) a b
+hassociateComposition = hcompose . hfmap hcompose . hdecompose . hdecompose
 
-hcoassociateComp :: (HFunctor f, HComposition c) => c f (c g h) a b -> c (c f g) h a b
-hcoassociateComp = hcompose . hcompose . hfmap hdecompose . hdecompose
+hcoassociateComposition :: (HFunctor f, HComposition o) => (f `o` (g `o` h)) a b -> ((f `o` g) `o` h) a b
+hcoassociateComposition = hcompose . hcompose . hfmap hdecompose . hdecompose

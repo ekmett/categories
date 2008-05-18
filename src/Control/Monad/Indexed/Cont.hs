@@ -18,7 +18,7 @@ import Control.Functor.Pointed
 import Control.Monad.Trans
 import Control.Monad.Identity
 import Control.Monad.Indexed
-import Control.Monad.Cont.Class
+-- import Control.Monad.Cont.Class
 import Control.Monad.State.Class
 import Control.Monad.Reader.Class
 import Control.Monad.Indexed.Trans
@@ -26,6 +26,7 @@ import Control.Monad.Indexed.Trans
 class IxMonad m => IxMonadCont m where
 	reset :: m a o o -> m r r a
 	shift :: (forall i. (a -> m i i o) -> m r j j) -> m r o a
+--	shift :: ((a -> m i i o) -> m r j j) -> m r o a
 
 newtype IxContT m r o a = IxContT { runIxContT :: (a -> m o) -> m r }
 
@@ -62,8 +63,8 @@ instance Monad m => Monad (IxContT m i i) where
 	return = ireturn
 	m >>= k = ibind k m
 
-instance Monad m => MonadCont (IxContT m i i) where 
-	callCC = undefined -- shift (\k -> f k >>= k)
+--instance Monad m => MonadCont (IxContT m i i) where 
+--	callCC f = shift (\k -> f k >>>= k)
 
 instance IxMonadTrans IxContT where
 	ilift m = IxContT (m >>=)
@@ -91,8 +92,8 @@ runIxCont (IxCont k) f = runIdentity $ runIxContT k (return . f)
 runIxCont_ :: IxCont r a a -> r
 runIxCont_ m = runIxCont m id
 
-instance MonadCont (IxCont i i) where 
-	callCC = undefined -- shift (\k -> f k >>= k)
+-- instance MonadCont (IxCont i i) where 
+--	callCC f = shift (\k -> f k >>>= k)
 
 instance Functor (IxCont i j) where
 	fmap = imap

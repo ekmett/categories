@@ -122,22 +122,20 @@ library {
                 Data.Void
 
         hs-source-dirs:         src
-        ghc-options:            -Wall
+        ghc-options:            -Wall 
 
         if flag(ArrowSubclassesCategory) {
-                build-depends: ghc > 6.9
---              cpp-options: -D__ARROW_SUBCLASSES_CATEGORY__
-                ghc-options: -D__ARROW_SUBCLASSES_CATEGORY__
-		-- we have to use the WRONG one to get it to work with haddock!
+                build-depends: ghc >= 6.9
+                cpp-options: -D__ARROW_SUBCLASSES_CATEGORY__=1
+--              ghc-options: -D__ARROW_SUBCLASSES_CATEGORY__
+		-- if you want docs you have to use the WRONG one to get it to work with haddock!
+        } else { 
+                build-depends: ghc < 6.9
         }
 
 
         if flag(TypeFamilies) {
-                extensions:
-                        TypeFamilies
---              cpp-options: -D__USE_TYPE_FAMILIES__
-                ghc-options: -D__USE_TYPE_FAMILIES__
-		-- we have to use the WRONG one to get it to work with haddock!
+                extensions: TypeFamilies
         }
 
         if flag(Optimize) {

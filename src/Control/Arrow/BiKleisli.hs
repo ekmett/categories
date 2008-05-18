@@ -15,7 +15,7 @@ module Control.Arrow.BiKleisli
 	( BiKleisli(..)
 	) where
 
-#ifdef __ARROW_SUBCLASSES_CATEGORY__
+#if __GLASGOW_HASKELL__ >= 609
 import Prelude hiding (id,(.))
 import Control.Category
 #endif
@@ -34,7 +34,7 @@ instance (Comonad w, Monad m, Distributes w m) => Arrow (BiKleisli w m) where
 	first (BiKleisli f) = BiKleisli $ \x -> do
 		u <- f (fmap fst x)
 		return (u, extract (fmap snd x))
-#ifdef __ARROW_SUBCLASSES_CATEGORY__
+#if __GLASGOW_HASKELL__ >= 609
 instance (Comonad w, Monad m, Distributes w m) => Category (BiKleisli w m) where
 	BiKleisli f . BiKleisli g = BiKleisli ((>>=f) . dist . extend g)
 	id = BiKleisli (return . extract)

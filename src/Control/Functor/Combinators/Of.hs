@@ -35,10 +35,10 @@ instance (Functor f, QFunctor p Hask Hask) => QFunctor (f `Of` p) Hask Hask wher
 instance (Functor f, Bifunctor p Hask Hask Hask) => Bifunctor (f `Of` p) Hask Hask Hask where
         bimap f g = liftOf (bimap f g)
 
-instance (Functor f, Braided p Hask) => Braided (f `Of` p) Hask where
+instance (Functor f, Braided Hask p ) => Braided Hask (f `Of` p) where
         braid = liftOf braid
 
-instance (Functor f, Symmetric p Hask) => Symmetric (f `Of` p) Hask
+instance (Functor f, Symmetric Hask p) => Symmetric Hask (f `Of` p)
 
 instance (Functor f, Functor (p a)) => Functor (Of f p a) where
         fmap f = Of . fmap (fmap f) . runOf

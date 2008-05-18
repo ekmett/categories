@@ -22,22 +22,20 @@
 
 module Control.Category.Monoidal 
 	( module Control.Category.Braided
-	, Void
-	, HasIdentity(..)
+	, HasIdentity
 	, Monoidal(..)
 	, Comonoidal(..)
 	) where
 
+import Control.Category.Braided
 import Control.Category.Hask
 import Control.Category.Associative
-import Control.Category.Braided
 import Control.Functor
 import Data.Void
 
 -- | Denotes that we have some reasonable notion of 'Identity' for a particular 'Bifunctor' in this 'Category'. This
 -- notion is currently used by both 'Monoidal' and 'Comonoidal'
-class Bifunctor p k k k => HasIdentity p k where
-	type Id p k :: *
+class Bifunctor p k k k => HasIdentity k p i | k p -> i 
 
 {- | A monoidal category. 'idl' and 'idr' are traditionally denoted lambda and rho
  the triangle identity holds:
@@ -46,9 +44,9 @@ class Bifunctor p k k k => HasIdentity p k where
 > bimap id idl = bimap idr id . associate
 -}
 
-class (Associative p k , HasIdentity p k) => Monoidal p k where
-	idl :: k (p (Id p k) a) a
-	idr :: k (p a (Id p k)) a
+class (Associative k p, HasIdentity k p i) => Monoidal k p i | k p -> i where
+	idl :: k (p i a) a
+	idr :: k (p a i) a
 
 {- | A comonoidal category satisfies the dual form of the triangle identities
 
@@ -64,9 +62,9 @@ A strict (co)monoidal category is one that is both 'Monoidal' and 'Comonoidal' a
 > coidr . idr = id 
 
 -}
-class (Coassociative p k, HasIdentity p k) => Comonoidal p k where
-	coidl :: k a (p (Id p k) a)
-	coidr :: k a (p a (Id p k))
+class (Coassociative k p, HasIdentity k p i) => Comonoidal k p i | k p -> i where
+	coidl :: k a (p i a)
+	coidr :: k a (p a i)
 
 {-# RULES
 -- "bimap id idl/associate" 		bimap id idl . associate = bimap idr id
@@ -83,9 +81,10 @@ class (Coassociative p k, HasIdentity p k) => Comonoidal p k where
 "braid/coidl"                   braid . coidl = coidr
  #-}
 
-instance HasIdentity (,) Hask where
-	type Id (,) Hask = Void
+instance HasIdentity Hask (,) Void
 
-instance Monoidal (,) Hask where
+
+instance Monoidal Hask (,) Void where
         idl = snd
         idr = fst
+

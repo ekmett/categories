@@ -30,7 +30,7 @@ import Control.Category.Hask
 
 -}
 
-class Braided p k where
+class Braided k p where
 	braid :: k (p a b) (p b a)
 
 {- |
@@ -38,9 +38,9 @@ If we have a symmetric (co)'Monoidal' category, you get the additional law:
 
 > swap . swap = id
  -}
-class Braided p k => Symmetric p k
+class Braided k p => Symmetric k p
 
-swap :: Symmetric p k => k (p a b) (p b a)
+swap :: Symmetric k p => k (p a b) (p b a)
 swap = braid
 
 {-# RULES
@@ -49,14 +49,14 @@ swap = braid
 "braid/coassociate/braid"       bimap braid id . coassociate . bimap id braid = coassociate . braid . coassociate
  #-}
 
-instance Braided Either Hask where
+instance Braided Hask Either where
         braid (Left a) = Right a
         braid (Right b) = Left b
 
-instance Symmetric Either Hask
+instance Symmetric Hask Either 
 
-instance Braided (,) Hask where
+instance Braided Hask (,) where
         braid ~(a,b) = (b,a)
 
-instance Symmetric (,) Hask
+instance Symmetric Hask (,)
 

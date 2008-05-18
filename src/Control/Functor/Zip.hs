@@ -33,9 +33,8 @@ import Data.Monoid (Monoid(..))
 unfzip :: Functor f => f (a, b) -> (f a, f b)
 unfzip = fmap fst &&& fmap snd
 
-unbizip :: (PreCartesian r, PreCartesian s, PreCartesian t, Bifunctor p r s t) => 
-	t (p (Prod r a c) (Prod s b d)) 
-	  (Prod t (p a b) (p c d))
+unbizip :: (PreCartesian r pr , PreCartesian s ps, PreCartesian t pt, Bifunctor p r s t) => 
+	t (p (pr a c) (ps b d)) (pt (p a b) (p c d))
 unbizip = bimap fst fst &&& bimap snd snd
 
 {- | Minimum definition:
@@ -104,8 +103,8 @@ instance Zip f => Bizip (FreeB f) where
 counzip :: Functor f => Either (f a) (f b) -> f (Either a b)
 counzip = fmap Left ||| fmap Right
  
-counbizip :: (PreCoCartesian r, PreCoCartesian s, PreCoCartesian t, Bifunctor q r s t) => 
-	t (Sum t (q a c) (q b d)) (q (Sum r a b) (Sum s c d))
+counbizip :: (PreCoCartesian r sr, PreCoCartesian s ss, PreCoCartesian t st, Bifunctor q r s t) => 
+	t (st (q a c) (q b d)) (q (sr a b) (ss c d))
 counbizip = bimap inl inl ||| bimap inr inr
 
 class Functor f => Cozip f where

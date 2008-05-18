@@ -1,9 +1,9 @@
 name:                   category-extras
 category:               Control, Monads, Comonads
-version:                0.50.0
+version:                0.50.1
 license:                BSD3
+cabal-version:          >= 1.2
 license-file:           LICENSE
-build-depends:          base > 3, mtl, array, ghc > 6.9
 author:                 Edward A. Kmett, Dave Menendez
 maintainer:             Edward A. Kmett <ekmett@gmail.com>
 stability:              experimental
@@ -19,90 +19,128 @@ description:            A vastly expanded collection of modules implementing var
                         operaters ala /Functional Programming with Bananas, Lenses,
                         Envelopes and Barbed Wire/.
 
-extensions:
-        CPP,
-        EmptyDataDecls,
-        FlexibleContexts,
-        FlexibleInstances,
-        FunctionalDependencies,
-        MultiParamTypeClasses,
-        TypeOperators,
-	TypeSynonymInstances,
-        UndecidableInstances,
-        ExistentialQuantification,
-        Rank2Types
+flag ArrowSubclassesCategory {
+        description:    Indicates Control.Category is available and that the standard library has
+                        its arrows subclass Control.Category.Category
+        default:        True
+}
 
-exposed-modules:
-	Control.Applicative.Parameterized,
-	Control.Arrow.BiKleisli,
-	Control.Arrow.CoKleisli,
-	Control.Category.Associative,
-	Control.Category.Monoidal,
-	Control.Category.Braided,
-	Control.Category.Cartesian,
-	Control.Category.Cartesian.Closed,
-	Control.Category.Distributive,
-	Control.Category.Dual,
-	Control.Category.Hask,
-	Control.Category.Object,
-	Control.Comonad,
-	Control.Comonad.Cofree,
-	Control.Comonad.Context,
-	Control.Comonad.Coideal,
-	Control.Comonad.Fix,
-	Control.Comonad.Indexed,
-	Control.Comonad.HigherOrder,
-	Control.Comonad.Parameterized,
-	Control.Comonad.Pointer,
-	Control.Comonad.Reader,
-	Control.Comonad.Supply
-	Control.Functor.Adjunction,
-	Control.Functor.Adjunction.HigherOrder,
-	Control.Functor.Algebra,
-	Control.Functor.Composition,
-	Control.Functor.Combinators.Const,
-	Control.Functor.Combinators.Lift,
-	Control.Functor.Combinators.Join,
-	Control.Functor.Combinators.Biff,
-	Control.Functor.Combinators.Flip,
-	Control.Functor.Combinators.Of,
-	Control.Functor.Contra,
-	Control.Functor.Extras,
-	Control.Functor.Exponential,
-	Control.Functor.Fix,
-	Control.Functor.Full,
-	Control.Functor.HigherOrder,
-	Control.Functor.HigherOrder.Composition,
-	Control.Functor.Indexed,
-	Control.Functor.KanExtension,
-	Control.Functor.Strong,
-	Control.Functor.Pointed,
-	Control.Functor.Pointed.Composition,
-	Control.Functor.Representable,
-	Control.Functor.Zip,
-	Control.Functor.Zap,
-	Control.Monad.Free,
-	Control.Monad.HigherOrder,
-	Control.Monad.Indexed,
-	Control.Monad.Indexed.Cont,
-	Control.Monad.Indexed.Fix,
-	Control.Monad.Indexed.State,
-	Control.Monad.Indexed.Trans,
-	Control.Monad.Parameterized,
-	Control.Monad.Hyper,
-	Control.Monad.Either,
-	Control.Morphism.Hylo,
-	Control.Morphism.Cata,
-	Control.Morphism.Ana,
-	Control.Morphism.Meta,
-	Control.Morphism.Futu,
-	Control.Morphism.Chrono,
-	Control.Morphism.Para,
-	Control.Morphism.Dyna,
-	Control.Morphism.Apo,
-	Control.Morphism.Zygo,
-	Control.Morphism.Histo,
-	Data.Void
+flag TypeFamilies {
+       description:    Support for Type Families is available to us
+}
 
-ghc-options:            -Wall -funbox-strict-fields -O2
-hs-source-dirs:         src
+flag Optimize { 
+        description:    Enable optimizations
+        default:        False
+}
+
+library { 
+        build-depends:          base > 3, mtl, array, ghc > 6.9
+        extensions:
+                CPP,
+                EmptyDataDecls,
+                FlexibleContexts,
+                FlexibleInstances,
+                FunctionalDependencies,
+                MultiParamTypeClasses,
+                TypeOperators,
+                TypeSynonymInstances
+                UndecidableInstances,
+                ExistentialQuantification,
+                Rank2Types
+
+        exposed-modules:
+                Control.Category.Monoidal,
+                Control.Category.Cartesian,
+                Control.Category.Cartesian.Closed,
+
+                Control.Applicative.Parameterized,
+                Control.Arrow.BiKleisli,
+                Control.Arrow.CoKleisli,
+                Control.Category.Associative,
+                Control.Category.Braided,
+                Control.Category.Distributive,
+                Control.Category.Dual,
+                Control.Category.Hask,
+                Control.Category.Object,
+                Control.Comonad,
+                Control.Comonad.Cofree,
+                Control.Comonad.Context,
+                Control.Comonad.Coideal,
+                Control.Comonad.Fix,
+                Control.Comonad.Indexed,
+                Control.Comonad.HigherOrder,
+                Control.Comonad.Parameterized,
+                Control.Comonad.Pointer,
+                Control.Comonad.Reader,
+                Control.Comonad.Supply
+                Control.Functor.Adjunction,
+                Control.Functor.Adjunction.HigherOrder,
+                Control.Functor.Algebra,
+                Control.Functor.Composition,
+                Control.Functor.Combinators.Const,
+                Control.Functor.Combinators.Lift,
+                Control.Functor.Combinators.Join,
+                Control.Functor.Combinators.Biff,
+                Control.Functor.Combinators.Flip,
+                Control.Functor.Combinators.Of,
+                Control.Functor.Contra,
+                Control.Functor.Extras,
+                Control.Functor.Exponential,
+                Control.Functor.Fix,
+                Control.Functor.Full,
+                Control.Functor.HigherOrder,
+                Control.Functor.HigherOrder.Composition,
+                Control.Functor.Indexed,
+                Control.Functor.KanExtension,
+                Control.Functor.Strong,
+                Control.Functor.Pointed,
+                Control.Functor.Pointed.Composition,
+                Control.Functor.Representable,
+                Control.Functor.Zip,
+                Control.Functor.Zap,
+                Control.Monad.Free,
+                Control.Monad.HigherOrder,
+                Control.Monad.Indexed,
+                Control.Monad.Indexed.Cont,
+                Control.Monad.Indexed.Fix,
+                Control.Monad.Indexed.State,
+                Control.Monad.Indexed.Trans,
+                Control.Monad.Parameterized,
+                Control.Monad.Hyper,
+                Control.Monad.Either,
+                Control.Morphism.Hylo,
+                Control.Morphism.Cata,
+                Control.Morphism.Ana,
+                Control.Morphism.Meta,
+                Control.Morphism.Futu,
+                Control.Morphism.Chrono,
+                Control.Morphism.Para,
+                Control.Morphism.Dyna,
+                Control.Morphism.Apo,
+                Control.Morphism.Zygo,
+                Control.Morphism.Histo,
+                Data.Void
+
+        hs-source-dirs:         src
+        ghc-options:            -Wall
+
+        if flag(ArrowSubclassesCategory) {
+                build-depends: ghc > 6.9
+--                cpp-options: -D__ARROW_SUBCLASSES_CATEGORY__
+                ghc-options: -D__ARROW_SUBCLASSES_CATEGORY__
+        }
+
+
+        if flag(TypeFamilies) {
+                extensions:
+                        TypeFamilies
+--                cpp-options: -D__USE_TYPE_FAMILIES__
+                ghc-options: -D__USE_TYPE_FAMILIES__
+        }
+
+        if flag(Optimize) {
+                ghc-options: -funbox-strict-fields -O2
+        }
+}
+

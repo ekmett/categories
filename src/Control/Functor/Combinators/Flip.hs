@@ -36,18 +36,17 @@ instance QFunctor p Hask Hask => PFunctor (Flip p) Hask Hask where
 instance Bifunctor p Hask Hask Hask => Bifunctor (Flip p) Hask Hask Hask where
 	bimap f g = liftFlip (bimap g f)
 
-instance Braided p Hask => Braided (Flip p) Hask where
+instance Braided Hask p => Braided Hask (Flip p) where
 	braid = liftFlip braid
 
-instance Symmetric p Hask => Symmetric (Flip p) Hask
+instance Symmetric Hask p => Symmetric Hask (Flip p) 
 
 instance Bifunctor p Hask Hask Hask => Functor (Flip p a) where
 	fmap = bimap id
 
-instance HasIdentity p Hask => HasIdentity (Flip p) Hask where
-	type Id (Flip p) Hask = Id p Hask
+instance HasIdentity Hask p i => HasIdentity Hask (Flip p) i where
 
-instance Associative p Hask => Coassociative (Flip p) Hask where
+instance Associative Hask p => Coassociative Hask (Flip p) where
 	coassociate = Flip . second Flip . associate . first runFlip . runFlip 
 	-- Flip p a (Flip p b c) 	>- runFlip ->
 	-- p (Flip p b c) a 		>- first runFlip ->
@@ -56,13 +55,13 @@ instance Associative p Hask => Coassociative (Flip p) Hask where
 	-- p c (Flip p a b) 		>- Flip ->
 	-- Flip p (Flip p a b) c
 	
-instance Coassociative p Hask => Associative (Flip p) Hask where
+instance Coassociative Hask p => Associative Hask (Flip p) where
 	associate = Flip . first Flip . coassociate . second runFlip . runFlip
 
-instance (Coassociative p Hask, Monoidal p Hask) => Monoidal (Flip p) Hask where
+instance (Coassociative Hask p, Monoidal Hask p i) => Monoidal Hask (Flip p) i where
 	idl = idr . runFlip 
 	idr = idl . runFlip
 
-instance (Associative p Hask, Comonoidal p Hask) => Comonoidal (Flip p) Hask where
+instance (Associative Hask p, Comonoidal Hask p i) => Comonoidal Hask (Flip p) i where
 	coidl = Flip . coidr
 	coidr = Flip . coidl

@@ -25,7 +25,7 @@ module Control.Functor.Combinators.Biff
 import Control.Category.Hask
 import Control.Arrow ((|||),(&&&))
 import Control.Monad.Identity
-import Control.Category.Monoidal
+import Control.Category.Braided
 import Control.Functor
 import Control.Functor.Extras
 import Control.Monad.Parameterized
@@ -81,10 +81,10 @@ instance (QFunctor q Hask Hask, Functor g) => QFunctor (Biff q f g) Hask Hask wh
 instance (Functor f, Bifunctor p Hask Hask Hask, Functor g) => Bifunctor (Biff p f g) Hask Hask Hask where
 	bimap f g = Biff . bimap (fmap f) (fmap g) . runBiff
 
-instance (Functor f, Braided p Hask) => Braided (Biff p f f) Hask where
+instance (Functor f, Braided Hask p) => Braided Hask (Biff p f f) where
 	braid = Biff . braid . runBiff
 
-instance (Functor f, Symmetric p Hask) => Symmetric (Biff p f f) Hask
+instance (Functor f, Symmetric Hask p) => Symmetric Hask (Biff p f f) 
 
 instance (Functor f, Bifunctor p Hask Hask Hask, Functor g) => Functor (Biff p f g a) where
 	fmap f = bimap id f

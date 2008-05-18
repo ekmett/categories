@@ -40,16 +40,16 @@ instance PFunctor (Const2 t) Hask Hask where
 instance Bifunctor (Const2 t) Hask Hask Hask where
 	bimap _ _ = Const2 . runConst2
 
-instance Associative (Const2 t) Hask where
+instance Associative Hask (Const2 t) where
 	associate = Const2 . runConst2
 
-instance Coassociative (Const2 t) Hask where
+instance Coassociative Hask (Const2 t) where
 	coassociate = Const2 . runConst2
 
-instance Braided (Const2 t) Hask where
+instance Braided Hask (Const2 t) where
 	braid = Const2 . runConst2
 
-instance Symmetric (Const2 t) Hask
+instance Symmetric Hask (Const2 t)
 
 instance Monoid t => Zip (Const2 t a) where
 	fzipWith _ a b = Const2 (runConst2 a `mappend` runConst2 b)

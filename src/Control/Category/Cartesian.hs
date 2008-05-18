@@ -23,13 +23,13 @@ module Control.Category.Cartesian
 	, CoCartesian
 	) where
 
-import Prelude hiding (Functor, map, (.), id, fst, snd, curry, uncurry)
-import qualified Prelude
-
-import Control.Functor
-import Control.Category
+import Control.Category.Hask
 import Control.Category.Associative
 import Control.Category.Monoidal
+import Prelude hiding (Functor, map, (.), id, fst, snd, curry, uncurry)
+import qualified Prelude
+import Control.Functor
+import Control.Category
 
 infixr 3 &&&
 infixr 2 |||
@@ -47,12 +47,11 @@ Minimum definition:
 > fst, snd, diag 
 > fst, snd, (&&&)
 -}
-class (Associative (Prod k) k, Coassociative (Prod k) k, Braided (Prod k) k) => PreCartesian k where
-	type Prod k :: * -> * -> *
-	fst :: k (Prod k a b) a
-	snd :: k (Prod k a b) b
-	diag :: k a (Prod k a a)
-	(&&&) :: k a b -> k a c -> k a (Prod k b c)
+class (Associative k p, Coassociative k p, Braided k p) => PreCartesian k p | k -> p where
+	fst :: k (p a b) a
+	snd :: k (p a b) b
+	diag :: k a (p a a)
+	(&&&) :: k a b -> k a c -> k a (p b c)
 
 	diag = id &&& id
 	f &&& g = bimap f g . diag
@@ -65,44 +64,40 @@ class (Associative (Prod k) k, Coassociative (Prod k) k, Braided (Prod k) k) => 
 "snd . f &&& g" forall f g. snd . (f &&& g) = g
  #-}
 
-instance PreCartesian (->) where
-	type Prod (->) = (,)
+instance PreCartesian Hask (,) where
 	fst = Prelude.fst
 	snd = Prelude.snd
 	diag a = (a,a)
 	(f &&& g) a = (f a, g a)
 
 -- alias
-class (Monoidal (Prod k) k, PreCartesian k) => Cartesian k
-instance (Monoidal (Prod k) k, PreCartesian k) => Cartesian k
+class (Monoidal k p i, PreCartesian k p) => Cartesian k p i | k -> p i 
+instance (Monoidal k p i, PreCartesian k p) => Cartesian k p i
 
 -- | free construction of 'Bifunctor' for the product 'Bifunctor' @Prod k@ if @(&&&)@ is known
-bimapPreCartesian :: PreCartesian k => k a c -> k b d -> k (Prod k a b) (Prod k c d)
+bimapPreCartesian :: PreCartesian k p => k a c -> k b d -> k (p a b) (p c d)
 bimapPreCartesian f g = (f . fst) &&& (g . snd)
 	
 -- | free construction of 'Braided' for the product 'Bifunctor' @Prod k@
-braidPreCartesian :: PreCartesian k => k (Prod k a b) (Prod k b a)
+braidPreCartesian :: PreCartesian k p => k (p a b) (p b a)
 braidPreCartesian = snd &&& fst
 
 -- | free construction of 'Associative' for the product 'Bifunctor' @Prod k@
-associatePreCartesian :: PreCartesian k => k (Prod k (Prod k a b) c) (Prod k a (Prod k b c))
+associatePreCartesian :: PreCartesian k p => k (p (p a b) c) (p a (p b c))
 associatePreCartesian = (fst . fst) &&& first snd
 
 -- | free construction of 'Coassociative' for the product 'Bifunctor' @Prod k@
-coassociatePreCartesian :: PreCartesian k => k (Prod k a (Prod k b c)) (Prod k (Prod k a b) c)
+coassociatePreCartesian :: PreCartesian k p => k (p a (p b c)) (p (p a b) c)
 coassociatePreCartesian = braid . second braid . associatePreCartesian . first braid . braid 
 
 -- * Co-PreCartesian categories
 
 -- a category that has finite coproducts, weakened the same way as PreCartesian above was weakened
-class (Associative (Sum k) k, Coassociative (Sum k) k, Braided (Sum k) k) => PreCoCartesian k where
-#ifndef __HADDOCK__
-	type Sum k :: * -> * -> *
-#endif
-	inl :: k a (Sum k a b)
-	inr :: k b (Sum k a b)
-	codiag :: k (Sum k a a) a
-	(|||) :: k a c -> k b c -> k (Sum k a b) c
+class (Associative k s, Coassociative k s , Braided k s) => PreCoCartesian k s | k -> s where
+	inl :: k a (s a b)
+	inr :: k b (s a b)
+	codiag :: k (s a a) a
+	(|||) :: k a c -> k b c -> k (s a b) c
 
 	codiag = id ||| id
 	f ||| g = codiag . bimap f g
@@ -114,8 +109,7 @@ class (Associative (Sum k) k, Coassociative (Sum k) k, Braided (Sum k) k) => Pre
 "(f ||| g) . inr" forall f g. (f ||| g) . inr = g
  #-}
 
-instance PreCoCartesian (->) where
-	type Sum (->) = Either
+instance PreCoCartesian Hask Either where
 	inl = Left
 	inr = Right
 	codiag (Left a) = a
@@ -124,20 +118,20 @@ instance PreCoCartesian (->) where
 	(_ ||| g) (Right a) = g a
 
 -- | free construction of 'Bifunctor' for the coproduct 'Bifunctor' @Sum k@ if @(|||)@ is known
-bimapPreCoCartesian :: PreCoCartesian k => k a c -> k b d -> k (Sum k a b) (Sum k c d)
+bimapPreCoCartesian :: PreCoCartesian k s => k a c -> k b d -> k (s a b) (s c d)
 bimapPreCoCartesian f g = (inl . f) ||| (inr . g)
 
 -- | free construction of 'Braided' for the coproduct 'Bifunctor' @Sum k@
-braidPreCoCartesian :: PreCoCartesian k => k (Sum k a b) (Sum k b a)
+braidPreCoCartesian :: PreCoCartesian k s => k (s a b) (s b a)
 braidPreCoCartesian = inr ||| inl
 
 -- | free construction of 'Associative' for the coproduct 'Bifunctor' @Sum k@
-associatePreCoCartesian :: PreCoCartesian k => k (Sum k (Sum k a b) c) (Sum k a (Sum k b c))
+associatePreCoCartesian :: PreCoCartesian k s => k (s (s a b) c) (s a (s b c))
 associatePreCoCartesian = braid . first braid . coassociatePreCoCartesian . second braid . braid
 
 -- | free construction of 'Coassociative' for the coproduct 'Bifunctor' @Sum k@
-coassociatePreCoCartesian :: PreCoCartesian k => k (Sum k a (Sum k b c)) (Sum k (Sum k a b) c)
+coassociatePreCoCartesian :: PreCoCartesian k s => k (s a (s b c)) (s (s a b) c)
 coassociatePreCoCartesian = (inl . inl) ||| first inr
 
-class (Comonoidal (Sum k) k, PreCoCartesian k) => CoCartesian k
-instance (Comonoidal (Sum k) k, PreCoCartesian k) => CoCartesian k
+class (Comonoidal k s i, PreCoCartesian k s) => CoCartesian k s i | k -> s i
+instance (Comonoidal k s i, PreCoCartesian k s) => CoCartesian k s i 

@@ -1,3 +1,4 @@
+# OPTIONS = "-f-TypeFamilies"
 .PHONY: docs
 
 build: all
@@ -11,7 +12,7 @@ clean:
 	@runhaskell Setup.lhs clean
 
 config:
-	@runhaskell Setup.lhs configure
+	@runhaskell Setup.lhs configure $(OPTIONS)
 
 html:
 	@runhaskell Setup.lhs haddock

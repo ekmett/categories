@@ -19,15 +19,20 @@ module Control.Category.Distributive
 import Prelude hiding (Functor, map, (.), id, fst, snd, curry, uncurry)
 import Control.Functor
 import Control.Category
+import Control.Category.Hask
 import Control.Category.Cartesian
 
 -- | the canonical factoring morphism 
-factor :: (Cartesian k, CoCartesian k) => k (Sum k (Prod k a b) (Prod k a c)) (Prod k a (Sum k b c))
+factor :: (PreCartesian hom prod, PreCoCartesian hom sum) => hom (sum (prod a b) (prod a c)) (prod a (sum b c))
 factor = second inl ||| second inr
 
 -- | A category in which 'factor' is an isomorphism
-class (Cartesian k, CoCartesian k) => Distributive k where
-	distribute :: k (Prod k a (Sum k b c)) (Sum k (Prod k a b) (Prod k a c))
+class (PreCartesian hom prod, PreCoCartesian hom sum) => Distributive hom prod sum where
+	distribute :: hom (prod a (sum b c)) (sum (prod a b) (prod a c))
+
+instance Distributive Hask (,) Either where
+	distribute (a,Left b) = Left (a,b)
+	distribute (a,Right c) = Right (a,c)
 
 {-# RULES
 "factor . distribute"	 factor . distribute = id

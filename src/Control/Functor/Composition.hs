@@ -74,10 +74,10 @@ instance (Bifunctor p c d Hask, Bifunctor f a b c, Bifunctor g a b d) => Bifunct
 liftComp :: Bifunctor p r s Hask => r (f a b) (f c d) -> s (g a b) (g c d) -> Comp p f g a b -> Comp p f g c d 
 liftComp f g = Comp . bimap f g . runComp
 
-instance (Bifunctor p Hask Hask Hask, Braided f Hask, Braided g Hask) => Braided (Comp p f g) Hask where
+instance (Bifunctor p Hask Hask Hask, Braided Hask f, Braided Hask g) => Braided Hask (Comp p f g) where
 	braid = liftComp braid braid
 
-instance (Bifunctor p Hask Hask Hask, Symmetric f Hask, Symmetric g Hask) => Symmetric (Comp p f g) Hask
+instance (Bifunctor p Hask Hask Hask, Symmetric Hask f,  Symmetric Hask g) => Symmetric Hask (Comp p f g) 
 
 instance (Bifunctor p Hask Hask Hask, Bifunctor f Hask Hask Hask, Bifunctor g Hask Hask Hask) => Functor (Comp p f g a) where
 	fmap = bimap id

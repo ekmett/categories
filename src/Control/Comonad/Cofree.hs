@@ -15,7 +15,7 @@ module Control.Comonad.Cofree
 	, outCofree, runCofree, anaCofree, cofree
 	, CofreeLike(unwrap)
 	, Expensive(..)
-	, coimprove, worsten
+	, coimprove, worsen
 	) where
 
 import Control.Arrow ((&&&))
@@ -53,5 +53,5 @@ data Expensive f a = forall w. CofreeLike f w => Expensive { runExpensive :: w a
 coimprove :: Functor f => Cofree f a -> Expensive f a
 coimprove m = Expensive (coabs m)
 
-worsten :: Functor f => (forall w. CofreeLike f w => w a) -> Cofree f a
-worsten m = corep m 
+worsen :: Functor f => (forall w. CofreeLike f w => w a) -> Cofree f a
+worsen m = corep m 

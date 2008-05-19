@@ -22,12 +22,12 @@ import Control.Comonad ()
 import Control.Monad.Identity
 
 -- | Anamorphisms are a generalized form of 'unfoldr'
-ana :: Functor f => CoAlg f a -> a -> FixF f
+ana :: Functor f => Coalgebra f a -> a -> FixF f
 ana g = InF . fmap (ana g) . g
--- ana g = g_ana distAna (liftCoAlg g)
+-- ana g = g_ana distAna (liftCoAlgebra g)
 
 -- | Generalized anamorphisms allow you to work with a monad given a distributive law
-g_ana :: (Functor f, Monad m) => Dist m f -> CoAlgM f m a -> a -> FixF f
+g_ana :: (Functor f, Monad m) => Dist m f -> GCoalgebra f m a -> a -> FixF f
 -- g_ana k g = g_hylo distCata k inW id g
 g_ana k g = a . return where a = InF . fmap (a . join) . k . liftM g
 
@@ -35,12 +35,12 @@ g_ana k g = a . return where a = InF . fmap (a . join) . k . liftM g
 distAna :: Functor f => Dist Identity f
 distAna = fmap Identity . runIdentity
 
-biana :: Bifunctor f Hask Hask Hask => CoAlg (f b) a -> a -> Fix f b
+biana :: Bifunctor f Hask Hask Hask => Coalgebra (f b) a -> a -> Fix f b
 biana g = InB . bimap id (biana g) . g
 
-g_biana :: (Bifunctor f Hask Hask Hask, Monad m) => Dist m (f b) -> CoAlgM (f b) m a -> a -> Fix f b
+g_biana :: (Bifunctor f Hask Hask Hask, Monad m) => Dist m (f b) -> GCoalgebra (f b) m a -> a -> Fix f b
 g_biana k g = a . return where a = InB . bimap id (a . join) . k . liftM g
 
 -- | A higher-order anamorphism for constructing higher order functors.
-hana :: HFunctor f => CoAlgH f a -> a :~> FixH f
+hana :: HFunctor f => HCoalgebra f a -> a :~> FixH f
 hana g = InH . hfmap (hana g) . g

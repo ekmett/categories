@@ -9,10 +9,12 @@
 -- Stability   :  experimental
 -- Portability :  non-portable (rank-2 polymorphism)
 --
--- Generalized metamorphisms 
+-- A very basic Jeremy Gibbons metamorphism, without all 
+-- the productive stream stuff. See:
+-- <http://www.comlab.ox.ac.uk/oucl/work/jeremy.gibbons/publications/metamorphisms-scp.pdf>
+-- TODO: Add some support for spigot algorithms over streams/lists.
 ----------------------------------------------------------------------------
 module Control.Morphism.Meta where
-
 
 import Control.Functor.Algebra
 import Control.Functor.Extras
@@ -22,11 +24,10 @@ import Control.Monad.Identity
 import Control.Morphism.Ana
 import Control.Morphism.Cata
 
-
 meta :: (Functor f, Functor g) => 
-	  CoAlg f b -> (a -> b) -> Alg g a -> FixF g -> FixF f
+	  Coalgebra f b -> (a -> b) -> Algebra g a -> FixF g -> FixF f
 meta f e g = ana f . e . cata g
 
 g_meta :: (Monad m, Functor f, Comonad w, Functor g) => 
-	  Dist m f -> Dist g w -> CoAlgM f m b -> (a -> b) -> AlgW g w a -> FixF g -> FixF f
+	  Dist m f -> Dist g w -> GCoalgebra f m b -> (a -> b) -> GAlgebra g w a -> FixF g -> FixF f
 g_meta m w f e g = g_ana m f . e . g_cata w g

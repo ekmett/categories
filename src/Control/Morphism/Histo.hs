@@ -20,10 +20,10 @@ import Control.Comonad
 import Control.Comonad.Cofree
 import Control.Morphism.Cata
 
-histo :: Functor f => AlgW f (Cofree f) a -> FixF f -> a
+histo :: Functor f => GAlgebra f (Cofree f) a -> FixF f -> a
 histo = g_cata (distHisto id)
 
-g_histo :: (Functor f, Functor h) => Dist f h -> AlgW f (Cofree h) a -> FixF f -> a
+g_histo :: (Functor f, Functor h) => Dist f h -> GAlgebra f (Cofree h) a -> FixF f -> a
 g_histo k = g_cata (distHisto k)
 
 distHisto :: (Functor f, Functor h) => Dist f h -> Dist f (Cofree h)

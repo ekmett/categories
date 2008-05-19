@@ -20,19 +20,20 @@ import Control.Functor.Extras
 import Control.Functor.Fix
 import Control.Morphism.Cata
 
-type Zygo b a = (b,a)
+type Zygo = (,)
+type ZygoT = CoreaderT
 
-zygo :: Functor f => Alg f b -> AlgW f (Zygo b) a -> FixF f -> a
+zygo :: Functor f => Algebra f b -> GAlgebra f (Zygo b) a -> FixF f -> a
 zygo f = g_cata (distZygo f)
 
-g_zygo :: (Functor f, Comonad w) => AlgW f w b -> Dist f w -> AlgW f (CoreaderT w b) a -> FixF f -> a
+g_zygo :: (Functor f, Comonad w) => GAlgebra f w b -> Dist f w -> GAlgebra f (ZygoT w b) a -> FixF f -> a
 g_zygo f w = g_cata (distZygoT f w)
 
 -- * Distributive Law Combinators
 
-distZygo :: Functor f => Alg f b -> Dist f (Zygo b)
+distZygo :: Functor f => Algebra f b -> Dist f (Zygo b)
 distZygo g = g . fmap fst &&& fmap snd
 
-distZygoT :: (Functor f, Comonad w) => AlgW f w b -> Dist f w -> Dist f (CoreaderT w b)
+distZygoT :: (Functor f, Comonad w) => GAlgebra f w b -> Dist f w -> Dist f (ZygoT w b)
 distZygoT g k = CoreaderT . liftW (g . fmap (liftW fst) &&& fmap (snd . extract)) . k . fmap (duplicate . runCoreaderT)
 

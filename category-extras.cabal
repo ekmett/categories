@@ -1,6 +1,6 @@
 name:                   category-extras
 category:               Control, Monads, Comonads
-version:                0.50.2
+version:                0.50.3
 license:                BSD3
 cabal-version:          >= 1.2
 license-file:           LICENSE
@@ -76,6 +76,7 @@ library {
                 Control.Functor.Adjunction,
                 Control.Functor.Adjunction.HigherOrder,
                 Control.Functor.Algebra,
+                Control.Functor.Algebra.Elgot,
                 Control.Functor.Composition,
                 Control.Functor.Combinators.Const,
                 Control.Functor.Combinators.Lift,
@@ -92,10 +93,11 @@ library {
                 Control.Functor.HigherOrder.Composition,
                 Control.Functor.Indexed,
                 Control.Functor.KanExtension,
-                Control.Functor.Strong,
+                Control.Functor.Limit,
                 Control.Functor.Pointed,
                 Control.Functor.Pointed.Composition,
                 Control.Functor.Representable,
+                Control.Functor.Strong,
                 Control.Functor.Zip,
                 Control.Functor.Zap,
                 Control.Monad.Free,
@@ -127,15 +129,13 @@ library {
         if flag(ArrowSubclassesCategory) {
                 build-depends: ghc >= 6.9
                 cpp-options: -D__ARROW_SUBCLASSES_CATEGORY__=1
---              ghc-options: -D__ARROW_SUBCLASSES_CATEGORY__
-		-- if you want docs you have to use the WRONG one to get it to work with haddock!
         } else { 
                 build-depends: ghc < 6.9
         }
 
-
         if flag(TypeFamilies) {
                 extensions: TypeFamilies
+                cpp-options: -D__TYPE_FAMILIES__=1
         }
 
         if flag(Optimize) {

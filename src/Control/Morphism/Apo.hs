@@ -11,7 +11,14 @@
 -- 
 -- Traditional operators, shown here to show how to roll your own
 ----------------------------------------------------------------------------
-module Control.Morphism.Apo where
+module Control.Morphism.Apo 
+	( apo
+	, Apo, ApoT
+	, distApoT
+	, g_apo
+	, GApo, GApoT
+	, distGApo, distGApoT
+	) where
 
 
 import Control.Functor.Algebra
@@ -24,10 +31,10 @@ import Control.Arrow ((|||))
 
 -- * Unfold Sugar
 
-apo :: Functor f => CoAlgM f (Apo f) a -> a -> FixF f
+apo :: Functor f => GCoalgebra f (Apo f) a -> a -> FixF f
 apo = g_apo outF
 
-g_apo :: Functor f => CoAlg f b -> CoAlgM f (GApo b) a -> a -> FixF f
+g_apo :: Functor f => Coalgebra f b -> GCoalgebra f (GApo b) a -> a -> FixF f
 g_apo g = g_ana (distGApo g)
 
 type Apo f a 		= Either (FixF f) a
@@ -38,12 +45,12 @@ type GApoT b m a 	= EitherT b m a
 
 -- * Distributive Law Combinators
 
-distGApo :: Functor f => CoAlg f b -> Dist (Either b) f
+distGApo :: Functor f => Coalgebra f b -> Dist (Either b) f
 distGApo f = fmap Left . f  ||| fmap Right
 
-distGApoT :: (Functor f, Monad m) => CoAlgM f m b -> Dist m f -> Dist (EitherT b m) f
+distGApoT :: (Functor f, Monad m) => GCoalgebra f m b -> Dist m f -> Dist (EitherT b m) f
 distGApoT g k = fmap (EitherT . join) . k  . liftM (fmap (liftM Left) . g ||| fmap (return . Right)) . runEitherT
 
 distApoT :: (Functor f, Monad m) => Dist m f -> Dist (ApoT f m) f
-distApoT = distGApoT (liftCoAlg outF)
+distApoT = distGApoT (liftCoalgebra outF)
 

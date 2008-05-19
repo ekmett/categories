@@ -16,8 +16,8 @@ module Control.Functor.HigherOrder
 	( HFunctor(..)
 	, HPointed(..)
 	, HCopointed(..)
-	, AlgH
-	, CoAlgH
+	, HAlgebra
+	, HCoalgebra
 	, FixH(..)
 	, LowerH(..)
 	) where
@@ -25,12 +25,12 @@ module Control.Functor.HigherOrder
 import Control.Functor.Pointed
 import Control.Functor.Extras
 
-type AlgH f g = f g :~> g
-type CoAlgH f g = g :~> f g
+type HAlgebra f g = f g :~> g
+type HCoalgebra f g = g :~> f g
 
 class HFunctor f where
 	ffmap :: Functor g => (a -> b) -> f g a -> f g b
-	hfmap :: g :~> h -> f g :~> f h
+	hfmap :: (g :~> h) -> f g :~> f h
 
 newtype FixH f a = InH { outH :: f (FixH f) a }
 

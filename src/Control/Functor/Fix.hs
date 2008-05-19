@@ -31,11 +31,11 @@ import Control.Morphism.Hylo
 
 newtype FixF f = InF { outF :: f (FixF f) }
 
-outM :: (Functor f, Monad m) => CoAlgM f m (FixF f)
-outM = liftCoAlg outF
+outM :: (Functor f, Monad m) => GCoalgebra f m (FixF f)
+outM = liftCoalgebra outF
 
-inW :: (Functor f, Comonad w) => AlgW f w (FixF f)
-inW = liftAlg InF
+inW :: (Functor f, Comonad w) => GAlgebra f w (FixF f)
+inW = liftAlgebra InF
 
 -- * Fixpoint of a bifunctor
 

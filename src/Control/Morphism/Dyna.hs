@@ -19,5 +19,5 @@ import Control.Morphism.Hylo
 import Control.Morphism.Histo
 import Control.Morphism.Ana
 
-dyna :: (Functor f, Functor g) => AlgW g (Cofree g) b -> (f :~> g) -> CoAlg f a -> a -> b
-dyna f e g = g_hylo (distHisto id) distAna f e (liftCoAlg g)
+dyna :: (Functor f, Functor g) => GAlgebra g (Cofree g) b -> (f :~> g) -> Coalgebra f a -> a -> b
+dyna f e g = g_hylo (distHisto id) distAna f e (liftCoalgebra g)

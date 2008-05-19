@@ -8,3 +8,11 @@
 0.50.0
 ------
 * Moved back to type families
+
+0.50.3
+------
+* Renamed 'Alg' to 'Algebra', renamed AlgH to HAlgebra, etc. 
+* Added Di- and Bi- algebras
+* Added Janis Voigtlaender's asymptotic free monad improvements and their dual, but noted it just uses the right Kan extension
+  of a monad.
+* Added Elgot (Co)Algebras

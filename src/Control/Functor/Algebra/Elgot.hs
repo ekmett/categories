@@ -13,31 +13,22 @@
 --
 -- Elgot algebras given you a shortcircuitable hylomorphism where you
 -- can directly return a sub-answer to the catamorphism.
+-- 
+-- Elgot coalgebras are defined in:
+-- <http://comonad.com/reader/2008/elgot-coalgebras/>
 ----------------------------------------------------------------------------
 module Control.Functor.Algebra.Elgot
 	( elgot
 	, coelgot
---	, g_elgot
---	, g_coelgot
 	) where
 
 import Control.Arrow ((|||),(&&&))
 import Control.Functor.Algebra
--- import Control.Functor.Extras
--- import Control.Comonad
--- import Control.Monad
 
+-- | Elgot algebra
 elgot :: Functor f => Algebra f a -> (b -> Either a (f b)) -> b -> a
 elgot phi psi = h where h = (id ||| phi . fmap h) . psi
 
+-- | Elgot coalgebra
 coelgot :: Functor f => ((a, f b) -> b) -> Coalgebra f a -> a -> b
 coelgot phi psi = h where h = phi . (id &&& fmap h . psi)
-
--- ideally this would have b -> Either a (f b)
--- g_elgot :: (Comonad w, Functor f) => Dist f w -> GAlgebra f w a -> (b -> Either (w a) (f b)) -> b -> a
--- g_elgot k phi psi = extract . h where 
--- 	h = (id ||| liftW phi . k . fmap (duplicate . h)) . psi
-
--- g_coelgot :: (Monad m, Functor f) => Dist m f -> ((m a, f b) -> b) -> GCoalgebra f m a -> a -> b
--- g_coelgot k phi psi = h . return where
---	h = phi . (id &&& fmap (h . join) . k . liftM psi)

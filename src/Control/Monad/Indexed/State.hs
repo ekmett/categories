@@ -26,11 +26,10 @@ import Control.Monad.Indexed
 import Control.Monad.Indexed.Trans
 import Control.Monad.Indexed.Fix
 import Control.Monad.State
-import Control.Monad.Writer.Class
-import Control.Monad.Reader.Class
-import Control.Monad.Cont.Class
+import Control.Monad.Writer
+import Control.Monad.Reader
+import Control.Monad.Cont
 import Control.Monad.Error.Class
-
 
 class IxMonad m => IxMonadState m where
 	iget :: m i i i

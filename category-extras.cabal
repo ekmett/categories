@@ -1,6 +1,6 @@
 name:                   category-extras
 category:               Control, Monads, Comonads
-version:                0.50.3
+version:                0.51.0
 license:                BSD3
 cabal-version:          >= 1.2
 license-file:           LICENSE
@@ -19,23 +19,23 @@ description:            A vastly expanded collection of modules implementing var
                         Envelopes and Barbed Wire/.
 build-type:             Simple
 
-flag ArrowSubclassesCategory {
+flag ArrowSubclassesCategory
         description:    Indicates Control.Category is available and that the standard library has
                         its arrows subclass Control.Category.Category
         default:        True
-}
 
-flag TypeFamilies {
-       description:    Support for Type Families is available to us
-}
+flag RedefinableEitherMonad
+        description:         Indicates Control.Monad.Error isn't baked into the Prelude
 
-flag Optimize { 
+flag TypeFamilies
+        description:    Support for Type Families is available to us
+
+flag Optimize
         description:    Enable optimizations
         default:        False
-}
 
-library { 
-        build-depends:  base > 3, mtl, array
+library
+        build-depends:  mtl >= 1.1
         extensions:
                 CPP,
                 EmptyDataDecls,
@@ -77,6 +77,7 @@ library {
                 Control.Functor.Adjunction.HigherOrder,
                 Control.Functor.Algebra,
                 Control.Functor.Algebra.Elgot,
+                Control.Functor.Categorical,
                 Control.Functor.Composition,
                 Control.Functor.Combinators.Const,
                 Control.Functor.Combinators.Lift,
@@ -98,6 +99,7 @@ library {
                 Control.Functor.Pointed.Composition,
                 Control.Functor.Representable,
                 Control.Functor.Strong,
+                Control.Functor.Yoneda,
                 Control.Functor.Zip,
                 Control.Functor.Zap,
                 Control.Monad.Free,
@@ -119,6 +121,7 @@ library {
                 Control.Morphism.Para,
                 Control.Morphism.Dyna,
                 Control.Morphism.Apo,
+                Control.Morphism.Universal,
                 Control.Morphism.Zygo,
                 Control.Morphism.Histo,
                 Data.Void
@@ -126,20 +129,22 @@ library {
         hs-source-dirs:         src
         ghc-options:            -Wall 
 
-        if flag(ArrowSubclassesCategory) {
-                build-depends: ghc >= 6.9
+        if flag(ArrowSubclassesCategory)
+                build-depends: ghc >= 6.9, base > 3, array
                 cpp-options: -D__ARROW_SUBCLASSES_CATEGORY__=1
-        } else { 
-                build-depends: ghc < 6.9
-        }
+        else
+                build-depends: ghc < 6.9, base
+                hs-source-dirs: pre-6.9
+                exposed-modules: Control.Category
 
-        if flag(TypeFamilies) {
+        if flag(RedefinableEitherMonad)
+                build-depends: ghc >= 6.8 
+        else
+                cpp-options: -D__BROKEN_EITHER__=1
+
+        if flag(TypeFamilies)
                 extensions: TypeFamilies
                 cpp-options: -D__TYPE_FAMILIES__=1
-        }
 
-        if flag(Optimize) {
+        if flag(Optimize)
                 ghc-options: -funbox-strict-fields -O2
-        }
-}
-

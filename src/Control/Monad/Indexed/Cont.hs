@@ -7,20 +7,25 @@
 --
 -- Maintainer	: Edward Kmett <ekmett@gmail.com>
 -- Stability	: experimental
--- Portability	: Rank-2 Types
---
+-- Portability	: rank-2 Types required for correctness of shift, but they can be removed
 -------------------------------------------------------------------------------------------
 
-module Control.Monad.Indexed.Cont where
+module Control.Monad.Indexed.Cont 
+	( IxMonadCont(reset, shift)
+	, IxContT(IxContT, runIxContT)
+	, runIxContT_
+	, IxCont(IxCont)
+	, runIxCont
+	, runIxCont_
+	) where
 
 import Control.Applicative
 import Control.Functor.Pointed
 import Control.Monad.Trans
 import Control.Monad.Identity
 import Control.Monad.Indexed
--- import Control.Monad.Cont.Class
-import Control.Monad.State.Class
-import Control.Monad.Reader.Class
+import Control.Monad.State
+import Control.Monad.Reader
 import Control.Monad.Indexed.Trans
 
 class IxMonad m => IxMonadCont m where

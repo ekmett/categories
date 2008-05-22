@@ -27,7 +27,7 @@ import Control.Category.Hask
 import Control.Category.Associative
 import Control.Category.Monoidal
 import Prelude hiding (Functor, map, (.), id, fst, snd, curry, uncurry)
-import qualified Prelude
+import qualified Prelude (fst,snd)
 import Control.Functor
 import Control.Category
 

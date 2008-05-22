@@ -25,6 +25,7 @@ import Control.Functor
 import Control.Functor.Contra
 import Control.Functor.Exponential
 import Control.Functor.Full
+import Control.Functor.HigherOrder
 import Control.Monad.Identity
 import Control.Functor.Pointed
 import Control.Arrow ((&&&),(|||))
@@ -49,6 +50,11 @@ instance (Bifunctor p Hask Hask Hask, ContraFunctor f ,ContraFunctor g) => Contr
 
 instance (Bifunctor p Hask Hask Hask, ExpFunctor f ,ExpFunctor g) => ExpFunctor (Lift p f g) where
         xmap f g = Lift . bimap (xmap f g) (xmap f g) . runLift
+
+instance (Bifunctor p Hask Hask Hask) => HFunctor (Ap p) where
+        ffmap f = Lift . bimap (fmap f) (fmap f) . runLift
+        hfmap f = Lift . second f . runLift
+
 
 type (f :*: g) = Lift (,) f g
 

@@ -19,29 +19,23 @@ module Control.Monad.Free
 	( module Control.Monad.Parameterized
 	, PFree
 	, Free
-	, inFree
 	, runFree
 	, cataFree
 	, free
-	-- * Improving asymptotic performance with right Kan extensions
-	, FreeLike(wrap)
-	, improve
+	, MonadFree(inFree)
 	) where
 
-import Prelude hiding ((.),id,abs)
+import Prelude hiding ((.),id)
 import Control.Category
 import Control.Category.Cartesian
 import Control.Functor
 import Control.Functor.Combinators.Biff
-import Control.Functor.KanExtension
 import Control.Functor.Fix
 import Control.Monad.Parameterized
 import Control.Monad.Identity
+import Control.Monad.Reader
 
 type Free f = Fix (PFree f)
-
-inFree :: f (Free f a) -> Free f a
-inFree = InB . Biff . Right
 
 runFree :: Free f a -> Either a (f (Free f a))
 runFree = first runIdentity . runBiff . outB
@@ -52,14 +46,13 @@ cataFree l r = (l . runIdentity ||| r . fmap (cataFree l r)) . runBiff . outB
 free :: Either a (f (Free f a)) -> Free f a
 free = InB . Biff . first Identity
 
-class (Functor f, Monad m) => FreeLike f m where
-        wrap :: f (m a) -> m a
+class (Functor f, Monad m) => MonadFree f m | m -> f where
+        inFree :: f (m a) -> m a
 
-instance FreeLike f m => FreeLike f (Ran m m) where
-        wrap t = Ran (wrap . flip fmap t . flip runRan)
+instance Functor f => MonadFree f (Free f) where
+        inFree = InB . Biff . Right
 
-instance Functor f => FreeLike f (Free f) where
-        wrap = inFree
+instance MonadFree f m => MonadFree f (ReaderT e m) where
+	inFree fma = ReaderT (\e -> inFree $ fmap (flip runReaderT e) fma)
 
-improve :: Functor f => (forall m. FreeLike f m => m a) -> Free f a
-improve m = abs m 
+-- instance (MonadFree f m, Traversable f) => MonadFree f (StateT e m) where

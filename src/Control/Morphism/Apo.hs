@@ -20,12 +20,11 @@ module Control.Morphism.Apo
 	, distGApo, distGApoT
 	) where
 
-
 import Control.Functor.Algebra
 import Control.Functor.Extras
 import Control.Functor.Fix
 import Control.Monad
-import Control.Monad.Either
+import Control.Monad.Either 
 import Control.Morphism.Ana
 import Control.Arrow ((|||))
 

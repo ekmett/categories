@@ -1,4 +1,5 @@
 # OPTIONS = "-f-TypeFamilies"
+# OPTIONS = --with-ghc=ghc-6.6 --with-ghc-pkg=ghc-pkg-6.6
 .PHONY: docs
 
 build: all

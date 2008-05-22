@@ -22,8 +22,13 @@ module Control.Functor.HigherOrder
 	, LowerH(..)
 	) where
 
+import Control.Functor
 import Control.Functor.Pointed
 import Control.Functor.Extras
+import Control.Monad.Reader
+import Control.Monad.State.Lazy
+import Control.Monad.Writer.Lazy
+import Control.Monad.List
 
 type HAlgebra f g = f g :~> g
 type HCoalgebra f g = g :~> f g
@@ -53,6 +58,34 @@ instance (HPointed h, Pointed f) => Pointed (LowerH h f) where
 
 instance (HCopointed h, Copointed f) => Copointed (LowerH h f) where
 	extract = extract . hextract . liftH
+
+instance HFunctor (ReaderT e) where
+	ffmap f g = ReaderT (fmap f . runReaderT g) 
+	hfmap f g = ReaderT (f . runReaderT g)
+
+instance HPointed (ReaderT e) where
+	hreturn = ReaderT . const
+
+instance HFunctor (StateT e) where
+	ffmap f (StateT g) = StateT (fmap (first f) . g)
+	hfmap f (StateT g) = StateT (f . g)
+
+instance HPointed (StateT e) where
+	hreturn m = StateT (\s -> fmap (\a -> (a,s)) m) 
+
+instance HFunctor (WriterT e) where
+	ffmap f = WriterT . fmap (first f) . runWriterT 
+	hfmap f = WriterT . f . runWriterT
+
+instance Monoid e => HPointed (WriterT e) where
+	hreturn = WriterT . fmap (\a -> (a,mempty))
+
+instance HFunctor ListT where
+	ffmap f = ListT . fmap (fmap f) . runListT 
+	hfmap f = ListT . f . runListT
+
+instance HPointed ListT where
+	hreturn = ListT . fmap return
 
 {-# RULES
 "hextract/hreturn" hextract . hreturn = id

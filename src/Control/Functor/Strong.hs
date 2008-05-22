@@ -13,12 +13,12 @@
 
 module Control.Functor.Strong where
 
-import Prelude hiding (sequence)
+import Prelude hiding (sequence,Either)
 import Data.Traversable
-import Control.Monad.Either ()
+import Control.Monad.Either (Either(..))
 
-strength :: Functor f => f a -> b -> f (a,b)
-strength fa b = fmap (\a -> (a,b)) fa
+strength :: Functor f => a -> f b -> f (a,b)
+strength a fb = fmap ((,)a) fb
 
 costrength :: Traversable f => f (Either a b) -> Either a (f b)
 costrength = sequence

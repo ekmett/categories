@@ -14,35 +14,41 @@
 -- therefore incompatible with Control.Monad.Error
 ----------------------------------------------------------------------------
 module Control.Monad.Either 
-	( Either(..)
-	, EitherT(..)
+	( Either(Left,Right)
+	, EitherT(EitherT,runEitherT)
 	) where
 
-import Data.Either
-import Control.Applicative
-import Control.Monad
-import Control.Monad.Fix
 import Control.Functor.Pointed
+import Control.Applicative
+import Control.Monad.Fix
 
-newtype EitherT a m b = EitherT { runEitherT :: m (Either a b) }
+#if __BROKEN_EITHER__
+import Prelude hiding (Either(Left,Right))
+#endif
 
-{-
+-- we have to define our own because the Control.Monad.Error instance is 
+-- baked into the prelude on old versions.
+#if __BROKEN_EITHER__
+data Either a b = Left a | Right b
 instance Functor (Either e) where
 	fmap _ (Left a) = Left a
 	fmap f (Right a) = Right (f a)
+#endif
 
-instance Pointed (Either e) where
-	point = Right
--}
+newtype EitherT a m b = EitherT { runEitherT :: m (Either a b) }
 
-instance Applicative (Either e) where
-	pure = Right
-	(<*>) = ap
+-- defined in Control.Functor.Pointed
+--instance Pointed (Either e) where
+--	point = Right
 
 instance Monad (Either e) where
         return = Right
         Right m >>= k = k m
         Left e  >>= _ = Left e
+
+instance Applicative (Either e) where
+	pure = Right
+	a <*> b = do x <- a; y <- b; return (x y)
 
 instance MonadFix (Either e) where
 	mfix f = let 
@@ -52,7 +58,7 @@ instance MonadFix (Either e) where
 		in a
 
 instance Functor f => Functor (EitherT a f) where
-        fmap f = EitherT . fmap (fmap f) . runEitherT
+	fmap f = EitherT . fmap (fmap f) . runEitherT
 
 instance Pointed f => Pointed (EitherT a f) where
 	point = EitherT . point . Right

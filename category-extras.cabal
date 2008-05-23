@@ -134,7 +134,7 @@ library
                 build-depends: ghc >= 6.9, base > 3, array
                 cpp-options: -D__ARROW_SUBCLASSES_CATEGORY__=1
         else
-                build-depends: ghc < 6.9, base
+                build-depends: ghc < 6.9, base, array 
                 hs-source-dirs: pre-6.9
                 exposed-modules: Control.Category
 

@@ -73,7 +73,7 @@ library
                 Control.Comonad.Pointer,
                 Control.Comonad.Reader,
                 Control.Comonad.Supply
-		Control.Functor,
+                Control.Functor,
                 Control.Functor.Adjunction,
                 Control.Functor.Adjunction.HigherOrder,
                 Control.Functor.Algebra,

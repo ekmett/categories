@@ -24,9 +24,6 @@ flag ArrowSubclassesCategory
                         its arrows subclass Control.Category.Category
         default:        True
 
-flag RedefinableEitherMonad
-        description:         Indicates Control.Monad.Error isn't baked into the Prelude
-
 flag TypeFamilies
         description:    Support for Type Families is available to us
 
@@ -137,11 +134,6 @@ library
                 build-depends: ghc < 6.9, base, array 
                 hs-source-dirs: pre-6.9
                 exposed-modules: Control.Category
-
-        if flag(RedefinableEitherMonad)
-                build-depends: ghc >= 6.8 
-        else
-                cpp-options: -D__BROKEN_EITHER__=1
 
         if flag(TypeFamilies)
                 extensions: TypeFamilies

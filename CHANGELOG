@@ -26,3 +26,7 @@
 * Lifted more monad instances into right Kan extensions
 * Renamed (Co)freeLike to (Co)monad(Co)ideal
 * Added a lot of HFunctor instances including much of the MTL.
+
+0.51.2
+------
+* Fixed support for 6.8

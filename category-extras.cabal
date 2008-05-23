@@ -102,6 +102,7 @@ library
                 Control.Functor.Zap,
                 Control.Monad.Free,
                 Control.Monad.HigherOrder,
+                Control.Monad.Ideal,
                 Control.Monad.Indexed,
                 Control.Monad.Indexed.Cont,
                 Control.Monad.Indexed.Fix,

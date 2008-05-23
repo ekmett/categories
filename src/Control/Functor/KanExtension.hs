@@ -31,7 +31,7 @@ module Control.Functor.KanExtension
 	, adjointToLan, lanToAdjoint
 	, composeLan, decomposeLan
 	, lanToComposedAdjoint, composedAdjointToLan
-	-- * Performance tweaks for (co)free comonads
+	-- * Performance tweaks for (co)free (co)monads
 	, improveFree
 	, worsenCofree
 	) where

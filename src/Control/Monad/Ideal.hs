@@ -16,10 +16,12 @@ module Control.Monad.Ideal
 	  MonadIdeal(..)
 	, Ideal
 	, ideal
+	, destroyIdeal
 	-- * Coideal Comonads
 	, ComonadCoideal(..)
 	, Coideal
 	, coideal
+	, buildCoideal
 	-- * Mutual recursion for (co)ideal (co)monad (co)products
 	, Mutual(..)
 	-- * Coideal Comonad Product
@@ -33,6 +35,7 @@ import Control.Category.Cartesian
 import Control.Category.Hask
 import Control.Comonad
 import Control.Functor
+import Control.Functor.Algebra
 import Control.Functor.Combinators.Lift
 import Control.Monad.Identity
 -- Control.Arrow ((|||),(&&&))
@@ -77,6 +80,8 @@ instance MonadIdeal m => Monad (Ideal m) where
 	return = point
 	m >>= f = ideal . (id ||| Right . idealize) . runIdeal $ fmap (runIdeal . f) m
 
+destroyIdeal :: Algebra m a -> Ideal m a -> a
+destroyIdeal phi = (id ||| phi) . runIdeal 
 
 
 -- instance MonadIdeal (Fst k) where
@@ -90,6 +95,9 @@ instance Functor f => Copointed (Coideal f) where
 
 instance ComonadCoideal w => Comonad (Coideal w) where
 	extend f = fmap (f . coideal) . coideal . (id &&& coidealize . snd) . runCoideal
+
+buildCoideal :: Coalgebra m a -> a -> Coideal m a
+buildCoideal phi = coideal . (id &&& phi)
 
 -- instance ComonadCoideal (Fst k) where
 --	coidealize = mkFst . runFst

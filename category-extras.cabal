@@ -1,6 +1,6 @@
 name:                   category-extras
 category:               Control, Monads, Comonads
-version:                0.51.0
+version:                0.51.1
 license:                BSD3
 cabal-version:          >= 1.2
 license-file:           LICENSE
@@ -73,6 +73,7 @@ library
                 Control.Comonad.Pointer,
                 Control.Comonad.Reader,
                 Control.Comonad.Supply
+		Control.Functor,
                 Control.Functor.Adjunction,
                 Control.Functor.Adjunction.HigherOrder,
                 Control.Functor.Algebra,

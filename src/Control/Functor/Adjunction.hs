@@ -71,6 +71,8 @@ instance Adjunction f g => Comonad (ACompF f g) where
         extend f = compose . fmap (leftAdjunct (f . compose)) . decompose
 
 instance Adjunction ((,)e) ((->)e) where
+	leftAdjunct f a e  = f (e,a)
+	rightAdjunct f ~(e,a) = f a e
 	unit a e = (e,a)
 	counit (x,f) = f x
 

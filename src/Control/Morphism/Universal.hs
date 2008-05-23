@@ -14,9 +14,13 @@
 -------------------------------------------------------------------------------------------
 
 module Control.Morphism.Universal
-	( Couniversal(..), extractCouniversal, universalize
-	, Universal(..), extractUniversal, couniversalize
+	( Couniversal(..), extractCouniversal, couniversalize
+	, couniversalIdentity
+	, Universal(..), extractUniversal, universalize
+	, universalIdentity
 	) where
+
+import Control.Monad.Identity
 
 data Couniversal a f x = Couniversal (a -> f x) (forall z. (a -> f z) -> x -> z)
 
@@ -26,6 +30,9 @@ extractCouniversal (Couniversal f _) = f
 couniversalize :: (a -> f z) -> Couniversal a f x -> x -> z
 couniversalize f (Couniversal _ s) = s f
 
+couniversalIdentity :: Couniversal a Identity a 
+couniversalIdentity = Couniversal Identity (runIdentity .)
+
 data Universal a f x = Universal (f x -> a) (forall z. (f z -> a) -> z -> x)
 
 extractUniversal :: Universal a f x -> f x -> a
@@ -33,3 +40,7 @@ extractUniversal (Universal f _) = f
 
 universalize :: Universal a f x -> (f z -> a) -> z -> x
 universalize (Universal _ s) f = s f 
+
+universalIdentity :: Universal a Identity a 
+universalIdentity = Universal runIdentity (. Identity)
+

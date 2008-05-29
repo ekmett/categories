@@ -10,16 +10,23 @@
 -- Portability :  non-portable (rank-2 polymorphism)
 -- 
 ----------------------------------------------------------------------------
-module Control.Morphism.Cata where
+module Control.Morphism.Cata 
+	( cata, g_cata, distCata
+	, bicata, g_bicata
+	, hcata
+	, kcata, runkcata
+	) where
 
 import Control.Comonad
 import Control.Category.Hask
 import Control.Functor
 import Control.Functor.Pointed
 import Control.Functor.Algebra 
-import Control.Functor.HigherOrder
 import Control.Functor.Extras
 import Control.Functor.Fix
+import Control.Functor.HigherOrder
+import Control.Functor.KanExtension
+import Control.Functor.KanExtension.Interpreter
 import Control.Monad.Identity
 
 cata :: Functor f => Algebra f a -> FixF f -> a
@@ -41,3 +48,9 @@ g_bicata k g = extract . c where c = liftW g . k . bimap id (duplicate . c) . ou
 
 hcata :: HFunctor f => HAlgebra f a -> FixH f :~> a
 hcata f = f . hfmap (hcata f) . outH
+
+kcata :: HFunctor f => InterpreterT f g h -> FixH f :~> Ran g h
+kcata i = hcata (interpreterAlgebra i)
+
+runkcata :: HFunctor f => InterpreterT f g h -> FixH f a -> (a -> g b) -> h b
+runkcata i = runRan . kcata i

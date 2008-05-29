@@ -23,6 +23,12 @@ import Control.Monad.Identity
 
 {- | Minimum definition: zapWith -}
 
+-- zapWith :: Adjunction f g => (a -> b -> c) -> f a -> g b -> c
+-- zapWith f a b = uncurry (flip f) . counit . fmap (uncurry (flip strength)) $ strength a b
+
+-- zap :: Adjunction f g => f (a -> b) -> g a -> b
+-- zap = zapWith id
+
 class Zap f g | f -> g, g -> f where
 	zapWith :: (a -> b -> c) -> f a -> g b -> c
 	zap :: f (a -> b) -> g a -> b

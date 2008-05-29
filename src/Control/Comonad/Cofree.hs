@@ -9,11 +9,16 @@
 -- Stability   :  experimental
 -- Portability :  rank-2 types 
 --
+-- Examples: 
+-- type LV = Cofree Maybe
+-- type Stream = Cofree Identity
+
 ----------------------------------------------------------------------------
 module Control.Comonad.Cofree 
 	( Cofree
-	, runCofree, anaCofree, cofree
+	, runCofree, cofree
 	, ComonadCofree(outCofree)
+	, RunComonadCofree(anaCofree)
 	) where
 
 import Control.Arrow ((&&&))
@@ -28,9 +33,6 @@ type Cofree f = Fix (PCofree f)
 runCofree :: Cofree f a -> (a, f (Cofree f a))
 runCofree = runPCofree . outB
 
-anaCofree :: Functor f => (a -> c) -> (a -> f a) -> a -> Cofree f c
-anaCofree h t = InB . Biff . (Identity . h &&& fmap (anaCofree h t) . t)
-
 cofree :: a -> f (Cofree f a) -> Cofree f a 
 cofree a as = InB $ Biff (Identity a,as)
 
@@ -42,3 +44,9 @@ instance Functor f => ComonadCofree f (Cofree f) where
 
 instance ComonadCofree f w => ComonadCofree f (CoreaderT w e) where
 	outCofree = fmap CoreaderT . outCofree . runCoreaderT
+
+class ComonadCofree f w => RunComonadCofree f w | w -> f where
+	anaCofree :: Functor f => (a -> c) -> (a -> f a) -> a -> w c
+
+instance Functor f => RunComonadCofree f (Cofree f) where
+	anaCofree h t = InB . Biff . (Identity . h &&& fmap (anaCofree h t) . t)

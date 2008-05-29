@@ -1,6 +1,6 @@
 name:                   category-extras
 category:               Control, Monads, Comonads
-version:                0.51.2
+version:                0.52.1
 license:                BSD3
 cabal-version:          >= 1.2
 license-file:           LICENSE
@@ -46,6 +46,7 @@ library
                 ExistentialQuantification,
                 Rank2Types
 
+
         exposed-modules:
                 Control.Category.Monoidal,
                 Control.Category.Cartesian,
@@ -63,19 +64,23 @@ library
                 Control.Comonad.Cofree,
                 Control.Comonad.Context,
                 Control.Comonad.Coideal,
+                Control.Comonad.Density,
                 Control.Comonad.Fix,
                 Control.Comonad.Indexed,
                 Control.Comonad.HigherOrder,
                 Control.Comonad.Parameterized,
                 Control.Comonad.Pointer,
                 Control.Comonad.Reader,
-                Control.Comonad.Supply
+                Control.Comonad.Stream,
+                Control.Comonad.Supply,
+                Control.Comonad.Trans,
                 Control.Functor,
                 Control.Functor.Adjunction,
                 Control.Functor.Adjunction.HigherOrder,
                 Control.Functor.Algebra,
                 Control.Functor.Algebra.Elgot,
                 Control.Functor.Categorical,
+                Control.Functor.Cone,
                 Control.Functor.Composition,
                 Control.Functor.Combinators.Const,
                 Control.Functor.Combinators.Lift,
@@ -92,6 +97,8 @@ library
                 Control.Functor.HigherOrder.Composition,
                 Control.Functor.Indexed,
                 Control.Functor.KanExtension,
+                Control.Functor.KanExtension.Interpreter,
+                Control.Functor.Lambek,
                 Control.Functor.Limit,
                 Control.Functor.Pointed,
                 Control.Functor.Pointed.Composition,
@@ -100,6 +107,8 @@ library
                 Control.Functor.Yoneda,
                 Control.Functor.Zip,
                 Control.Functor.Zap,
+                Control.Monad.Categorical,
+                Control.Monad.Codensity,
                 Control.Monad.Free,
                 Control.Monad.HigherOrder,
                 Control.Monad.Ideal,
@@ -111,18 +120,21 @@ library
                 Control.Monad.Parameterized,
                 Control.Monad.Hyper,
                 Control.Monad.Either,
-                Control.Morphism.Hylo,
-                Control.Morphism.Cata,
                 Control.Morphism.Ana,
-                Control.Morphism.Meta,
-                Control.Morphism.Futu,
-                Control.Morphism.Chrono,
-                Control.Morphism.Para,
-                Control.Morphism.Dyna,
                 Control.Morphism.Apo,
+                Control.Morphism.Build,
+                Control.Morphism.Cata,
+                Control.Morphism.Chrono,
+                Control.Morphism.Destroy,
+                Control.Morphism.Dyna,
+                Control.Morphism.Futu,
+                Control.Morphism.Histo,
+                Control.Morphism.Hylo,
+                Control.Morphism.Meta,
+                Control.Morphism.Para,
+                Control.Morphism.Span,
                 Control.Morphism.Universal,
                 Control.Morphism.Zygo,
-                Control.Morphism.Histo,
                 Data.Void
 
         hs-source-dirs:         src

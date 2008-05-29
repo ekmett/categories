@@ -50,6 +50,7 @@ instance (Adjunction f1 g1, Adjunction f2 g2) => Adjunction (CompF f2 f1) (CompF
 	counit = counit . fmap (counit . fmap decompose) . decompose
 	unit = compose . fmap (fmap compose . unit) . unit
 
+
 -- | Adjunction-oriented composition, yields monads and comonads from adjunctions
 newtype ACompF f g a = ACompF (CompF f g a) deriving (Functor, ExpFunctor, Full, Composition, HFunctor)
 
@@ -75,6 +76,10 @@ instance Adjunction ((,)e) ((->)e) where
 	rightAdjunct f ~(e,a) = f a e
 	unit a e = (e,a)
 	counit (x,f) = f x
+
+instance Adjunction Identity Identity where
+	unit = Identity . Identity
+	counit = runIdentity . runIdentity 
 
 instance Adjunction (Coreader e) (Reader e) where
 	unit a = Reader (\e -> Coreader e a)

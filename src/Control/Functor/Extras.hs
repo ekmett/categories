@@ -12,7 +12,9 @@
 ----------------------------------------------------------------------------
 module Control.Functor.Extras where
 
-infixr 0 :~>, :~~> -- to match ->
+import Control.Monad
+
+infixr 0 :~>, :~~> -- to match ->'s fixity
 
 type Dist f g = forall a. f (g a) -> g (f a)
 
@@ -40,8 +42,6 @@ class PreUnfold f w where
 class Distributes f g where
         dist :: f (g a) -> g (f a)
 
-
-
 class Functor f => FunctorZero f where
 	fzero :: f a
 
@@ -51,3 +51,16 @@ class FunctorZero f => FunctorPlus f where
 
 class Functor f => FunctorSplit f where
 	fsplit :: f a -> (f a, f a)
+
+instance FunctorZero Maybe where
+	fzero = Nothing
+
+instance FunctorPlus Maybe where
+	fplus = mplus
+
+instance FunctorZero [] where
+	fzero = []
+	
+instance FunctorPlus [] where
+	fplus = (++)
+	

@@ -17,18 +17,19 @@ module Control.Functor.Pointed
 	, PCopointed(..)
 	) where
 
-import Control.Functor
 import Control.Category
 import Control.Category.Hask
+import Control.Functor
+-- import Control.Functor.Algebra
 import Control.Monad.Identity
 import Prelude hiding ((.),id)
 
 -- return
 class Functor f => Pointed f where
-        point :: a -> f a
+        point :: a -> f a -- Coalgebra f a
 
 class Functor f => Copointed f where
-        extract :: f a -> a
+        extract :: f a -> a -- Algebra f a
 
 {-# RULES
 "extract/point" extract . point = id

@@ -1,23 +1,21 @@
 {-# OPTIONS_GHC -fglasgow-exts #-}
 -----------------------------------------------------------------------------
 -- |
--- Module      :  Control.Morphism.Dyna
+-- Module      :  Control.Morphism.Span
 -- Copyright   :  (C) 2008 Edward Kmett
 -- License     :  BSD-style (see the file LICENSE)
 --
 -- Maintainer  :  Edward Kmett <ekmett@gmail.com>
 -- Stability   :  experimental
 -- Portability :  non-portable (rank-2 polymorphism)
--- 
+--
+-- Spans and Cospans
+-- <http://en.wikipedia.org/wiki/Span_(category_theory)>
 ----------------------------------------------------------------------------
-module Control.Morphism.Dyna where
+module Control.Morphism.Span 
+	( Span(..)
+	, Cospan(..)
+	) where
 
-import Control.Functor.Algebra
-import Control.Functor.Extras
-import Control.Comonad.Cofree
-import Control.Morphism.Hylo
-import Control.Morphism.Histo
-import Control.Morphism.Ana
-
-dyna :: (Functor f, RunComonadCofree g w) => GAlgebra g w b -> (f :~> g) -> Coalgebra f a -> a -> b
-dyna f e g = g_hylo (distHisto id) distAna f e (liftCoalgebra g)
+newtype Span (~>) x y z = Span { runSpan :: (y ~> x, y ~> z) }
+newtype Cospan (~>) x y z = Cospan { runCospan :: (x ~> y, z ~> y) }

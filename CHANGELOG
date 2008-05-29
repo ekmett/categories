@@ -30,3 +30,12 @@
 0.51.2
 ------
 * Fixed support for 6.8
+
+0.51.5
+------
+* Added CoYoneda to Control.Functor.Yoneda
+* Added Lambek's lemma (and its dual) in Control.Morphism.Cata (Control.Morphism.Ana)
+* Added a Run(Co)Monad(Co)Free class to encapsulate cataFree (anaFree)
+* Generalized dyna-, futu-, histo-, and chrono- morphisms to run over the appropriate kth left- and right- Kan extensions
+  of their associated (co)free monads as well as the basic (co)free monad. This may permit asymptotic free monad
+  improvement in some recursion schemes.

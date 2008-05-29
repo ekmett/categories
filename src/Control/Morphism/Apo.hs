@@ -52,4 +52,3 @@ distGApoT g k = fmap (EitherT . join) . k  . liftM (fmap (liftM Left) . g ||| fm
 
 distApoT :: (Functor f, Monad m) => Dist m f -> Dist (ApoT f m) f
 distApoT = distGApoT (liftCoalgebra outF)
-

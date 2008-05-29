@@ -6,21 +6,32 @@
 --
 -- Maintainer  :  Edward Kmett <ekmett@gmail.com>
 -- Stability   :  experimental
--- Portability :  non-portable (rank-2 polymorphism/existentials in Ran/Lan)
+-- Portability :  non-portable (rank-2 polymorphism/existentials)
 --
 ----------------------------------------------------------------------------
 module Control.Functor.Limit
-	( Lim
-	, Colim
-	, module Control.Functor.KanExtension
-	, Void
-	, Const
+	( Limit, HasLimit(limit)
+	, Colimit(..)
 	) where
 
 import Prelude hiding (abs)
-import Control.Applicative (Const)
-import Data.Void (Void)
-import Control.Functor.KanExtension
+import Data.Monoid
 
-type Lim = Ran (Const Void)
-type Colim = Lan (Const Void)
+-- | @type Limit = Ran (Const Void)@
+-- Limit { runLimit :: forall a. f a }
+type Limit f = forall a. f a 
+
+class HasLimit f where
+	limit :: f a
+
+instance HasLimit Maybe where
+	limit = Nothing
+
+instance HasLimit [] where
+	limit = []
+
+instance Monoid a => HasLimit (Either a) where
+	limit = (Left mempty)
+
+-- | @type Colimit = Lan (Const Void)@
+data Colimit f = forall b. Colimit (f b)

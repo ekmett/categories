@@ -13,6 +13,8 @@
 
 module Control.Functor.Representable where
 
+import Control.Monad.Identity
+
 class Functor f => Representable f x where
 	rep :: (x -> a) -> f a
 	unrep :: f a -> (x -> a)
@@ -31,3 +33,19 @@ instance Representable (EitherF a b) (Either a b) where
         rep f = EitherF (f . Left) (f . Right)
         unrep (EitherF l r) = either l r
 
+instance Representable Identity () where
+	rep f = Identity (f ())
+	unrep (Identity a) = const a
+
+data Both a = Both a a 
+
+instance Functor Both where
+	fmap f (Both a b) = Both (f a) (f b)
+
+instance Representable Both Bool where
+	rep f = Both (f False) (f True)
+	unrep (Both x _) False = x
+	unrep (Both _ y) True = y
+
+-- instance Adjunction f g => Representable g (f ()) where
+-- instance Representable (Cofree Identity) (Free Identity ()) where

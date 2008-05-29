@@ -21,9 +21,9 @@ import Control.Morphism.Hylo
 import Control.Morphism.Futu
 import Control.Morphism.Histo
 
-chrono :: (Functor f, Functor g) => GAlgebra g (Cofree g) b -> (f :~> g) -> GCoalgebra f (Free f) a -> a -> b
+chrono :: (RunMonadFree f m, RunComonadCofree g w) => GAlgebra g w b -> (f :~> g) -> GCoalgebra f m a -> a -> b
 chrono = g_hylo (distHisto id) (distFutu id)
 
-g_chrono :: (Functor f, Functor g, Functor h, Functor j) => 
-	    Dist g h -> Dist j f -> GAlgebra g (Cofree h) b -> (f :~> g) -> GCoalgebra f (Free j) a -> a -> b
+g_chrono :: (Functor f, Functor g, RunComonadCofree h w, RunMonadFree j m) => 
+	    Dist g h -> Dist j f -> GAlgebra g w b -> (f :~> g) -> GCoalgebra f m a -> a -> b
 g_chrono h f = g_hylo (distHisto h) (distFutu f)

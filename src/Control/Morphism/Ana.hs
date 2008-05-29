@@ -10,7 +10,12 @@
 -- Portability :  non-portable (rank-2 polymorphism)
 -- 
 ----------------------------------------------------------------------------
-module Control.Morphism.Ana where
+module Control.Morphism.Ana 
+	( ana, g_ana, distAna
+	, biana, g_biana
+	, hana
+	, kana, runkana
+	) where
 
 import Control.Category.Hask
 import Control.Functor
@@ -18,6 +23,8 @@ import Control.Functor.Algebra
 import Control.Functor.Extras
 import Control.Functor.Fix
 import Control.Functor.HigherOrder
+import Control.Functor.KanExtension
+import Control.Functor.KanExtension.Interpreter
 import Control.Comonad ()
 import Control.Monad.Identity
 
@@ -44,3 +51,9 @@ g_biana k g = a . return where a = InB . bimap id (a . join) . k . liftM g
 -- | A higher-order anamorphism for constructing higher order functors.
 hana :: HFunctor f => HCoalgebra f a -> a :~> FixH f
 hana g = InH . hfmap (hana g) . g
+
+kana :: HFunctor f => CointerpreterT f g h -> Lan g h :~> FixH f
+kana i = hana (cointerpreterCoalgebra i)
+
+runkana :: HFunctor f => CointerpreterT f g h -> (g b -> a) -> h b -> FixH f a 
+runkana i f v = kana i (Lan f v)

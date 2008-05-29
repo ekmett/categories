@@ -41,7 +41,6 @@ experiment ms a = fmap (flip modifyC a) ms
 
 data Context s a = Context (s -> a) s
 
-
 runContext :: (Context s s -> Context s b) -> s -> (b, s)
 runContext f s = (a b, b) where
 	Context a b = f (Context id s)
@@ -58,7 +57,6 @@ instance Copointed (Context s) where
 
 instance Comonad (Context s) where
 	duplicate (Context f a) = Context (Context f) a
-
 
 newtype ContextT s w a = ContextT { runContextT :: (w s -> a, w s) }
 

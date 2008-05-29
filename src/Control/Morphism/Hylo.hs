@@ -23,11 +23,12 @@ import Control.Functor.Algebra
 import Control.Functor.Extras
 import Control.Functor.HigherOrder
 
+-- | hylo :: (g b -> b) -> (forall c. f c -> g c) -> (a -> f b) -> a -> b
 hylo :: Functor f => Algebra g b -> (f :~> g) -> Coalgebra f a -> a -> b
 hylo f e g = f . e . fmap (hylo f e g). g 
 
-g_hylo :: (Comonad w, Functor f, Monad m) =>
-          Dist g w -> Dist m f -> GAlgebra g w b -> (f :~> g) -> GCoalgebra f m a -> a -> b
+-- | g_hylo :: (Comonad w, Functor f, Monad m) => (forall d. g (w d) -> w (g d)) -> (forall e. m (f e) -> f (m e)) -> (g (w b) -> b) -> (forall c. f c -> g c) -> a -> f (m a) -> a -> b
+g_hylo :: (Comonad w, Functor f, Monad m) => Dist g w -> Dist m f -> GAlgebra g w b -> (f :~> g) -> GCoalgebra f m a -> a -> b
 g_hylo w m f e g = extract . h . return where h = liftW f . w . e . fmap (duplicate . h . join) . m . liftM g
 
 -- The Jeremy Gibbons-style bifunctor-based version has the same expressive power, but may fuse with bimaps better

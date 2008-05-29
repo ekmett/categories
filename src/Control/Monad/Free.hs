@@ -20,15 +20,16 @@ module Control.Monad.Free
 	, PFree
 	, Free
 	, runFree
-	, cataFree
 	, free
 	, MonadFree(inFree)
+	, RunMonadFree(cataFree)
 	) where
 
 import Prelude hiding ((.),id)
 import Control.Category
 import Control.Category.Cartesian
 import Control.Functor
+import Control.Functor.Algebra
 import Control.Functor.Combinators.Biff
 import Control.Functor.Fix
 import Control.Monad.Parameterized
@@ -40,11 +41,14 @@ type Free f = Fix (PFree f)
 runFree :: Free f a -> Either a (f (Free f a))
 runFree = first runIdentity . runBiff . outB
 
-cataFree :: Functor f => (c -> a) -> (f a -> a) -> Free f c -> a
-cataFree l r = (l . runIdentity ||| r . fmap (cataFree l r)) . runBiff . outB
-
 free :: Either a (f (Free f a)) -> Free f a
 free = InB . Biff . first Identity
+
+class MonadFree f m => RunMonadFree f m | m -> f where
+	cataFree :: (c -> a) -> Algebra f a -> m c -> a
+
+instance Functor f => RunMonadFree f (Free f) where
+	cataFree l r = (l . runIdentity ||| r . fmap (cataFree l r)) . runBiff . outB
 
 class (Functor f, Monad m) => MonadFree f m | m -> f where
         inFree :: f (m a) -> m a

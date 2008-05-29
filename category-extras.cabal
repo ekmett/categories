@@ -1,6 +1,6 @@
 name:                   category-extras
 category:               Control, Monads, Comonads
-version:                0.52.1
+version:                0.52.2
 license:                BSD3
 cabal-version:          >= 1.2
 license-file:           LICENSE
@@ -15,8 +15,7 @@ copyright:              Copyright (C) 2008 Edward A. Kmett
 description:            A vastly expanded collection of modules implementing various
                         ideas from category theory. Notable bits include: comonads,
                         adjunctions, functor fixedpoints and various recursion
-                        operaters ala /Functional Programming with Bananas, Lenses,
-                        Envelopes and Barbed Wire/.
+                        operaters ala /Functional Programming with Bananas, Lenses, Envelopes and Barbed Wire/.
 build-type:             Simple
 
 flag ArrowSubclassesCategory
@@ -56,6 +55,7 @@ library
                 Control.Arrow.CoKleisli,
                 Control.Category.Associative,
                 Control.Category.Braided,
+                Control.Category.Discrete,
                 Control.Category.Distributive,
                 Control.Category.Dual,
                 Control.Category.Hask,

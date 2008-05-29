@@ -10,7 +10,7 @@
 -- Portability	: non-portable (class-associated types)
 --
 -- NB: Some rewrite rules are disabled pending resolution of:
--- <http://hachomage.hashomell.org/trac/ghc/tichomet/2291>
+-- <http://hackage.haskell.org/trac/ghc/ticket/2291>
 -------------------------------------------------------------------------------------------
 module Control.Category.Cartesian.Closed
 	( 

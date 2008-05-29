@@ -39,3 +39,7 @@
 * Generalized dyna-, futu-, histo-, and chrono- morphisms to run over the appropriate kth left- and right- Kan extensions
   of their associated (co)free monads as well as the basic (co)free monad. This may permit asymptotic free monad
   improvement in some recursion schemes.
+
+0.52.1 
+------
+* Added Control.Category.Discrete to represent |Hask|

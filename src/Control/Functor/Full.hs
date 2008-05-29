@@ -12,6 +12,7 @@
 
 module Control.Functor.Full where
 
+import Control.Monad.Identity
 
 {- |
 	A 'Full' 'Functor' @F : C -> D@ provides for every pair of objects @c@, @c'@ in @C@
@@ -23,12 +24,15 @@ module Control.Functor.Full where
 
 class Functor f => Full f where
 	premap :: (f a -> f b) -> a -> b
+instance Full Identity where
+	premap f = runIdentity . f . Identity
 	
 {-# RULES
 	"fmap/premap" 	map . premap = id
  #-}
 
 class Functor f => Faithful f
+instance Faithful Identity 
 
 {- | 
 

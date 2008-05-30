@@ -20,7 +20,6 @@ module Control.Functor.Lambek
 	) where
 
 import Control.Functor.Algebra 
-import Control.Functor.Extras
 import Control.Functor.Fix
 import Control.Functor.HigherOrder
 import Control.Morphism.Cata

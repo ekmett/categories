@@ -16,10 +16,8 @@ module Control.Arrow.CoKleisli
 	) where
 
 
-#if __GLASGOW_HASKELL__ >= 609
 import Prelude hiding (id,(.))
 import Control.Category
-#endif
 import Control.Comonad
 import Control.Arrow
 
@@ -34,11 +32,10 @@ instance Comonad w => Arrow (CoKleisli w) where
 	CoKleisli a *** CoKleisli b = CoKleisli (a . fmap fst &&& b . fmap snd)
 	first a = a *** CoKleisli extract
 	second a = CoKleisli extract *** a
-#if __GLASGOW_HASKELL__ >= 609
-instance Comonad w => Category (CoKleisli w) where
-	id = CoKleisli extract
-	CoKleisli b . CoKleisli a = CoKleisli (b . fmap a . duplicate)
-#else
+#if __GLASGOW_HASKELL__ < 609
 	CoKleisli a >>> CoKleisli b = CoKleisli (b . fmap a . duplicate)
 #endif
 
+instance Comonad w => Category (CoKleisli w) where
+	id = CoKleisli extract
+	CoKleisli b . CoKleisli a = CoKleisli (b . fmap a . duplicate)

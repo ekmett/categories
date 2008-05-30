@@ -11,7 +11,11 @@
 --
 -------------------------------------------------------------------------------------------
 
-module Control.Functor.Representable where
+module Control.Functor.Representable 
+	( Representable, rep, unrep
+--	, repAdjunction, unrepAdjunction
+	, Both(..), EitherF(..)
+	) where
 
 import Control.Monad.Identity
 
@@ -23,6 +27,12 @@ class Functor f => Representable f x where
 "rep/unrep" rep . unrep = id
 "unrep/rep" unrep . rep = id
  #-}
+
+--repAdjunction :: Adjunction f g => (f () -> a) -> g a
+--repAdjunction f = leftAdjunct f ()
+
+--unrepAdjunction :: Adjunction f g => g a -> (f () -> a)
+--unrepAdjunction = rightAdjunction . const
 
 data EitherF a b c = EitherF (a -> c) (b -> c)
 

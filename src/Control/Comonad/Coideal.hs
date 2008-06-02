@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -fglasgow-exts #-}
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Control.Comonad.Coideal
@@ -10,8 +11,16 @@
 --
 ----------------------------------------------------------------------------
 module Control.Comonad.Coideal
-	( module Control.Monad.Ideal
+	( 
+	-- * Coideal Comonads
+	  ComonadCoideal(..)
+	, Coideal
+	, coideal
+	, buildCoideal
+	-- * Mutual recursion for (co)ideal (co)monad (co)products
+	, Mutual(..)
+	-- * Coideal Comonad Product
+	, (:*)
 	) where
 
-import Control.Monad.Ideal
-
+import Control.Functor.Internal.Ideal

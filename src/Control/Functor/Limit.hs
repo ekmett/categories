@@ -12,9 +12,11 @@
 module Control.Functor.Limit
 	( Limit, HasLimit(limit)
 	, Colimit(..)
+	, liftLimit, liftColimit
 	) where
 
 import Prelude hiding (abs)
+import Control.Functor.Extras
 import Data.Monoid
 
 -- | @type Limit = Ran (Const Void)@
@@ -33,5 +35,11 @@ instance HasLimit [] where
 instance Monoid a => HasLimit (Either a) where
 	limit = (Left mempty)
 
+liftLimit :: (f :~> g) -> Limit f -> Limit g
+liftLimit f a = f a
+
 -- | @type Colimit = Lan (Const Void)@
 data Colimit f = forall b. Colimit (f b)
+
+liftColimit :: (f :~> g) -> Colimit f -> Colimit g
+liftColimit f (Colimit a) = Colimit (f a)

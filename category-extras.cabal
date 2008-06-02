@@ -1,6 +1,6 @@
 name:                   category-extras
 category:               Control, Monads, Comonads
-version:                0.52.2
+version:                0.52.3
 license:                BSD3
 cabal-version:          >= 1.2
 license-file:           LICENSE
@@ -45,6 +45,9 @@ library
                 ExistentialQuantification,
                 Rank2Types
 
+        other-modules:
+                Control.Functor.Internal.Adjunction,
+                Control.Functor.Internal.Ideal
 
         exposed-modules:
                 Control.Category.Monoidal,

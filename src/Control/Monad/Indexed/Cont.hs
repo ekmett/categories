@@ -21,7 +21,7 @@ module Control.Monad.Indexed.Cont
 
 import Control.Applicative
 import Control.Functor.Pointed
-import Control.Monad.Trans
+-- import Control.Monad.Trans
 import Control.Monad.Identity
 import Control.Monad.Indexed
 import Control.Monad.State

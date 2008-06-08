@@ -21,6 +21,8 @@ module Control.Functor.Composition
 	, associateComposition
 	, coassociateComposition
 	, (:.:)
+	, preTransform
+	, postTransform
 	, Comp
 	, (:++:)
 	, (:**:)
@@ -28,6 +30,7 @@ module Control.Functor.Composition
 	) where
 
 import Control.Functor
+import Control.Functor.Extras
 import Control.Functor.Exponential
 import Control.Functor.Full
 import Control.Functor.HigherOrder
@@ -62,11 +65,17 @@ instance (ExpFunctor f, ExpFunctor g) => ExpFunctor (CompF f g) where
 instance (Full f, Full g) => Full (CompF f g) where
         premap f = premap . premap $ decompose . f . compose
 
+preTransform :: Composition o => (f :~> g) -> (f `o` k) :~> (g `o` k) 
+preTransform f x = compose (f (decompose x))
+
+postTransform :: (Functor k, Composition o) => (f :~> g) -> (k `o` f) :~> (k `o` g) 
+postTransform f x = compose (fmap f (decompose x))
+
 -- | The only reason the compositions are all the same is for type inference. This can be liberalized.
-associateComposition :: (Functor f, Composition c) => c (c f g) h a -> c f (c g h) a
+associateComposition :: (Functor f, Composition o) => ((f `o` g) `o` h) :~> (f `o` (g `o` h))
 associateComposition = compose . fmap compose . decompose . decompose
 
-coassociateComposition :: (Functor f, Composition c) => c f (c g h) a -> c (c f g) h a
+coassociateComposition :: (Functor f, Composition o) => (f `o` (g `o` h)) :~> ((f `o` g) `o` h)
 coassociateComposition = compose . compose . fmap decompose . decompose
 
 

@@ -1,6 +1,6 @@
 name:                   category-extras
 category:               Control, Monads, Comonads
-version:                0.52.3
+version:                0.53.0
 license:                BSD3
 cabal-version:          >= 1.2
 license-file:           LICENSE
@@ -135,6 +135,8 @@ library
                 Control.Morphism.Hylo,
                 Control.Morphism.Meta,
                 Control.Morphism.Para,
+                Control.Morphism.Postpro,
+                Control.Morphism.Prepro,
                 Control.Morphism.Span,
                 Control.Morphism.Universal,
                 Control.Morphism.Zygo,

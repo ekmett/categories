@@ -18,7 +18,7 @@ import Data.Traversable
 import Control.Monad.Either (Either(..))
 
 strength :: Functor f => a -> f b -> f (a,b)
-strength a fb = fmap ((,)a) fb
+strength = fmap . (,)
 
 costrength :: Traversable f => f (Either a b) -> Either a (f b)
-costrength = sequence
+costrength = Data.Traversable.sequence

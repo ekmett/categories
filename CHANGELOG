@@ -43,3 +43,8 @@
 0.52.1 
 ------
 * Added Control.Category.Discrete to represent |Hask|
+
+0.53.0
+------
+* Added Fokkinga's prepro- and postpro- morphisms. Generalized them to allow them to be parameterized by (co)monads and 
+  derived the corresponding methods for (zygo, para, futu, histo, etc.)-(pre|post)promorphisms.

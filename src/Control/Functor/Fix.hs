@@ -62,3 +62,4 @@ paugment g k = g (InB . pbind (outB . k))
 
 pcoaugment :: PComonad f => ((Fix f a -> f b (Fix f a)) -> Fix f b) -> (Fix f a -> b) -> Fix f b
 pcoaugment g k = g (pextend (k . InB) . outB)
+

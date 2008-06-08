@@ -17,6 +17,7 @@ import Control.Functor.HigherOrder
 import Control.Functor.KanExtension
 -- import Control.Functor.KanExtension.Interpreter
 -- import Control.Morphism.Cata
+-- prepro/preprobuild fusion?
 
 -- | @forall h g.  hcata h . hbuild g = g h@ cannot be realized as a RULE because
 -- h and g are not monotypes.

@@ -15,8 +15,10 @@ module Control.Functor.Fix
 	-- * Functor fixpoint
 	  FixF(InF,outF)
 	, outM, inW
+	, identityBialgebraF
 	-- * Bifunctor fixpoint
 	, Fix(InB,outB)
+	, identityBialgebraB
 	, paugment, pcoaugment
 	) where
 
@@ -37,8 +39,10 @@ outM = liftCoalgebra outF
 inW :: (Functor f, Comonad w) => GAlgebra f w (FixF f)
 inW = liftAlgebra InF
 
--- * Fixpoint of a bifunctor
+identityBialgebraF :: Bialgebra f f (FixF f)
+identityBialgebraF = (InF,outF)
 
+-- * Fixpoint of a bifunctor
 newtype Fix s a = InB { outB :: s a (Fix s a) }
 
 instance Bifunctor s Hask Hask Hask => Functor (Fix s) where
@@ -56,6 +60,9 @@ instance (Bifunctor f Hask Hask Hask, PComonad f) => Comonad (Fix f) where
 instance (Bifunctor f Hask Hask Hask, PMonad f) => Monad (Fix f) where
         return = InB . preturn
         m >>= k = paugment (\f -> bihylo f id outB m) k
+
+identityBialgebraB :: Bialgebra (f a) (f a) (Fix f a)
+identityBialgebraB = (InB,outB)
 
 paugment :: PMonad f => (forall c. (f a c -> c) -> c) -> (a -> Fix f b) -> Fix f b
 paugment g k = g (InB . pbind (outB . k))

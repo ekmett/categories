@@ -16,6 +16,7 @@ module Control.Functor.Algebra
 	, Bialgebra, GBialgebra
 	, Algebra, GAlgebra
 	, Coalgebra, GCoalgebra
+	, Trialgebra
 	, liftAlgebra
 	, liftCoalgebra
 	, liftDialgebra
@@ -39,6 +40,9 @@ type GDialgebra f g w m a = f (w a) -> g (m a)
 -- and so add no expressive power, but are a lot more convenient.
 type Bialgebra f g a = (Algebra f a, Coalgebra g a)
 type GBialgebra f g w m a = (GAlgebra f w a, GCoalgebra g m a)
+
+-- | Martin Erwig's trialgebras for indexed data types
+type Trialgebra f g h a = (Algebra f a, Dialgebra g h a)
 
 -- | F-Algebras
 type Algebra f a = f a -> a

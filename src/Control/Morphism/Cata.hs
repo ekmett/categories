@@ -40,11 +40,11 @@ g_cata k g = extract . c where c = liftW g . k . fmap (duplicate . c) . outF
 distCata :: Functor f => Dist f Identity
 distCata = Identity . fmap runIdentity
 
-bicata :: Bifunctor f Hask Hask Hask => Algebra (f b) a -> Fix f b -> a
-bicata f = f . bimap id (bicata f) . outB
+bicata :: QFunctor f Hask Hask => Algebra (f b) a -> Fix f b -> a
+bicata f = f . second (bicata f) . outB
 
-g_bicata :: (Bifunctor f Hask Hask Hask, Comonad w) => Dist (f b) w -> GAlgebra (f b) w a -> Fix f b -> a
-g_bicata k g = extract . c where c = liftW g . k . bimap id (duplicate . c) . outB
+g_bicata :: (QFunctor f Hask Hask, Comonad w) => Dist (f b) w -> GAlgebra (f b) w a -> Fix f b -> a
+g_bicata k g = extract . c where c = liftW g . k . second (duplicate . c) . outB
 
 hcata :: HFunctor f => HAlgebra f a -> FixH f :~> a
 hcata f = f . hfmap (hcata f) . outH

@@ -42,11 +42,11 @@ g_ana k g = a . return where a = InF . fmap (a . join) . k . liftM g
 distAna :: Functor f => Dist Identity f
 distAna = fmap Identity . runIdentity
 
-biana :: Bifunctor f Hask Hask Hask => Coalgebra (f b) a -> a -> Fix f b
-biana g = InB . bimap id (biana g) . g
+biana :: QFunctor f Hask Hask => Coalgebra (f b) a -> a -> Fix f b
+biana g = InB . second (biana g) . g
 
-g_biana :: (Bifunctor f Hask Hask Hask, Monad m) => Dist m (f b) -> GCoalgebra (f b) m a -> a -> Fix f b
-g_biana k g = a . return where a = InB . bimap id (a . join) . k . liftM g
+g_biana :: (QFunctor f Hask Hask, Monad m) => Dist m (f b) -> GCoalgebra (f b) m a -> a -> Fix f b
+g_biana k g = a . return where a = InB . second (a . join) . k . liftM g
 
 -- | A higher-order anamorphism for constructing higher order functors.
 hana :: HFunctor f => HCoalgebra f a -> a :~> FixH f

@@ -18,13 +18,14 @@ infixr 0 :~>, :~~> -- to match ->'s fixity
 
 type Dist f g = forall a. f (g a) -> g (f a)
 
--- A natural transformation between functors f and g.
+-- | A natural transformation between functors f and g.
 type f :~> g = forall a. f a -> g a
+type Natural f g = f :~> g
 
--- Its bifunctorial analogue
+-- | A transformation natural in both sides of a bifunctor.
 type f :~~> g = forall a b. f a b -> g a b
 
--- Dinatural transformations
+-- | Dinatural transformations
 type Dinatural f g = forall a. f a a -> g a a
 
 class PostFold m f where

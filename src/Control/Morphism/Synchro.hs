@@ -19,7 +19,15 @@ import Control.Functor
 import Control.Functor.Algebra
 
 -- | @synchro d' f d g1 g2 d''@ is Martin Erwig's @d,d''-synchromorphism to d'@. Mostly useful for graph algorithms.
-synchro :: QFunctor h Hask Hask => Bialgebra m n c -> (h x (Either a c) -> m c) -> Trialgebra (f x) (g x) (h x) a -> ((h x a, b) -> k x b) -> ((h x a, j x b) -> h x (Either a (g x a, b))) -> Bialgebra (k x) (j x) b -> (g x a, b) -> c 
+synchro :: 
+	QFunctor h Hask Hask => 
+	Bialgebra m n c -> 
+	(h x (Either a c) -> m c) -> 
+	Trialgebra (f x) (g x) (h x) a -> 
+	((h x a, b) -> k x b) -> 
+	((h x a, j x b) -> h x (Either a (g x a, b))) -> 
+	Bialgebra (k x) (j x) b -> 
+	(g x a, b) -> c 
 
 --             g1
 -- h = D' <- D <-> D''

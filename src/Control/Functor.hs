@@ -14,10 +14,12 @@ module Control.Functor
 	( PFunctor (first), first'
 	, QFunctor (second), second'
 	, Bifunctor (bimap)
+	, dimap
 	) where
 
 import Prelude hiding (id,(.))
 import Control.Category
+import Control.Category.Dual
 import Control.Category.Hask
 
 class (Category r, Category t) => PFunctor p r t | p r -> t, p t -> r where
@@ -58,3 +60,7 @@ instance Bifunctor (,) Hask Hask Hask where
 
 class (PFunctor p r t, QFunctor p s t) => Bifunctor p r s t | p r -> s t, p s -> r t, p t -> r s where
 	bimap :: r a b -> s c d -> t (p a c) (p b d)
+
+-- map for difunctors
+dimap :: Bifunctor f (Dual k) k k => k b a -> k c d -> k (f a c) (f b d)
+dimap f = bimap (Dual f)

@@ -20,11 +20,15 @@ module Control.Functor.Fix
 	, Fix(InB,outB)
 	, identityBialgebraB
 	, paugment, pcoaugment
+	-- Final and initial dialgebras 
+	-- , NuD(..)
+	-- , MuD(..)
 	) where
 
 import Control.Monad
 import Control.Comonad
 import Control.Functor.Algebra
+import Control.Functor.Limit
 import Control.Monad.Parameterized
 import Control.Comonad.Parameterized
 import Control.Comonad
@@ -70,3 +74,29 @@ paugment g k = g (InB . pbind (outB . k))
 pcoaugment :: PComonad f => ((Fix f a -> f b (Fix f a)) -> Fix f b) -> (Fix f a -> b) -> Fix f b
 pcoaugment g k = g (pextend (k . InB) . outB)
 
+{-
+-- data NuF f = forall a. NuF (a -> f a) a
+-- data NuB f b = forall b. NuF (a -> f b a) a
+-- data NuDT f g a b = NuDT (f a -> g b) b
+-- type NuD f g = Coend (NuDT f g)
+data NuD f g = forall a. NuD (f a -> g a) a
+outD :: (Functor f, Functor g) => NuD f g -> Colimit f -> g (NuD f g)
+outD (NuD f a) (Colim bs) = fmap (NuD f) (f (fmap (const a) bs))
+
+outD :: (Functor f, Functor g) => f (NuD f g) -> g (NuD f g)
+
+
+diana :: (f a -> g a) -> a -> NuD f g 
+diana = NuD
+
+-- newtype MuF f g = MuF (forall a. (f a -> a) -> a)
+-- newtype MuDT f g a b = MuDT ((f b -> g a) -> b)
+-- type NuD f g = End (MuDT f g)
+newtype MuD f g = MuD (forall a. (f a -> g a) -> a)
+inD :: f (MuD f g) -> g (MuD f g)
+inD 
+inD :: MuD f g -> Limit f -> g (MuD f g)
+
+dicata :: (f a -> g a) -> MuD f g -> a
+dicata = MuD
+-}

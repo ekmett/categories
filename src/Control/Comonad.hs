@@ -25,6 +25,7 @@ module Control.Comonad
 	, sequenceW
 	) where
 
+import Data.Monoid
 import Control.Monad.Identity
 import Control.Functor.Pointed
 
@@ -60,6 +61,14 @@ must also satisfy these laws:
 (The first two are the defaults for 'extend' and 'duplicate',
 and the third is the definition of 'liftW'.)
 -}
+
+-- class Functor w => Extendable w where
+--        duplicate :: w a -> w (w a)
+--        extend :: (w a -> b) -> w a -> w b
+--        extend f = fmap f . duplicate
+--        duplicate = extend id
+-- class (Copointed w, Extendable w) => Comonad w
+-- instance (Copointed w, Extendable w) => Comonad w
 
 class Copointed w => Comonad w where
         duplicate :: w a -> w (w a)
@@ -106,3 +115,9 @@ instance Comonad Identity where
 instance Comonad ((,)e) where
         duplicate ~(e,a) = (e,(e,a))
 
+-- the anonymous exponent comonad
+instance Monoid m => Copointed ((->)m) where
+        extract f = f mempty
+
+instance Monoid m => Comonad ((->)m) where
+        duplicate f m = f . mappend m

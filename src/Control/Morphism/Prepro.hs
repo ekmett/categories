@@ -28,13 +28,16 @@ import Control.Monad.Identity
 import Control.Morphism.Cata
 
 -- | @cascade f . map f = map f . cascade f@
--- | @cascade f = biprepro InB (first f)@
--- | @cascade f = x where x = InB . bimap id (x . fmap f) . outB@
--- | @cascade f = x where x = InB . bimap id (fmap f . x) . outB@
+--
+-- @cascade f = biprepro InB (first f)@
+--
+-- @cascade f = x where x = InB . bimap id (x . fmap f) . outB@
+--
+-- @cascade f = x where x = InB . bimap id (fmap f . x) . outB@
+
+-- @cascade f = biprepro InB (first f)@
 cascade :: Bifunctor s Hask Hask Hask => (a -> a) -> Fix s a -> Fix s a 
--- cascade f = biprepro InB (first f)
 cascade f = x where x = InB . bimap id (x . fmap f) . outB 
--- equivalently: @cascade f = InB . bimap id (fmap f . cascade f) . outB@
 
 -- | Fokkinga's Prepromorphism
 prepro :: Functor f => Algebra f c -> (f :~> f) -> FixF f -> c

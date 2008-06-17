@@ -12,6 +12,13 @@
 -------------------------------------------------------------------------------------------
 module Control.Functor.Categorical
 	( CFunctor (cmap)
+	, CPointed (creturn)
+	, CCopointed (cextract)
+	, CBind (cbind, cjoin)
+	, CExtend (cextend, cduplicate)
+	, CDistributes (cdist)
+	, CMonad
+	, CComonad
 	) where
 
 import Prelude hiding (id,(.))
@@ -62,3 +69,32 @@ instance Monad m => CFunctor (SW.WriterT w m) Hask Hask where cmap = fmap
 instance Monad m => CFunctor (SS.StateT s m) Hask Hask where cmap = fmap
 instance Monad m => CFunctor (SRWS.RWST r w s m) Hask Hask where cmap = fmap
 #endif
+
+class CFunctor m (~>) (~>) => CBind m (~>) where
+        cjoin :: m (m a) ~> m a
+        cbind :: (a ~> m b) -> (m a ~> m b)
+
+        cjoin = cbind id
+        cbind f = cjoin . cmap f
+
+class CFunctor w (~>) (~>) => CExtend w (~>) where
+        cduplicate :: w a ~> w (w a)
+        cextend :: (w a ~> b) -> (w a ~> w b)
+
+        cduplicate = cextend id
+        cextend f = cmap f . cduplicate
+
+class CFunctor m (~>) (~>) => CPointed m (~>) where
+	creturn :: a ~> m a
+
+class CFunctor w (~>) (~>) => CCopointed w (~>) where
+	cextract :: w a ~> a
+
+class (CFunctor f (~>) (~>), CFunctor g (~>) (~>)) => CDistributes f g (~>) where
+	cdist :: f (g a) ~> g (f a)
+
+class (CPointed m (~>), CBind m (~>)) => CMonad m (~>) 
+instance (CPointed m (~>), CBind m (~>)) => CMonad m (~>) 
+
+class (CCopointed m (~>), CExtend m (~>)) => CComonad m (~>) 
+instance (CCopointed m (~>), CExtend m (~>)) => CComonad m (~>) 

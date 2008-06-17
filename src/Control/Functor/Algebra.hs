@@ -31,10 +31,6 @@ import Control.Functor
 import Control.Functor.Extras
 import Control.Functor.Combinators.Lift
 
--- | F,G-dialgebras generalize algebras and coalgebraas
-type Dialgebra f g a = f a -> g a
-
-type GDialgebra f g w m a = f (w a) -> g (m a)
 
 -- | F-G-bialgebras are representable by @DiAlg (f :+: Identity) (Identity :+: g) a@
 -- and so add no expressive power, but are a lot more convenient.
@@ -75,3 +71,8 @@ fromCoalgebra psi = psi . runIdentity
 
 fromBialgebra :: Bialgebra f g :~> Dialgebra (f :*: Identity) (Identity :*: g) 
 fromBialgebra (phi,psi) = Lift . bimap (Identity . phi) (psi . runIdentity) . runLift 
+
+-- | F,G-dialgebras generalize algebras and coalgebras
+-- NB: these definitions are actually wrong.
+type Dialgebra f g a = f a -> g a
+type GDialgebra f g w m a = f (w a) -> g (m a)

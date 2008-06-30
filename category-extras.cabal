@@ -1,6 +1,6 @@
 name:          category-extras
 category:      Control, Monads, Comonads
-version:       0.53.4
+version:       0.53.5
 license:       BSD3
 cabal-version: >= 1.2
 license-file:  LICENSE

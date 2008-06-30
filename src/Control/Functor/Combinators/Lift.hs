@@ -20,6 +20,7 @@ module Control.Functor.Combinators.Lift
 	, Ap, runAp, mkAp
 	) where
 
+import Control.Applicative
 import Control.Category.Hask
 import Control.Functor
 import Control.Functor.Contra
@@ -63,6 +64,10 @@ runProductF = runLift
 
 instance (Pointed f, Pointed g) => Pointed (f :*: g) where
         point = Lift . (point &&& point)
+
+instance (Applicative f, Applicative g) => Applicative (f :*: g) where
+	pure b = Lift (pure b, pure b)
+	Lift (f,g) <*> Lift (a,b) = Lift (f <*> a, g <*> b)
 
 instance (Faithful f, Faithful g) => Faithful (f :*: g)
 

@@ -20,6 +20,8 @@ module Control.Functor.Algebra
 	, liftAlgebra
 	, liftCoalgebra
 	, liftDialgebra
+	, lowerAlgebra
+	, lowerCoalgebra
 	, fromCoalgebra
 	, fromAlgebra
 	, fromBialgebra
@@ -60,8 +62,11 @@ liftAlgebra phi = phi . fmap extract
 liftCoalgebra :: (Functor f, Monad m) => Coalgebra f :~> GCoalgebra f m
 liftCoalgebra psi = fmap return . psi
 
-liftDialgebra :: (Functor g, Functor f, Comonad w, Monad m) => Dialgebra f g :~> GDialgebra f g w m 
-liftDialgebra phi = fmap return . phi . fmap extract
+lowerAlgebra :: (Functor f, Comonad w) => Dist f w -> GAlgebra f w a -> Algebra f (w a)
+lowerAlgebra k phi = liftW phi . k . fmap duplicate
+
+lowerCoalgebra :: (Functor f, Monad m) => Dist m f -> GCoalgebra f m a -> Coalgebra f (m a)
+lowerCoalgebra k phi = fmap join . k . liftM phi
 
 fromAlgebra :: Algebra f :~> Dialgebra f Identity
 fromAlgebra phi = Identity . phi
@@ -72,7 +77,11 @@ fromCoalgebra psi = psi . runIdentity
 fromBialgebra :: Bialgebra f g :~> Dialgebra (f :*: Identity) (Identity :*: g) 
 fromBialgebra (phi,psi) = Lift . bimap (Identity . phi) (psi . runIdentity) . runLift 
 
+
 -- | F,G-dialgebras generalize algebras and coalgebras
 -- NB: these definitions are actually wrong.
 type Dialgebra f g a = f a -> g a
 type GDialgebra f g w m a = f (w a) -> g (m a)
+
+liftDialgebra :: (Functor g, Functor f, Comonad w, Monad m) => Dialgebra f g :~> GDialgebra f g w m 
+liftDialgebra phi = fmap return . phi . fmap extract

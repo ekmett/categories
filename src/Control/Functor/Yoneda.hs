@@ -185,6 +185,7 @@ instance Copointed w => Copointed (CoYoneda w) where
 
 instance Comonad w => Comonad (CoYoneda w) where
 	extend k (CoYoneda f v) = CoYoneda id $ extend (k . CoYoneda f) v
+	duplicate (CoYoneda f v) = CoYoneda id $ extend (CoYoneda f) v
 
 instance MonadTrans CoYoneda where
 	lift = CoYoneda id

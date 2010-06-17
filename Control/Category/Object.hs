@@ -1,4 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
 -------------------------------------------------------------------------------------------
 -- |
 -- Module	: Control.Category.Object
@@ -25,23 +24,13 @@ import Control.Category
 
 -- | The @Category k@ has a terminal object @Terminal k@ such that for all objects @a@ in @k@, 
 -- there exists a unique morphism from @a@ to @Terminal k@.
-#ifdef USE_TYPE_FAMILIES
 class Category k => HasTerminalObject k where
 	type Terminal k :: *
 	terminate :: k a (Terminal k)
-#else 
-class Category k => HasTerminalObject k t | k -> t where
-	terminate :: k a t
-#endif
 
 -- | The @Category k@ has an initial (coterminal) object @Initial k@ such that for all objects 
 -- @a@ in @k@, there exists a unique morphism from @Initial k @ to @a@.
 
-#ifdef USE_TYPE_FAMILIES
 class Category k => HasInitialObject k where
 	type Initial k :: *
 	initiate :: k (Initial k) a
-#else
-class Category k => HasInitialObject k i | k -> i where
-	initiate :: k i a
-#endif

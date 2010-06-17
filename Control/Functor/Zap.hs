@@ -1,4 +1,3 @@
-{-# OPTIONS_GHC -fglasgow-exts -fallow-undecidable-instances #-}
 -------------------------------------------------------------------------------------------
 -- |
 -- Module	: Control.Functor.Zap

@@ -1,4 +1,3 @@
-{-# OPTIONS_GHC -fallow-undecidable-instances #-}
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Control.Monad.Indexed.State

@@ -1,4 +1,4 @@
-{-# OPTIONS_GHC -cpp -fglasgow-exts -fallow-undecidable-instances #-}
+{-# LANGUAGE UndecidableInstances #-}
 -------------------------------------------------------------------------------------------
 -- |
 -- Module	: Control.Functor.Combinators.Lift

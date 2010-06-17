@@ -33,11 +33,9 @@ import Control.Monad.Writer as LW
 import Control.Monad.State as LS
 
 import Control.Monad.RWS as LRWS
-#if __GLASGOW_HASKELL__ >= 608
 import Control.Monad.Writer.Strict as SW
 import Control.Monad.State.Strict as SS
 import Control.Monad.RWS.Strict as SRWS
-#endif
 
 class (Category r, Category s) => CFunctor f r s | f r -> s,  f s -> r where
 	cmap :: r a b -> s (f a) (f b)

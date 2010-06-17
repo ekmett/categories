@@ -1,3 +1,7 @@
+0.45.0
+------
+* Removed workarounds for GHC 6.8
+
 0.44.5
 ------
 

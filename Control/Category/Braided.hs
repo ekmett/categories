@@ -1,8 +1,9 @@
+{-# LANGUAGE MultiParamTypeClasses #-}
 -------------------------------------------------------------------------------------------
 -- |
--- Module	: Control.Category.Braided
--- Copyright 	: 2008 Edward Kmett
--- License	: BSD
+-- Module	 : Control.Category.Braided
+-- Copyright : 2008 Edward Kmett
+-- License	 : BSD
 --
 -- Maintainer	: Edward Kmett <ekmett@gmail.com>
 -- Stability	: experimental
@@ -26,12 +27,24 @@ import Control.Category.Hask
 > braid . coidr = coidl 
 > braid . coidl = coidr 
 > associate . braid . associate = second braid . associate . first braid 
-> coassociate . braid . coassociate = first braid . coassociate . second braid 
+> disassociate . braid . disassociate = first braid . disassociate . second braid 
 
 -}
 
 class Braided k p where
 	braid :: k (p a b) (p b a)
+
+instance Braided Hask Either where
+        braid (Left a) = Right a
+        braid (Right b) = Left b
+
+instance Braided Hask (,) where
+        braid ~(a,b) = (b,a)
+
+{-# RULES
+"braid/associate/braid"         second braid . associate . first braid    = associate . braid . associate
+"braid/disassociate/braid"      first braid . disassociate . second braid = disassociate . braid . disassociate
+  #-}
 
 {- |
 If we have a symmetric (co)'Monoidal' category, you get the additional law:
@@ -45,18 +58,9 @@ swap = braid
 
 {-# RULES
 "swap/swap" swap . swap = id
-"braid/associate/braid"         bimap id braid . associate . bimap braid id = associate . braid . associate
-"braid/coassociate/braid"       bimap braid id . coassociate . bimap id braid = coassociate . braid . coassociate
- #-}
+  #-}
 
-instance Braided Hask Either where
-        braid (Left a) = Right a
-        braid (Right b) = Left b
 
 instance Symmetric Hask Either 
 
-instance Braided Hask (,) where
-        braid ~(a,b) = (b,a)
-
 instance Symmetric Hask (,)
-

@@ -1,0 +1,41 @@
+name:          categories
+category:      Control
+version:       0.54.0
+license:       BSD3
+cabal-version: >= 1.2
+license-file:  LICENSE
+author:        Edward A. Kmett
+maintainer:    Edward A. Kmett <ekmett@gmail.com>
+stability:     experimental
+homepage:      http://comonad.com/reader/
+synopsis:      categories from category-extras
+copyright:     Copyright (C) 2008-2010, Edward A. Kmett
+description:   categories from category-extras
+build-type:    Simple
+
+flag Optimize
+  description: Enable optimizations
+  default:     False
+
+library
+  build-depends: base >= 4 && < 5
+  ghc-options: -Wall 
+  if flag(Optimize)
+    ghc-options: -funbox-strict-fields -O2
+  --  Control.Arrow.BiKleisli,
+  --  Control.Arrow.CoKleisli,
+  exposed-modules
+    Control.Categorical.Functor,
+    Control.Categorical.Bifunctor,
+    Control.Categorical.Object,
+    Control.Category.Monoidal,
+    Control.Category.Cartesian,
+    Control.Category.Cartesian.Closed,
+    Control.Category.Associative,
+    Control.Category.Braided,
+    Control.Category.Discrete,
+    Control.Category.Distributive,
+    Control.Category.Iso,
+    Control.Category.Dual,
+    Control.Category.Extras,
+    Data.Void

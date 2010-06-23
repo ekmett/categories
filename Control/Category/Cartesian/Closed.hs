@@ -1,14 +1,16 @@
-{-# LANGUAGE TypeFamilies, MultiParamTypeClasses #-}
+{-# OPTIONS -fglasgow-exts #-}
 -------------------------------------------------------------------------------------------
 -- |
--- Module	 : Control.Category.Cartesian.Closed
--- Copyright : 2008 Edward Kmett
--- License	 : BSD
+-- Module	: Control.Category.Cartesian.Closed
+-- Copyright 	: 2008 Edward Kmett
+-- License	: BSD
 --
--- Maintainer	: Edward Kmett <ekmett@gmail.com>
+-- Maintainer	: Edward Kmett <ehommett@gmail.com>
 -- Stability	: experimental
 -- Portability	: non-portable (class-associated types)
 --
+-- NB: Some rewrite rules are disabled pending resolution of:
+-- <http://hackage.haskell.org/trac/ghc/ticket/2291>
 -------------------------------------------------------------------------------------------
 module Control.Category.Cartesian.Closed
 	( 
@@ -33,29 +35,23 @@ import Control.Category.Monoidal
 -- Ideally you also want an instance for @'Bifunctor' ('Exp' hom) ('Dual' hom) hom hom@.
 -- or at least @'Functor' ('Exp' hom a) hom hom@, which cannot be expressed in the constraints here.
 
-class ( Cartesian (<=)
-      , (*) ~ Product (<=) 
-      , Symmetric (<=) (*)
-      , Monoidal (<=) (*) 
-      , (\) ~ Exp (<=) 
-    ) => CCC (<=) where
-    type Exp (<=) :: * -> * -> *
-	apply :: ((a \ b) * a) <= b
-	curry :: ((a * b) <= c) -> a <= (b \ c)
-	uncurry :: (a <= (b \ c)) -> ((a * b) <= c)
+class (Monoidal hom prod i, Cartesian hom prod i) => CCC hom prod exp i | hom -> prod exp i where
+	apply :: hom (prod (exp a b) a) b
+	curry :: hom (prod a b) c -> hom a (exp b c)
+	uncurry :: hom a (exp b c) -> hom (prod a b) c
 
 {-# RULES
 "curry apply" 		curry apply = id
--- "curry . uncurry" 	curry . uncurry = id
--- "uncurry . curry" 	uncurry . curry = id
+-- "curry . uncurry" 	curry . uncurry = id :: CCC hom => hom a (exp b c) -> hom a (exp b c)
+-- "uncurry . curry" 	uncurry . curry = id :: CCC hom => hom (prod a b) c -> hom (prod a b) c
  #-}
 
--- * Free @'Adjunction' (Product (<=) a) (Exp (<=) a) (<=) (<=)@
+-- * Free 'Adjunction' (prod a) (exp a) hom hom 
 
-unitCCC :: (CCC (<=), (*) ~ Product (<=), (\) ~ Exp (<=)) => a <= b \ (b * a)
+unitCCC :: CCC hom prod exp i => hom a (exp b (prod b a))
 unitCCC = curry braid
 
-counitCCC :: (CCC (<=), (*) ~ Product (<=), (\) ~ Exp (<=)) => (b * (b \ a)) <= a
+counitCCC :: CCC hom prod exp i => hom (prod b (exp b a)) a
 counitCCC = apply . braid
 
 -- * A Co-(Closed Cartesian Category) 
@@ -64,17 +60,10 @@ counitCCC = apply . braid
 
 -- You probably also want an instance for @'Bifunctor' ('coexp' hom) ('Dual' hom) hom hom@.
 
-class 
-    ( CoCartesian (<=),
-    , (+) ~ Sum (<=) 
-    , Symmetric (<=) (+)
-    , Comonoidal (<=) (+)
-    , subtract ~ Coexp (<=)
-    ) => CoCCC (<=) where
-    type Coexp (<=) :: * -> * -> *
-	coapply :: b <= subtract a b + a
-	cocurry :: (c <= (a + b)) -> (subtract b c <= a)
-	uncocurry :: (subtract b c <= a) -> (c <= (a + b))
+class (Comonoidal hom sum i, CoCartesian hom sum i) => CoCCC hom sum coexp i | hom -> sum coexp i where
+	coapply :: hom b (sum (coexp hom a b) a)
+	cocurry :: hom c (sum a b) -> hom (coexp hom b c) a
+	uncocurry :: hom (coexp hom b c) a -> hom c (sum a b)
 
 {-# RULES
 "cocurry coapply" 	   cocurry coapply = id
@@ -82,9 +71,10 @@ class
 -- "uncocurry . cocurry"   uncocurry . cocurry = id
  #-}
 
--- * Free @'Adjunction' ('Coexp' (<=) a) ('Sum' (<=) a) (<=) (<=)@
-unitCoCCC :: CoCCC (<=), subtract ~ Coexp (<=), (+) ~ Sum (<=)) => a <= b + subtract b a
-unitCoCCC = swap . coapply
+-- * Free 'Adjunction' (coexp hom a) (sum a) hom hom 
 
-counitCoCCC :: CoCCC (<=), subtract ~ Coexp (<=), (+) ~ Sum (<=)) => subtract b (b + a) <= a
-counitCoCCC = cocurry swap
+unitCoCCC :: CoCCC hom sum coexp i => hom a (sum b (coexp hom b a))
+unitCoCCC = braid . coapply
+
+counitCoCCC :: CoCCC hom sum coexp i => hom (coexp hom b (sum b a)) a
+counitCoCCC = cocurry braid

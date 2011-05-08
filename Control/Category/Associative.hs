@@ -34,10 +34,10 @@ class Bifunctor p k k k => Associative k p where
 class Bifunctor s k k k => Disassociative k s where
     disassociate :: k (s a (s b c)) (s (s a b) c)
 
-{-# RULES
+{-- RULES
 "copentagonal coherence" first disassociate . disassociate . second disassociate = disassociate . disassociate
 "pentagonal coherence"   second associate . associate . first associate = associate . associate
- #-}
+ --}
 
 instance Associative (->) (,) where
         associate ((a,b),c) = (a,(b,c))

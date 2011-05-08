@@ -16,8 +16,8 @@ module Control.Category.Braided
 	, swap
 	) where
 
-import Control.Categorical.Bifunctor
-import Control.Category.Associative
+-- import Control.Categorical.Bifunctor
+-- import Control.Category.Associative
 
 {- | A braided (co)(monoidal or associative) category can commute the arguments of its bi-endofunctor. Obeys the laws:
 
@@ -40,10 +40,10 @@ instance Braided (->) Either where
 instance Braided (->) (,) where
         braid ~(a,b) = (b,a)
 
-{-# RULES
+{- RULES
 "braid/associate/braid"         second braid . associate . first braid    = associate . braid . associate
 "braid/disassociate/braid"      first braid . disassociate . second braid = disassociate . braid . disassociate
-  #-}
+  --}
 
 {- |
 If we have a symmetric (co)'Monoidal' category, you get the additional law:
@@ -55,9 +55,9 @@ class Braided k p => Symmetric k p
 swap :: Symmetric k p => k (p a b) (p b a)
 swap = braid
 
-{-# RULES
+{-- RULES
 "swap/swap" swap . swap = id
-  #-}
+  --}
 
 
 instance Symmetric (->) Either 

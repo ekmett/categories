@@ -61,12 +61,12 @@ class ( Associative k (Product k)
     f &&& g = bimap f g . diag
 
 
-{-# RULES
+{-- RULES
 "fst . diag"      fst . diag = id
 "snd . diag"    snd . diag = id
 "fst . f &&& g" forall f g. fst . (f &&& g) = f
 "snd . f &&& g" forall f g. snd . (f &&& g) = g
- #-}
+ --}
 
 instance PreCartesian (->) where
     type Product (->) = (,)
@@ -119,12 +119,12 @@ class ( Associative k (Sum k)
     codiag = id ||| id
     f ||| g = codiag . bimap f g
 
-{-# RULES
+{-- RULES
 "codiag . inl"  codiag . inl = id
 "codiag . inr"    codiag . inr = id
 "(f ||| g) . inl" forall f g. (f ||| g) . inl = f
 "(f ||| g) . inr" forall f g. (f ||| g) . inr = g
- #-}
+ --}
 
 instance PreCoCartesian (->) where
     type Sum (->) = Either

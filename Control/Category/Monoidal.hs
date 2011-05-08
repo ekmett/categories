@@ -26,7 +26,7 @@ module Control.Category.Monoidal
 	, Comonoidal(..)
 	) where
 
-import Control.Category.Braided
+-- import Control.Category.Braided
 import Control.Category.Associative
 import Control.Categorical.Bifunctor
 import Data.Void
@@ -65,7 +65,7 @@ class (Disassociative k p, HasIdentity k p) => Comonoidal k p where
 	coidl :: k a (p (Id k p) a)
 	coidr :: k a (p a (Id k p))
 
-{-# RULES
+{-- RULES
 -- "bimap id idl/associate" 	second idl . associate = first idr
 -- "bimap idr id/associate" 	first idr . associate = second idl
 -- "disassociate/bimap id idl"  disassociate . second idl = first idr
@@ -78,7 +78,7 @@ class (Disassociative k p, HasIdentity k p) => Comonoidal k p where
 "idl/braid" idl . braid = idr
 "braid/coidr" braid . coidr = coidl
 "braid/coidl" braid . coidl = coidr
- #-}
+ --}
 
 instance HasIdentity (->) (,) where
     type Id (->) (,) = Void

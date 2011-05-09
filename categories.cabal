@@ -1,6 +1,6 @@
 name:          categories
 category:      Control
-version:       0.55.1
+version:       0.55.2
 license:       BSD3
 cabal-version: >= 1.2
 license-file:  LICENSE
@@ -33,7 +33,7 @@ library
 
   build-depends: 
     base >= 4 && < 5,
-    void >= 0.5 && < 0.6
+    void >= 0.5.1 && < 0.6
     
   ghc-options: -Wall 
   if flag(Optimize)

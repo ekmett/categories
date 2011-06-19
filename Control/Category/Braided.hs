@@ -2,7 +2,7 @@
 -------------------------------------------------------------------------------------------
 -- |
 -- Module	 : Control.Category.Braided
--- Copyright : 2008 Edward Kmett
+-- Copyright     : 2008-2011 Edward Kmett
 -- License	 : BSD
 --
 -- Maintainer	: Edward Kmett <ekmett@gmail.com>
@@ -17,28 +17,34 @@ module Control.Category.Braided
 	) where
 
 -- import Control.Categorical.Bifunctor
--- import Control.Category.Associative
+import Control.Category.Associative
 
 {- | A braided (co)(monoidal or associative) category can commute the arguments of its bi-endofunctor. Obeys the laws:
 
-> idr . braid = idl 
-> idl . braid = idr 
-> braid . coidr = coidl 
-> braid . coidl = coidr 
 > associate . braid . associate = second braid . associate . first braid 
 > disassociate . braid . disassociate = first braid . disassociate . second braid 
 
+If the category is Monoidal the following laws should be satisfied
+
+> idr . braid = idl 
+> idl . braid = idr 
+
+If the category is Comonoidal the following laws should be satisfied 
+
+> braid . coidr = coidl 
+> braid . coidl = coidr 
+
 -}
 
-class Braided k p where
-	braid :: k (p a b) (p b a)
+class Associative k p => Braided k p where
+    braid :: k (p a b) (p b a)
 
 instance Braided (->) Either where
-        braid (Left a) = Right a
-        braid (Right b) = Left b
+    braid (Left a) = Right a
+    braid (Right b) = Left b
 
 instance Braided (->) (,) where
-        braid ~(a,b) = (b,a)
+    braid ~(a,b) = (b,a)
 
 {- RULES
 "braid/associate/braid"         second braid . associate . first braid    = associate . braid . associate

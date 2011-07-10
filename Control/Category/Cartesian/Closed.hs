@@ -20,7 +20,8 @@ module Control.Category.Cartesian.Closed
     , unitCoCCC, counitCoCCC
     ) where
 
-import Prelude () -- hiding ((.), id, fst, snd, curry, uncurry)
+import Prelude ()
+import qualified Prelude
 
 import Control.Category
 import Control.Category.Braided
@@ -42,7 +43,13 @@ class ( Cartesian (<=)
     -- apply :: (<\>) ~ Exp (<=), (<*>) ~ Product (<=) => ((a <\> b) <*> a) <= b
     apply :: (Product (<=) (Exp (<=) a b) a) <= b
     curry :: ((Product (<=) a b) <= c) -> a <= Exp (<=) b c
-    uncurry :: (a <= (Exp (<=) b c)) -> (Product (<=>) a b <= c)
+    uncurry :: (a <= (Exp (<=) b c)) -> (Product (<=) a b <= c)
+
+instance CCC (->) where
+  type Exp (->) = (->)
+  apply (f,a) = f a
+  curry = Prelude.curry
+  uncurry = Prelude.uncurry
 
 {-# RULES
 "curry apply"         curry apply = id

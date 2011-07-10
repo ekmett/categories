@@ -1,6 +1,6 @@
 name:          categories
 category:      Control
-version:       0.56.0
+version:       0.57.0
 license:       BSD3
 cabal-version: >= 1.2
 license-file:  LICENSE

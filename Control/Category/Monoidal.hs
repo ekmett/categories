@@ -21,18 +21,17 @@
 -------------------------------------------------------------------------------------------
 
 module Control.Category.Monoidal 
-	( HasIdentity(..)
+	( Id
 	, Monoidal(..)
 	, Comonoidal(..)
 	) where
 
 import Control.Category.Associative
-import Control.Categorical.Bifunctor
+import Data.Void
 
 -- | Denotes that we have some reasonable notion of 'Identity' for a particular 'Bifunctor' in this 'Category'. This
 -- notion is currently used by both 'Monoidal' and 'Comonoidal'
-class Bifunctor p k k k => HasIdentity k p where
-    type Id k p :: *
+type family Id k p :: *
 
 {- | A monoidal category. 'idl' and 'idr' are traditionally denoted lambda and rho
  the triangle identity holds:
@@ -41,9 +40,9 @@ class Bifunctor p k k k => HasIdentity k p where
 > second idl = first idr . associate
 -}
 
-class (Associative k p, HasIdentity k p) => Monoidal k p where
-	idl :: k (p (Id k p) a) a
-	idr :: k (p a (Id k p)) a
+class Associative k p => Monoidal k p where
+  idl :: k (p (Id k p) a) a
+  idr :: k (p a (Id k p)) a
 
 {- | A comonoidal category satisfies the dual form of the triangle identities
 
@@ -59,9 +58,9 @@ A strict (co)monoidal category is one that is both 'Monoidal' and 'Comonoidal' a
 > coidr . idr = id 
 
 -}
-class (Disassociative k p, HasIdentity k p) => Comonoidal k p where
-	coidl :: k a (p (Id k p) a)
-	coidr :: k a (p a (Id k p))
+class Disassociative k p => Comonoidal k p where
+  coidl :: k a (p (Id k p) a)
+  coidr :: k a (p a (Id k p))
 
 {-- RULES
 -- "bimap id idl/associate" 	second idl . associate = first idr
@@ -78,10 +77,21 @@ class (Disassociative k p, HasIdentity k p) => Comonoidal k p where
 "braid/coidl" braid . coidl = coidr
  --}
 
-instance HasIdentity (->) (,) where
-    type Id (->) (,) = ()
+type instance Id (->) (,) = ()
+type instance Id (->) Either = Void
 
 instance Monoidal (->) (,) where
-        idl = snd
-        idr = fst
+  idl = snd
+  idr = fst
 
+instance Monoidal (->) Either where
+  idl = either absurd id
+  idr = either id absurd
+
+instance Comonoidal (->) (,) where
+  coidl a = ((),a)
+  coidr a = (a,())
+
+instance Comonoidal (->) Either where
+  coidl = Right
+  coidr = Left

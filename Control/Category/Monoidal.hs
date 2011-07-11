@@ -26,10 +26,8 @@ module Control.Category.Monoidal
 	, Comonoidal(..)
 	) where
 
--- import Control.Category.Braided
 import Control.Category.Associative
 import Control.Categorical.Bifunctor
-import Data.Void
 
 -- | Denotes that we have some reasonable notion of 'Identity' for a particular 'Bifunctor' in this 'Category'. This
 -- notion is currently used by both 'Monoidal' and 'Comonoidal'
@@ -81,7 +79,7 @@ class (Disassociative k p, HasIdentity k p) => Comonoidal k p where
  --}
 
 instance HasIdentity (->) (,) where
-    type Id (->) (,) = Void
+    type Id (->) (,) = ()
 
 instance Monoidal (->) (,) where
         idl = snd

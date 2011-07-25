@@ -1,13 +1,13 @@
 name:          categories
 category:      Control
-version:       0.58.0
+version:       0.58.0.1
 license:       BSD3
 cabal-version: >= 1.2
 license-file:  LICENSE
 author:        Edward A. Kmett
 maintainer:    Edward A. Kmett <ekmett@gmail.com>
 stability:     experimental
-homepage:      http://comonad.com/reader/
+homepage:      http://github.com/ekmett/categories
 synopsis:      categories from category-extras
 copyright:     Copyright (C) 2008-2010, Edward A. Kmett
 description:   categories from category-extras

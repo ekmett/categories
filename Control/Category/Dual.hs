@@ -14,10 +14,10 @@ module Control.Category.Dual
 	( Dual(..)
 	) where
 
-import Prelude ()
+import Prelude (undefined,const,error)
 import Control.Category
 
-#ifdef GLASGOW_HASKELL
+#ifdef __GLASGOW_HASKELL__
 import Data.Data (Data(..), mkDataType, DataType, mkConstr, Constr, constrIndex, Fixity(..))
 import Data.Typeable (Typeable2(..), TyCon, mkTyCon, mkTyConApp, gcast1)
 #endif
@@ -28,7 +28,7 @@ instance Category k => Category (Dual k) where
 	id = Dual id
 	Dual f . Dual g = Dual (g . f)
 
-#ifdef GLASGOW_HASKELL
+#ifdef __GLASGOW_HASKELL__
 instance Typeable2 (~>) => Typeable2 (Dual (~>)) where
     typeOf2 tfab = mkTyConApp dataTyCon [typeOf2 (undefined `asDualArgsType` tfab)]
         where asDualArgsType :: f b a -> t f a b -> f b a

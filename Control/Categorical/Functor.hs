@@ -21,7 +21,7 @@ module Control.Categorical.Functor
 import Control.Category
 import Prelude hiding (id, (.), Functor(..))
 import qualified Prelude
-#ifdef GLASGOW_HASKELL
+#ifdef __GLASGOW_HASKELL__
 import Data.Data (Data(..), mkDataType, DataType, mkConstr, Constr, constrIndex, Fixity(..))
 import Data.Typeable (Typeable1(..), TyCon, mkTyCon, mkTyConApp, gcast1)
 #endif
@@ -30,7 +30,7 @@ import Data.Typeable (Typeable1(..), TyCon, mkTyCon, mkTyConApp, gcast1)
 newtype LiftedFunctor f a = LiftedFunctor (f a)
     deriving (Show, Read)
 
-#ifdef GLASGOW_HASKELL
+#ifdef __GLASGOW_HASKELL__
 
 liftedTyCon :: TyCon
 liftedTyCon = mkTyCon "Control.Categorical.Functor.LiftedFunctor"
@@ -62,7 +62,7 @@ instance (Typeable1 f, Data (f a), Data a) => Data (LiftedFunctor f a) where
 newtype LoweredFunctor f a = LoweredFunctor (f a)
     deriving (Show, Read)
 
-#ifdef GLASGOW_HASKELL
+#ifdef __GLASGOW_HASKELL__
 
 loweredTyCon :: TyCon
 loweredTyCon = mkTyCon "Control.Categorical.Functor.LoweredFunctor"

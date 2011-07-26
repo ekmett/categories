@@ -29,6 +29,9 @@ instance Category Discrete where
     id = Refl
     Refl . Refl = Refl
 
+-- instance Groupoid Discrete where
+--  inv Refl = Refl
+
 -- | Discrete a b acts as a proof that a = b, lift that proof into something of kind * -> *
 liftDiscrete :: Discrete a b -> Discrete (f a) (f b)
 liftDiscrete Refl = Refl

@@ -31,7 +31,7 @@ import Data.Void
 
 -- | Denotes that we have some reasonable notion of 'Identity' for a particular 'Bifunctor' in this 'Category'. This
 -- notion is currently used by both 'Monoidal' and 'Comonoidal'
-type family Id k p :: *
+type family Id (k :: * -> * -> *) (p :: * -> * -> *) :: *
 
 {- | A monoidal category. 'idl' and 'idr' are traditionally denoted lambda and rho
  the triangle identity holds:
@@ -40,7 +40,7 @@ type family Id k p :: *
 > second idl = first idr . associate
 -}
 
-class Associative k p => Monoidal k p where
+class Associative k p => Monoidal (k :: * -> * -> *) (p :: * -> * -> *) where
   idl :: k (p (Id k p) a) a
   idr :: k (p a (Id k p)) a
 

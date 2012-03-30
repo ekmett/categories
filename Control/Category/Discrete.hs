@@ -19,10 +19,9 @@ module Control.Category.Discrete
 
 import Prelude ()
 import Control.Category
--- import Unsafe.Coerce (unsafeCoerce)
 
 -- | Category of discrete objects. The only arrows are identity arrows.
-data Discrete a b where 
+data Discrete a b where
     Refl :: Discrete a a
 
 instance Category Discrete where
@@ -40,6 +39,6 @@ liftDiscrete Refl = Refl
 cast :: Category k => Discrete a b -> k a b
 cast Refl = id
 
--- | 
+-- |
 inverse :: Discrete a b -> Discrete b a
 inverse Refl = Refl

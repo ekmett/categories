@@ -1,38 +1,38 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 -------------------------------------------------------------------------------------------
 -- |
--- Module	 : Control.Category.Braided
--- Copyright     : 2008-2011 Edward Kmett
--- License	 : BSD
+-- Module     : Control.Category.Braided
+-- Copyright  : 2008-2012 Edward Kmett
+-- License    : BSD
 --
--- Maintainer	: Edward Kmett <ekmett@gmail.com>
--- Stability	: experimental
--- Portability	: portable
+-- Maintainer : Edward Kmett <ekmett@gmail.com>
+-- Stability  : experimental
+-- Portability: portable
 --
 -------------------------------------------------------------------------------------------
-module Control.Category.Braided 
-	( Braided(..)
-	, Symmetric
-	, swap
-	) where
+module Control.Category.Braided
+  ( Braided(..)
+  , Symmetric
+  , swap
+  ) where
 
 -- import Control.Categorical.Bifunctor
 import Control.Category.Associative
 
 {- | A braided (co)(monoidal or associative) category can commute the arguments of its bi-endofunctor. Obeys the laws:
 
-> associate . braid . associate = second braid . associate . first braid 
-> disassociate . braid . disassociate = first braid . disassociate . second braid 
+> associate . braid . associate = second braid . associate . first braid
+> disassociate . braid . disassociate = first braid . disassociate . second braid
 
 If the category is Monoidal the following laws should be satisfied
 
-> idr . braid = idl 
-> idl . braid = idr 
+> idr . braid = idl
+> idl . braid = idr
 
-If the category is Comonoidal the following laws should be satisfied 
+If the category is Comonoidal the following laws should be satisfied
 
-> braid . coidr = coidl 
-> braid . coidl = coidr 
+> braid . coidr = coidl
+> braid . coidl = coidr
 
 -}
 
@@ -65,7 +65,5 @@ swap = braid
 "swap/swap" swap . swap = id
   --}
 
-
-instance Symmetric (->) Either 
-
+instance Symmetric (->) Either
 instance Symmetric (->) (,)

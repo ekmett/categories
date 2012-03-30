@@ -2,16 +2,16 @@
 -------------------------------------------------------------------------------------------
 -- |
 -- Module     : Control.Category.Cartesian.Closed
--- Copyright : 2008 Edward Kmett
--- License     : BSD
+-- Copyright  : 2008 Edward Kmett
+-- License    : BSD
 --
--- Maintainer    : Edward Kmett <ekmett@gmail.com>
--- Stability    : experimental
--- Portability    : non-portable (class-associated types)
+-- Maintainer : Edward Kmett <ekmett@gmail.com>
+-- Stability  : experimental
+-- Portability: non-portable (class-associated types)
 --
 -------------------------------------------------------------------------------------------
 module Control.Category.Cartesian.Closed
-    ( 
+    (
     -- * Cartesian Closed Category
       CCC(..)
     , unitCCC, counitCCC
@@ -26,24 +26,19 @@ import qualified Prelude
 import Control.Category
 import Control.Category.Braided
 import Control.Category.Cartesian
-import Control.Category.Monoidal
 
--- * Closed Cartesian Category 
+-- * Closed Cartesian Category
 
 -- | A 'CCC' has full-fledged monoidal finite products and exponentials
 
 -- Ideally you also want an instance for @'Bifunctor' ('Exp' hom) ('Dual' hom) hom hom@.
 -- or at least @'Functor' ('Exp' hom a) hom hom@, which cannot be expressed in the constraints here.
 
-class ( Cartesian (<=)
-      , Symmetric (<=) (Product (<=))
-      , Monoidal (<=) (Product (<=)) 
-      ) => CCC (<=) where
-    type Exp (<=) :: * -> * -> *
-    -- apply :: (<\>) ~ Exp (<=), (<*>) ~ Product (<=) => ((a <\> b) <*> a) <= b
-    apply :: (Product (<=) (Exp (<=) a b) a) <= b
-    curry :: ((Product (<=) a b) <= c) -> a <= Exp (<=) b c
-    uncurry :: (a <= (Exp (<=) b c)) -> (Product (<=) a b <= c)
+class Cartesian k => CCC k where
+    type Exp k :: * -> * -> *
+    apply :: Product k (Exp k a b) a `k` b
+    curry :: Product k a b `k` c -> a `k` Exp k b c
+    uncurry :: a `k` Exp k b c -> Product k a b `k` c
 
 instance CCC (->) where
   type Exp (->) = (->)
@@ -58,41 +53,33 @@ instance CCC (->) where
  #-}
 
 -- * Free @'Adjunction' (Product (<=) a) (Exp (<=) a) (<=) (<=)@
-
--- unitCCC :: (CCC (<=), (<*>) ~ Product (<=), (<\>) ~ Exp (<=)) => a <= b <\> (b <*> a)
-unitCCC :: CCC (<=) => a <= Exp (<=) b (Product (<=) b a)
+unitCCC :: CCC k => a `k` Exp k b (Product k b a)
 unitCCC = curry braid
 
--- counitCCC :: (CCC (<=), (<*>) ~ Product (<=), (<\>) ~ Exp (<=)) => (b <*> (b <\> a)) <= a
-counitCCC :: CCC (<=) => (Product (<=) b (Exp (<=) b a)) <= a
+counitCCC :: CCC k => Product k b (Exp k b a) `k` a
 counitCCC = apply . braid
 
--- * A Co-(Closed Cartesian Category) 
+-- * A Co-(Closed Cartesian Category)
 
 -- | A Co-CCC has full-fledged comonoidal finite coproducts and coexponentials
 
 -- You probably also want an instance for @'Bifunctor' ('coexp' hom) ('Dual' hom) hom hom@.
 
-class 
-    ( CoCartesian (<=)
-    , Symmetric (<=) (Sum (<=))
-    , Comonoidal (<=) (Sum (<=))
-    ) => CoCCC (<=) where
-    type Coexp (<=) :: * -> * -> *
-    coapply :: b <= Sum (<=) (Coexp (<=) a b) a
-    cocurry :: (c <= Sum (<=) a b) -> (Coexp (<=) b c <= a)
-    uncocurry :: (Coexp (<=) b c <= a) -> (c <= Sum (<=) a b)
+class CoCartesian k => CoCCC k where
+    type Coexp k :: * -> * -> *
+    coapply :: b `k` Sum k (Coexp k a b) a
+    cocurry :: c `k` Sum k a b -> Coexp k b c `k` a
+    uncocurry :: Coexp k b c `k` a -> c `k` Sum k a b
 
 {-# RULES
-"cocurry coapply"        cocurry coapply = id
+"cocurry coapply" cocurry coapply = id
 -- "cocurry . uncocurry"   cocurry . uncocurry = id
 -- "uncocurry . cocurry"   uncocurry . cocurry = id
  #-}
 
 -- * Free @'Adjunction' ('Coexp' (<=) a) ('Sum' (<=) a) (<=) (<=)@
--- unitCoCCC :: (CoCCC (<=), subtract ~ Coexp (<=), (+) ~ Sum (<=)) => a <= b + subtract b a
-unitCoCCC :: (CoCCC (<=)) => a <= Sum (<=) b (Coexp (<=) b a)
+unitCoCCC :: CoCCC k => a `k` Sum k b (Coexp k b a)
 unitCoCCC = swap . coapply
 
-counitCoCCC :: (CoCCC (<=), subtract ~ Coexp (<=), (+) ~ Sum (<=)) => subtract b (b + a) <= a
+counitCoCCC :: CoCCC k => Coexp k b (Sum k b a) `k` a
 counitCoCCC = cocurry swap

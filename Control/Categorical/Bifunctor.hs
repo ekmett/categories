@@ -1,4 +1,4 @@
-{-# LANGUAGE MultiParamTypeClasses, FunctionalDependencies, FlexibleContexts #-}
+{-# LANGUAGE MultiParamTypeClasses, FunctionalDependencies, FlexibleContexts, DefaultSignatures #-}
 -------------------------------------------------------------------------------------------
 -- |
 -- Module   : Control.Categorical.Bifunctor
@@ -12,8 +12,8 @@
 -- A more categorical definition of 'Bifunctor'
 -------------------------------------------------------------------------------------------
 module Control.Categorical.Bifunctor
-    ( PFunctor (first), firstDefault
-    , QFunctor (second), secondDefault
+    ( PFunctor (first)
+    , QFunctor (second)
     , Bifunctor (bimap)
     , dimap
     , difirst
@@ -25,31 +25,28 @@ import Control.Category.Dual
 
 class (Category r, Category t) => PFunctor p r t | p r -> t, p t -> r where
     first :: r a b -> t (p a c) (p b c)
-
-instance PFunctor (,) (->) (->) where
-    first f ~(a, b) = (f a, b)
-
-instance PFunctor Either (->) (->) where
-    first f (Left a)  = Left (f a)
-    first _ (Right b) = Right b
-
-{-# INLINE firstDefault #-}
-firstDefault :: Bifunctor p r s t => r a b -> t (p a c) (p b c)
-firstDefault f = bimap f id
-
-difirst :: PFunctor f (Dual s) t => s b a -> t (f a c) (f b c)
-difirst = first . Dual
+    default first :: Bifunctor p r s t => r a b -> t (p a c) (p b c)
+    first f = bimap f id
 
 class (Category s, Category t) => QFunctor q s t | q s -> t, q t -> s where
     second :: s a b -> t (q c a) (q c b)
+    default second :: Bifunctor q r s t => s a b -> t (q c a) (q c b)
+    second = bimap id
 
-{-# INLINE secondDefault #-}
-secondDefault :: Bifunctor p r s t => s a b -> t (p c a) (p c b)
-secondDefault = bimap id
+-- | Minimal definition: @bimap@ 
 
-instance QFunctor Either (->) (->) where
-    second = secondDefault
+-- or both @first@ and @second@
+class (PFunctor p r t, QFunctor p s t) => Bifunctor p r s t | p r -> s t, p s -> r t, p t -> r s where
+    bimap :: r a b -> s c d -> t (p a c) (p b d)
+    -- bimap f g = second g . first f
 
+instance PFunctor (,) (->) (->)
+instance QFunctor (,) (->) (->)
+instance Bifunctor (,) (->) (->) (->) where
+    bimap f g (a,b)= (f a, g b)
+
+instance PFunctor Either (->) (->)
+instance QFunctor Either (->) (->)
 instance Bifunctor Either (->) (->) (->) where
     bimap f _ (Left a) = Left (f a)
     bimap _ g (Right a) = Right (g a)
@@ -57,15 +54,8 @@ instance Bifunctor Either (->) (->) (->) where
 instance QFunctor (->) (->) (->) where
     second = (.)
 
-instance QFunctor (,) (->) (->) where
-    second = secondDefault
-
-instance Bifunctor (,) (->) (->) (->) where
-    bimap f g ~(a,b)= (f a, g b)
-
-class (PFunctor p r t, QFunctor p s t) => Bifunctor p r s t | p r -> s t, p s -> r t, p t -> r s where
-    bimap :: r a b -> s c d -> t (p a c) (p b d)
+difirst :: PFunctor f (Dual s) t => s b a -> t (f a c) (f b c)
+difirst = first . Dual
 
 dimap :: Bifunctor f (Dual s) t u => s b a -> t c d -> u (f a c) (f b d)
 dimap = bimap . Dual
-

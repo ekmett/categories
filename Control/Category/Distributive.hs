@@ -11,7 +11,7 @@
 --
 -------------------------------------------------------------------------------------------
 module Control.Category.Distributive
-    ( 
+    (
     -- * Distributive Categories
       factor
     , Distributive(..)
@@ -23,27 +23,13 @@ import Control.Category
 import Control.Category.Cartesian
 
 -- | The canonical factoring morphism.
--- 
--- > factor :: ( PreCartesian k
--- >         , (*) ~ Product k
--- >         , PreCoCartesian k
--- >         , (+) ~ Sum k 
--- >         ) => ((a * b) + (a * c)) `k` (a * (b + c))
 
-factor :: ( PreCartesian k
-          , PreCoCartesian k
-          ) => Sum k (Product k a b) (Product k a c) `k` Product k a (Sum k b c)
+factor :: (Cartesian k, CoCartesian k) => Sum k (Product k a b) (Product k a c) `k` Product k a (Sum k b c)
 factor = second inl ||| second inr
 
 -- | A category in which 'factor' is an isomorphism
---
--- > class ( PreCartesian k 
--- >       , (*) ~ Product k
--- >       , PreCoCartesian k
--- >       , (+) ~ Sum k 
--- >       ) => Distributive k where
 
-class (PreCartesian k, PreCoCartesian k) => Distributive k where
+class (Cartesian k, CoCartesian k) => Distributive k where
     distribute :: Product k a (Sum k b c) `k` Sum k (Product k a b) (Product k a c)
 
 instance Distributive (->) where

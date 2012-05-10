@@ -14,12 +14,20 @@ module Control.Category.Dual
   ( Dual(..)
   ) where
 
+#ifndef MIN_VERSION_base
+#define MIN_VERSION_base(x,y,z) 1
+#endif
+
 import Prelude (undefined,const,error)
 import Control.Category
 
 #ifdef __GLASGOW_HASKELL__
 import Data.Data (Data(..), mkDataType, DataType, mkConstr, Constr, constrIndex, Fixity(..))
+#if MIN_VERSION_base(4,4,0)
 import Data.Typeable (Typeable2(..), TyCon, mkTyCon3, mkTyConApp, gcast1)
+#else
+import Data.Typeable (Typeable2(..), TyCon, mkTyCon, mkTyConApp, gcast1)
+#endif
 #endif
 
 data Dual k a b = Dual { runDual :: k b a }
@@ -35,7 +43,11 @@ instance Typeable2 (~>) => Typeable2 (Dual (~>)) where
           asDualArgsType = const
 
 dataTyCon :: TyCon
+#if MIN_VERSION_base(4,4,0)
 dataTyCon = mkTyCon3 "categories" "Control.Category.Dual" "Dual"
+#else
+dataTyCon = mkTyCon "Control.Category.Dual.Dual"
+#endif
 {-# NOINLINE dataTyCon #-}
 
 dualConstr :: Constr

@@ -18,12 +18,20 @@ module Control.Categorical.Functor
     , LoweredFunctor(..)
     ) where
 
+#ifndef MIN_VERSION_base
+#define MIN_VERSION_base(x,y,z) 1
+#endif
+
 import Control.Category
 import Prelude hiding (id, (.), Functor(..))
 import qualified Prelude
 #ifdef __GLASGOW_HASKELL__
 import Data.Data (Data(..), mkDataType, DataType, mkConstr, Constr, constrIndex, Fixity(..))
+#if MIN_VERSION_base(4,4,0)
 import Data.Typeable (Typeable1(..), TyCon, mkTyCon3, mkTyConApp, gcast1)
+#else
+import Data.Typeable (Typeable1(..), TyCon, mkTyCon, mkTyConApp, gcast1)
+#endif
 #endif
 
 -- TODO Data, Typeable
@@ -32,7 +40,11 @@ newtype LiftedFunctor f a = LiftedFunctor (f a) deriving (Show, Read)
 #ifdef __GLASGOW_HASKELL__
 
 liftedTyCon :: TyCon
+#if MIN_VERSION_base(4,4,0)
 liftedTyCon = mkTyCon3 "categories" "Control.Categorical.Functor" "LiftedFunctor"
+#else
+liftedTyCon = mkTyCon "Control.Categorical.Functor.LiftedFunctor"
+#endif
 {-# NOINLINE liftedTyCon #-}
 
 liftedConstr :: Constr
@@ -63,7 +75,11 @@ newtype LoweredFunctor f a = LoweredFunctor (f a) deriving (Show, Read)
 #ifdef __GLASGOW_HASKELL__
 
 loweredTyCon :: TyCon
+#if MIN_VERSION_base(4,4,0)
 loweredTyCon = mkTyCon3 "categories" "Control.Categorical.Functor" "LoweredFunctor"
+#else
+loweredTyCon = mkTyCon "Control.Categorical.Functor.LoweredFunctor"
+#endif
 {-# NOINLINE loweredTyCon #-}
 
 loweredConstr :: Constr

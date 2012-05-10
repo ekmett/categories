@@ -1,4 +1,4 @@
-{-# LANGUAGE MultiParamTypeClasses, FunctionalDependencies, FlexibleContexts, UndecidableInstances, FlexibleInstances, DefaultSignatures #-}
+{-# LANGUAGE MultiParamTypeClasses, FunctionalDependencies, FlexibleContexts, UndecidableInstances, FlexibleInstances #-}
 -------------------------------------------------------------------------------------------
 -- |
 -- Module      : Control.Categorical.Functor
@@ -92,8 +92,8 @@ instance (Typeable1 f, Data (f a), Data a) => Data (LoweredFunctor f a) where
 
 class (Category r, Category t) => Functor f r t | f r -> t, f t -> r where
   fmap :: r a b -> t (f a) (f b)
-  default fmap :: Prelude.Functor f => (a -> b) -> f a -> f b
-  fmap = Prelude.fmap
+--  default fmap :: Prelude.Functor f => (a -> b) -> f a -> f b
+--  fmap = Prelude.fmap
 
 instance Functor f (->) (->) => Prelude.Functor (LoweredFunctor f) where
   fmap f (LoweredFunctor a) = LoweredFunctor (Control.Categorical.Functor.fmap f a)

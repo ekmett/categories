@@ -1,4 +1,4 @@
-{-# LANGUAGE MultiParamTypeClasses, FunctionalDependencies, FlexibleContexts, DefaultSignatures #-}
+{-# LANGUAGE MultiParamTypeClasses, FunctionalDependencies, FlexibleContexts #-}
 -------------------------------------------------------------------------------------------
 -- |
 -- Module   : Control.Categorical.Bifunctor
@@ -25,13 +25,13 @@ import Control.Category.Dual
 
 class (Category r, Category t) => PFunctor p r t | p r -> t, p t -> r where
     first :: r a b -> t (p a c) (p b c)
-    default first :: Bifunctor p r s t => r a b -> t (p a c) (p b c)
-    first f = bimap f id
+--    default first :: Bifunctor p r s t => r a b -> t (p a c) (p b c)
+--    first f = bimap f id
 
 class (Category s, Category t) => QFunctor q s t | q s -> t, q t -> s where
     second :: s a b -> t (q c a) (q c b)
-    default second :: Bifunctor q r s t => s a b -> t (q c a) (q c b)
-    second = bimap id
+--    default second :: Bifunctor q r s t => s a b -> t (q c a) (q c b)
+--    second = bimap id
 
 -- | Minimal definition: @bimap@ 
 
@@ -40,13 +40,13 @@ class (PFunctor p r t, QFunctor p s t) => Bifunctor p r s t | p r -> s t, p s ->
     bimap :: r a b -> s c d -> t (p a c) (p b d)
     -- bimap f g = second g . first f
 
-instance PFunctor (,) (->) (->)
-instance QFunctor (,) (->) (->)
+instance PFunctor (,) (->) (->) where first f = bimap f id
+instance QFunctor (,) (->) (->) where second = bimap id
 instance Bifunctor (,) (->) (->) (->) where
     bimap f g (a,b)= (f a, g b)
 
-instance PFunctor Either (->) (->)
-instance QFunctor Either (->) (->)
+instance PFunctor Either (->) (->) where first f = bimap f id
+instance QFunctor Either (->) (->) where second = bimap id
 instance Bifunctor Either (->) (->) (->) where
     bimap f _ (Left a) = Left (f a)
     bimap _ g (Right a) = Right (g a)

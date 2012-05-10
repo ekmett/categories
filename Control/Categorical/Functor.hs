@@ -1,4 +1,4 @@
-{-# LANGUAGE ConstraintKinds, MultiParamTypeClasses, FunctionalDependencies, FlexibleContexts, UndecidableInstances, FlexibleInstances, DefaultSignatures #-}
+{-# LANGUAGE MultiParamTypeClasses, FunctionalDependencies, FlexibleContexts, UndecidableInstances, FlexibleInstances, DefaultSignatures #-}
 -------------------------------------------------------------------------------------------
 -- |
 -- Module      : Control.Categorical.Functor
@@ -117,4 +117,5 @@ instance Functor [] (->) (->) where
 instance Functor IO (->) (->) where
   fmap = Prelude.fmap
 
-type Endofunctor f a = Functor f a a
+class Functor f a a => Endofunctor f a
+instance Functor f a a => Endofunctor f a

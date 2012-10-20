@@ -37,7 +37,7 @@ instance Category k => Category (Dual k) where
   Dual f . Dual g = Dual (g . f)
 
 #ifdef __GLASGOW_HASKELL__
-instance Typeable2 (~>) => Typeable2 (Dual (~>)) where
+instance Typeable2 k => Typeable2 (Dual k) where
   typeOf2 tfab = mkTyConApp dataTyCon [typeOf2 (undefined `asDualArgsType` tfab)]
     where asDualArgsType :: f b a -> t f a b -> f b a
           asDualArgsType = const
@@ -58,7 +58,7 @@ dataDataType :: DataType
 dataDataType = mkDataType "Control.Category.Dual.Dual" [dualConstr]
 {-# NOINLINE dataDataType #-}
 
-instance (Typeable2 (~>), Data a, Data b, Data (b ~> a)) => Data (Dual (~>) a b) where
+instance (Typeable2 k, Data a, Data b, Data (k b a)) => Data (Dual k a b) where
   gfoldl f z (Dual a) = z Dual `f` a
   toConstr _ = dualConstr
   gunfold k z c = case constrIndex c of

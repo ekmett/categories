@@ -1,6 +1,6 @@
 name:          categories
 category:      Control
-version:       1.0.4
+version:       1.0.5
 license:       BSD3
 cabal-version: >= 1.10
 license-file:  LICENSE
@@ -13,8 +13,14 @@ synopsis:      Categories
 copyright:     Copyright (C) 2008-2010, Edward A. Kmett
 description:   Categories
 build-type:    Simple
-extra-source-files: .travis.yml
 tested-with:   GHC == 7.4.1, GHC == 7.6.1
+extra-source-files:
+  .ghci
+  .gitignore
+  .travis.yml
+  .vim.custom
+  README.markdown
+  CHANGELOG.markdown
 
 flag Optimize
   description: Enable optimizations
@@ -51,8 +57,9 @@ library
 
   build-depends:
     base >= 4 && < 5,
-    void >= 0.5.4.2 && < 0.6
+    void >= 0.5.4.2
 
+  hs-source-dirs: src
   ghc-options: -Wall
 
   if flag(Optimize)

@@ -40,7 +40,7 @@ instance Distributive (->) where
     distribute (a, Left b) = Left (a,b)
     distribute (a, Right c) = Right (a,c)
 
-{-# RULES
+{-- RULES
 "factor . distribute" factor . distribute = id
 "distribute . factor" distribute . factor = id
-  #-}
+  --}

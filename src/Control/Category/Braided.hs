@@ -50,7 +50,7 @@ instance Braided (->) Either where
 instance Braided (->) (,) where
     braid ~(a,b) = (b,a)
 
-{- RULES
+{-- RULES
 "braid/associate/braid"         second braid . associate . first braid    = associate . braid . associate
 "braid/disassociate/braid"      first braid . disassociate . second braid = disassociate . braid . disassociate
   --}

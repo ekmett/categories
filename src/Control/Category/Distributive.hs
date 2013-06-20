@@ -23,7 +23,6 @@ module Control.Category.Distributive
 
 import Prelude hiding (Functor, map, (.), id, fst, snd, curry, uncurry)
 import Control.Categorical.Bifunctor
-import Control.Category
 import Control.Category.Cartesian
 
 -- | The canonical factoring morphism.

@@ -1,3 +1,7 @@
+1.0.6
+-----
+* Marked modules `Trustworthy`
+
 1.0.5
 ---
 * Removed the upper bound on void.

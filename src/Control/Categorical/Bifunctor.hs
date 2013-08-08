@@ -1,12 +1,12 @@
 {-# LANGUAGE CPP #-}
+{-# LANGUAGE PolyKinds #-}
 #if defined(__GLASGOW_HASKELL__) && __GLASGOW_HASKELL__ >= 702
 {-# LANGUAGE Trustworthy #-}
 #endif
 {-# LANGUAGE MultiParamTypeClasses, FunctionalDependencies, FlexibleContexts #-}
 -------------------------------------------------------------------------------------------
 -- |
--- Module   : Control.Categorical.Bifunctor
--- Copyright: 2008-2010 Edward Kmett
+-- Copyright: 2008-2013 Edward Kmett
 -- License  : BSD3
 --
 -- Maintainer : Edward Kmett <ekmett@gmail.com>
@@ -24,20 +24,20 @@ module Control.Categorical.Bifunctor
     ) where
 
 import Prelude hiding (id, (.))
-import Control.Category
+import Control.Categorical.Category
 import Control.Category.Dual
 
-class (Category r, Category t) => PFunctor p r t | p r -> t, p t -> r where
+class (Category r, Category t) => PFunctor (p :: x -> y -> z) (r :: x -> x -> *) (t :: z -> z -> *) | p r -> t, p t -> r where
     first :: r a b -> t (p a c) (p b c)
 --    default first :: Bifunctor p r s t => r a b -> t (p a c) (p b c)
 --    first f = bimap f id
 
-class (Category s, Category t) => QFunctor q s t | q s -> t, q t -> s where
+class (Category s, Category t) => QFunctor (q :: x -> y -> z) (s :: y -> y -> *) (t :: z -> z -> *) | q s -> t, q t -> s where
     second :: s a b -> t (q c a) (q c b)
 --    default second :: Bifunctor q r s t => s a b -> t (q c a) (q c b)
 --    second = bimap id
 
--- | Minimal definition: @bimap@ 
+-- | Minimal definition: @bimap@
 
 -- or both @first@ and @second@
 class (PFunctor p r t, QFunctor p s t) => Bifunctor p r s t | p r -> s t, p s -> r t, p t -> r s where

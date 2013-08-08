@@ -1,4 +1,5 @@
 {-# LANGUAGE CPP #-}
+{-# LANGUAGE PolyKinds #-}
 #if defined(__GLASGOW_HASKELL__) && __GLASGOW_HASKELL__ >= 702
 {-# LANGUAGE Trustworthy #-}
 #endif
@@ -6,7 +7,7 @@
 -------------------------------------------------------------------------------------------
 -- |
 -- Module    : Control.Category.Cartesian
--- Copyright : 2008-2010 Edward Kmett
+-- Copyright : 2008-2013 Edward Kmett
 -- License   : BSD
 --
 -- Maintainer  : Edward Kmett <ekmett@gmail.com>
@@ -25,39 +26,46 @@ module Control.Category.Cartesian
 
 import Control.Category.Braided
 import Control.Category.Monoidal
+import Control.Categorical.Bifunctor
+import Control.Categorical.Category
 import Prelude hiding (Functor, map, (.), id, fst, snd, curry, uncurry)
 import qualified Prelude (fst,snd)
-import Control.Categorical.Bifunctor
-import Control.Category
 
 infixr 3 &&&
 infixr 2 |||
 
-{- |
-Minimum definition:
-
-> fst, snd, diag
-> fst, snd, (&&&)
--}
-class (Symmetric k (Product k), Monoidal k (Product k)) => Cartesian k where
-    type Product k :: * -> * -> *
+-- |
+-- Minimum definition: @fst, snd, diag@ or @fst, snd, (&&&)@
+class Symmetric k => Cartesian k where
+    -- | The first projection morphism
     fst :: Product k a b `k` a
+    -- | The second projection morphism
     snd :: Product k a b `k` b
+
+    -- | The diagonal morphism obtained by taking the product of two identity morphisms.
+    --
+    -- @
+    -- diag = id &&& id
+    -- @
+    --
+    -- @
+    -- fst . diag = id
+    -- snd . diag = id
+    -- @
     diag :: a `k` Product k a a
+
+    -- | The product of two morphisms
+    --
+    -- @
+    -- fst . (f &&& g) = f
+    -- snd . (f &&& g) = g
+    -- @
     (&&&) :: (a `k` b) -> (a `k` c) -> a `k` Product k b c
 
     diag = id &&& id
     f &&& g = bimap f g . diag
 
-{-- RULES
-"fst . diag"      fst . diag = id
-"snd . diag"    snd . diag = id
-"fst . f &&& g" forall f g. fst . (f &&& g) = f
-"snd . f &&& g" forall f g. snd . (f &&& g) = g
- --}
-
 instance Cartesian (->) where
-    type Product (->) = (,)
     fst = Prelude.fst
     snd = Prelude.snd
     diag a = (a,a)
@@ -82,25 +90,32 @@ disassociateProduct= braid . second braid . associateProduct . first braid . bra
 -- * Co-Cartesian categories
 
 -- a category that has finite coproducts, weakened the same way as PreCartesian above was weakened
-class (Monoidal k (Sum k), Symmetric k (Sum k)) => CoCartesian k where
-    type Sum k :: * -> * -> *
+class SymmetricBifunctor k (Sum k) => CoCartesian k where
     inl :: a `k` Sum k a b
     inr :: b `k` Sum k a b
+    -- | The codiagonal morphism
+    --
+    -- @
+    -- codiag = id ||| id
+    -- @
+    --
+    -- @
+    -- codiag . inl = id
+    -- codiag . inr = id
+    -- @
     codiag :: Sum k a a `k` a
-    (|||) :: k a c -> k b c -> Sum k a b `k` c
-
     codiag = id ||| id
+
+    -- | The coproduct of two morphisms
+    --
+    -- @
+    -- (f ||| g) . inl = f
+    -- (f ||| g) . inr = g
+    -- @
+    (|||) :: k a c -> k b c -> Sum k a b `k` c
     f ||| g = codiag . bimap f g
 
-{-- RULES
-"codiag . inl"  codiag . inl = id
-"codiag . inr"    codiag . inr = id
-"(f ||| g) . inl" forall f g. (f ||| g) . inl = f
-"(f ||| g) . inr" forall f g. (f ||| g) . inr = g
- --}
-
 instance CoCartesian (->) where
-    type Sum (->) = Either
     inl = Left
     inr = Right
     codiag (Left a) = a

@@ -1,7 +1,6 @@
 -------------------------------------------------------------------------------------------
 -- |
--- Module    : Control.Category.Hask
--- Copyright : 2008-2010 Edward Kmett
+-- Copyright : 2008-2013 Edward Kmett
 -- License   : BSD
 --
 -- Maintainer  : Edward Kmett <ekmett@gmail.com>
@@ -11,6 +10,8 @@
 -- Make it clearer when we are dealing with the category (->) that we mean the category
 -- of haskell types via its Hom bifunctor (->)
 -------------------------------------------------------------------------------------------
-module Control.Category.Hask ( Hask ) where
+module Control.Category.Hask
+  ( Hask
+  ) where
 
 type Hask = (->)

@@ -1,4 +1,5 @@
 {-# LANGUAGE CPP #-}
+{-# LANGUAGE PolyKinds #-}
 #if defined(__GLASGOW_HASKELL__) && __GLASGOW_HASKELL__ >= 702
 {-# LANGUAGE Trustworthy #-}
 #endif
@@ -26,7 +27,7 @@ module Control.Categorical.Functor
 #define MIN_VERSION_base(x,y,z) 1
 #endif
 
-import Control.Category
+import Control.Categorical.Category
 import Prelude hiding (id, (.), Functor(..))
 import qualified Prelude
 #ifdef __GLASGOW_HASKELL__
@@ -110,7 +111,7 @@ instance (Typeable1 f, Data (f a), Data a) => Data (LoweredFunctor f a) where
 
 #endif
 
-class (Category r, Category t) => Functor f r t | f r -> t, f t -> r where
+class (Category r, Category t) => Functor (f :: x -> y) (r :: x -> x -> *) (t :: y -> y -> *) | f r -> t, f t -> r where
   fmap :: r a b -> t (f a) (f b)
 --  default fmap :: Prelude.Functor f => (a -> b) -> f a -> f b
 --  fmap = Prelude.fmap

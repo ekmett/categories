@@ -1,3 +1,7 @@
+3.0.1
+-----
+* PVP compliant dependencies
+
 1.0.6
 -----
 * Marked modules `Trustworthy`

@@ -48,6 +48,7 @@ library
     Control.Category.Closed
     Control.Category.Discrete
     Control.Category.Distributive
+    Control.Category.Dual
     Control.Category.Hask
     Control.Category.Monoidal
 

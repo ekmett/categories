@@ -30,8 +30,8 @@ module Control.Categorical.Bifunctor
   ) where
 
 import Prelude hiding (id, (.))
-import Control.Categorical.Functor
 import Control.Category
+import Control.Category.Dual
 
 class (Category r, Category t) => PFunctor (p :: x -> y -> z) (r :: x -> x -> *) (t :: z -> z -> *) | p r -> t, p t -> r where
   first :: r a b -> t (p a c) (p b c)

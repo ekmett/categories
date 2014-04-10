@@ -36,25 +36,16 @@ module Control.Categorical.Functor
   , LoweredFunctor(..)
   , LiftedContravariant(..)
   , LoweredContravariant(..)
-  , Dual(..)
   ) where
 
 
 import Control.Category
+import Control.Category.Dual
 import Data.Data (Data, Typeable)
 import qualified Data.Functor.Contravariant as Contravariant
 import GHC.Generics
 import Prelude hiding (id, (.), Functor(..))
 import qualified Prelude as Prelude
-
-newtype Dual (k :: x -> x -> *) (a :: x) (b :: x) = Dual { runDual :: k b a }
-  deriving (Eq,Ord,Show,Read)
-
-instance Category k => Category (Dual k) where
-  id = Dual id
-  {-# INLINE id #-}
-  Dual f . Dual g = Dual (g . f)
-  {-# INLINE (.) #-}
 
 newtype LiftedFunctor f (a :: *) = LiftedFunctor (f a)
   deriving (Eq,Ord,Show,Read,Typeable,Generic)

@@ -10,6 +10,7 @@
 {-# LANGUAGE DefaultSignatures #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE StandaloneDeriving #-}
 
 #ifndef MIN_VERSION_base
@@ -56,20 +57,23 @@ instance Category k => Category (Dual k) where
   {-# INLINE (.) #-}
 
 newtype LiftedFunctor f (a :: *) = LiftedFunctor (f a)
-  deriving (Show,Read,Typeable)
-
-newtype LoweredFunctor f (a :: *) = LoweredFunctor (f a)
-  deriving (Show,Read,Typeable)
-
-newtype LiftedContravariant f (a :: *) = LiftedContravariant (f a)
-  deriving (Show,Read,Typeable)
-
-newtype LoweredContravariant f (a :: *) = LoweredContravariant (f a)
-  deriving (Show,Read,Typeable)
+  deriving (Eq,Ord,Show,Read,Typeable,Generic)
 
 deriving instance (Typeable f, Data (f a), Data a) => Data (LiftedFunctor f a)
+
+newtype LoweredFunctor f (a :: *) = LoweredFunctor (f a)
+  deriving (Eq,Ord,Show,Read,Typeable,Generic)
+
 deriving instance (Typeable f, Data (f a), Data a) => Data (LoweredFunctor f a)
+
+newtype LiftedContravariant f (a :: *) = LiftedContravariant (f a)
+  deriving (Eq,Ord,Show,Read,Typeable,Generic)
+
 deriving instance (Typeable f, Data (f a), Data a) => Data (LiftedContravariant f a)
+
+newtype LoweredContravariant f (a :: *) = LoweredContravariant (f a)
+  deriving (Eq,Ord,Show,Read,Typeable,Generic)
+
 deriving instance (Typeable f, Data (f a), Data a) => Data (LoweredContravariant f a)
 
 class (Category r, Category t) => Functor (f :: x -> y) (r :: x -> x -> *) (t :: y -> y -> *) | f r -> t, f t -> r where

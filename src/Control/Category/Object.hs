@@ -22,6 +22,7 @@ module Control.Category.Object
   ) where
 
 import Control.Category
+import Control.Category.Dual
 import Data.Void
 
 -- | The @Category (~>)@ has a terminal object @Terminal (~>)@ such that for all objects @a@ in @(~>)@,
@@ -34,12 +35,20 @@ instance HasTerminalObject (->) where
   type Terminal (->) = ()
   terminate _ = ()
 
+instance HasInitialObject k => HasTerminalObject (Dual k) where
+  type Terminal (Dual k) = Initial k
+  terminate = Dual initiate
+
 -- | The @Category (~>)@ has an initial (coterminal) object @Initial (~>)@ such that for all objects
 -- @a@ in @(~>)@, there exists a unique morphism from @Initial (~>) @ to @a@.
 
 class Category k => HasInitialObject (k :: x -> x -> *) where
   type Initial k :: x
   initiate :: Initial k `k` a
+
+instance HasTerminalObject k => HasInitialObject (Dual k) where
+  type Initial (Dual k) = Terminal k
+  initiate = Dual terminate
 
 instance HasInitialObject (->) where
   type Initial (->) = Void

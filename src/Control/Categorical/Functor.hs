@@ -1,18 +1,19 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE PolyKinds #-}
-#if __GLASGOW_HASKELL__ >= 702
-{-# LANGUAGE Trustworthy #-}
-#endif
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE OverlappingInstances #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE DefaultSignatures #-}
 {-# LANGUAGE TypeFamilies #-}
-#if __GLASGOW_HASKELL__ >= 707
 {-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE StandaloneDeriving #-}
+
+#ifndef MIN_VERSION_base
+#define MIN_VERSION_base(x,y,z) 1
 #endif
 
 -------------------------------------------------------------------------------------------
@@ -32,159 +33,44 @@ module Control.Categorical.Functor
   , Endofunctor
   , LiftedFunctor(..)
   , LoweredFunctor(..)
+  , LiftedContravariant(..)
+  , LoweredContravariant(..)
+  , Dual(..)
   ) where
 
-#ifndef MIN_VERSION_base
-#define MIN_VERSION_base(x,y,z) 1
-#endif
 
-import Control.Categorical.Category
+import Control.Category
+import Data.Data (Data, Typeable)
 import qualified Data.Functor.Contravariant as Contravariant
+import GHC.Generics
 import Prelude hiding (id, (.), Functor(..))
 import qualified Prelude as Prelude
-import Data.Data (Data(..), mkDataType, DataType, mkConstr, Constr, constrIndex, Fixity(..))
-#if __GLASGOW_HASKELL__ >= 707
-#define Typeable1 Typeable
-import Data.Typeable (Typeable, gcast1)
-#elif __GLASGOW_HASKELL__ >= 702
-import Data.Typeable (Typeable1(..), TyCon, mkTyCon3, mkTyConApp, gcast1)
-#else
-import Data.Typeable (Typeable1(..), TyCon, mkTyCon, mkTyConApp, gcast1)
-#endif
 
-newtype LiftedFunctor f a = LiftedFunctor (f a)
-  deriving
-  ( Show
-  , Read
-#if __GLASGOW_HASKELL__ >= 707
-  , Typeable
-#endif
-  )
+newtype Dual (k :: x -> x -> *) (a :: x) (b :: x) = Dual { runDual :: k b a }
+  deriving (Eq,Ord,Show,Read)
 
-newtype LoweredFunctor f a = LoweredFunctor (f a)
-  deriving
-  ( Show
-  , Read
-#if __GLASGOW_HASKELL__ >= 707
-  , Typeable
-#endif
-  )
+instance Category k => Category (Dual k) where
+  id = Dual id
+  {-# INLINE id #-}
+  Dual f . Dual g = Dual (g . f)
+  {-# INLINE (.) #-}
 
-newtype LiftedContravariant f a = LiftedContravariant (f a)
-  deriving
-  ( Show
-  , Read
-#if __GLASGOW_HASKELL__ >= 707
-  , Typeable
-#endif
-  )
+newtype LiftedFunctor f (a :: *) = LiftedFunctor (f a)
+  deriving (Show,Read,Typeable)
 
-newtype LoweredContravariant f a = LoweredContravariant (f a)
-  deriving
-  ( Show
-  , Read
-#if __GLASGOW_HASKELL__ >= 707
-  , Typeable
-#endif
-  )
+newtype LoweredFunctor f (a :: *) = LoweredFunctor (f a)
+  deriving (Show,Read,Typeable)
 
+newtype LiftedContravariant f (a :: *) = LiftedContravariant (f a)
+  deriving (Show,Read,Typeable)
 
-#if __GLASGOW_HASKELL__ < 707
+newtype LoweredContravariant f (a :: *) = LoweredContravariant (f a)
+  deriving (Show,Read,Typeable)
 
-liftedTyCon, loweredTyCon, liftedContraTyCon, loweredContraTyCon  :: TyCon
-#if __GLASGOW_HASKELL__ >= 702
-liftedTyCon = mkTyCon3 "categories" "Control.Categorical.Functor" "LiftedFunctor"
-loweredTyCon = mkTyCon3 "categories" "Control.Categorical.Functor" "LoweredFunctor"
-liftedContraTyCon = mkTyCon3 "categories" "Control.Categorical.Functor" "LiftedContravariant"
-loweredContraTyCon = mkTyCon3 "categories" "Control.Categorical.Functor" "LoweredContravariant"
-#else
-liftedTyCon = mkTyCon "Control.Categorical.Functor.LiftedFunctor"
-loweredTyCon = mkTyCon "Control.Categorical.Functor.LoweredFunctor"
-liftedContraTyCon = mkTyCon "Control.Categorical.Functor.LiftedContravariant"
-loweredContraTyCon = mkTyCon "Control.Categorical.Functor.LoweredContravariant"
-#endif
-{-# NOINLINE loweredTyCon #-}
-{-# NOINLINE liftedTyCon #-}
-{-# NOINLINE loweredContraTyCon #-}
-{-# NOINLINE liftedContraTyCon #-}
-
-instance Typeable1 f => Typeable1 (LiftedFunctor f) where
-  typeOf1 tfa = mkTyConApp liftedTyCon [typeOf1 (undefined `asArgsType` tfa)]
-    where asArgsType :: f a -> t f a -> f a
-          asArgsType = const
-
-instance Typeable1 f => Typeable1 (LoweredFunctor f) where
-  typeOf1 tfa = mkTyConApp loweredTyCon [typeOf1 (undefined `asArgsType` tfa)]
-    where asArgsType :: f a -> t f a -> f a
-          asArgsType = const
-
-instance Typeable1 f => Typeable1 (LiftedContravariant f) where
-  typeOf1 tfa = mkTyConApp liftedContraTyCon [typeOf1 (undefined `asArgsType` tfa)]
-    where asArgsType :: f a -> t f a -> f a
-          asArgsType = const
-
-instance Typeable1 f => Typeable1 (LoweredContravariant f) where
-  typeOf1 tfa = mkTyConApp loweredContraTyCon [typeOf1 (undefined `asArgsType` tfa)]
-    where asArgsType :: f a -> t f a -> f a
-          asArgsType = const
-#endif
-
-liftedConstr, loweredConstr, liftedContraConstr, loweredContraConstr :: Constr
-liftedConstr = mkConstr liftedDataType "LiftedFunctor" [] Prefix
-loweredConstr = mkConstr loweredDataType "LoweredFunctor" [] Prefix
-liftedContraConstr = mkConstr liftedContraDataType "LiftedContravariant" [] Prefix
-loweredContraConstr = mkConstr loweredContraDataType "LoweredContravariant" [] Prefix
-{-# NOINLINE liftedConstr #-}
-{-# NOINLINE loweredConstr #-}
-{-# NOINLINE liftedContraConstr #-}
-{-# NOINLINE loweredContraConstr #-}
-
-
-liftedDataType, loweredDataType, liftedContraDataType, loweredContraDataType :: DataType
-liftedDataType = mkDataType "Control.Categorical.Fucntor.LiftedFunctor" [liftedConstr]
-loweredDataType = mkDataType "Control.Categorical.Fucntor.LoweredFunctor" [loweredConstr]
-liftedContraDataType = mkDataType "Control.Categorical.Fucntor.LiftedContravariant" [liftedContraConstr]
-loweredContraDataType = mkDataType "Control.Categorical.Fucntor.LoweredContravariant" [loweredContraConstr]
-{-# NOINLINE liftedDataType #-}
-{-# NOINLINE loweredDataType #-}
-{-# NOINLINE liftedContraDataType #-}
-{-# NOINLINE loweredContraDataType #-}
-
-instance (Typeable1 f, Data (f a), Data a) => Data (LiftedFunctor f a) where
-  gfoldl f z (LiftedFunctor a) = z LiftedFunctor `f` a
-  toConstr _ = liftedConstr
-  gunfold k z c = case constrIndex c of
-    1 -> k (z LiftedFunctor)
-    _ -> error "gunfold"
-  dataTypeOf _ = liftedDataType
-  dataCast1 f = gcast1 f
-
-instance (Typeable1 f, Data (f a), Data a) => Data (LoweredFunctor f a) where
-  gfoldl f z (LoweredFunctor a) = z LoweredFunctor `f` a
-  toConstr _ = loweredConstr
-  gunfold k z c = case constrIndex c of
-    1 -> k (z LoweredFunctor)
-    _ -> error "gunfold"
-  dataTypeOf _ = loweredDataType
-  dataCast1 f = gcast1 f
-
-instance (Typeable1 f, Data (f a), Data a) => Data (LiftedContravariant f a) where
-  gfoldl f z (LiftedContravariant a) = z LiftedContravariant `f` a
-  toConstr _ = liftedContraConstr
-  gunfold k z c = case constrIndex c of
-    1 -> k (z LiftedContravariant)
-    _ -> error "gunfold"
-  dataTypeOf _ = liftedContraDataType
-  dataCast1 f = gcast1 f
-
-instance (Typeable1 f, Data (f a), Data a) => Data (LoweredContravariant f a) where
-  gfoldl f z (LoweredContravariant a) = z LoweredContravariant `f` a
-  toConstr _ = loweredContraConstr
-  gunfold k z c = case constrIndex c of
-    1 -> k (z LoweredContravariant)
-    _ -> error "gunfold"
-  dataTypeOf _ = loweredContraDataType
-  dataCast1 f = gcast1 f
+deriving instance (Typeable f, Data (f a), Data a) => Data (LiftedFunctor f a)
+deriving instance (Typeable f, Data (f a), Data a) => Data (LoweredFunctor f a)
+deriving instance (Typeable f, Data (f a), Data a) => Data (LiftedContravariant f a)
+deriving instance (Typeable f, Data (f a), Data a) => Data (LoweredContravariant f a)
 
 class (Category r, Category t) => Functor (f :: x -> y) (r :: x -> x -> *) (t :: y -> y -> *) | f r -> t, f t -> r where
   {-# MINIMAL fmap #-}

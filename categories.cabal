@@ -41,7 +41,6 @@ library
 
   exposed-modules:
     Control.Categorical.Bifunctor
-    Control.Categorical.Category
     Control.Categorical.Functor
     Control.Categorical.Object
     Control.Category.Braided

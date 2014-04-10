@@ -4,7 +4,7 @@
 -------------------------------------------------------------------------------------------
 -- |
 -- Module   : Control.Category.Object
--- Copyright: 2010-2012 Edward Kmett
+-- Copyright: 2010-2014 Edward Kmett
 -- License  : BSD
 --
 -- Maintainer : Edward Kmett <ekmett@gmail.com>
@@ -17,21 +17,21 @@
 -------------------------------------------------------------------------------------------
 
 module Control.Categorical.Object
-    ( HasTerminalObject(..)
-    , HasInitialObject(..)
-    ) where
+  ( HasTerminalObject(..)
+  , HasInitialObject(..)
+  ) where
 
 import Control.Categorical.Category
 
 -- | The @Category (~>)@ has a terminal object @Terminal (~>)@ such that for all objects @a@ in @(~>)@,
 -- there exists a unique morphism from @a@ to @Terminal (~>)@.
 class Category k => HasTerminalObject (k :: x -> x -> *) where
-    type Terminal k :: x
-    terminate :: a `k` Terminal k
+  type Terminal k :: x
+  terminate :: a `k` Terminal k
 
 -- | The @Category (~>)@ has an initial (coterminal) object @Initial (~>)@ such that for all objects
 -- @a@ in @(~>)@, there exists a unique morphism from @Initial (~>) @ to @a@.
 
 class Category k => HasInitialObject (k :: x -> x -> *) where
-    type Initial k :: x
-    initiate :: Initial k `k` a
+  type Initial k :: x
+  initiate :: Initial k `k` a

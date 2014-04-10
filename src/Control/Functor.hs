@@ -19,7 +19,7 @@
 
 -------------------------------------------------------------------------------------------
 -- |
--- Module      : Control.Categorical.Functor
+-- Module      : Control.Functor
 -- Copyright   : 2008-2014 Edward Kmett
 -- License     : BSD3
 --
@@ -29,7 +29,7 @@
 --
 -- A more categorical definition of 'Functor'
 -------------------------------------------------------------------------------------------
-module Control.Categorical.Functor
+module Control.Functor
   ( Functor(fmap)
   , Endofunctor
   , LiftedFunctor(..)

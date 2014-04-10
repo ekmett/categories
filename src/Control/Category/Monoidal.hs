@@ -29,8 +29,8 @@ module Control.Category.Monoidal
   , Sum
   ) where
 
+import Control.Bifunctor
 import Control.Category
-import Control.Categorical.Bifunctor
 import Data.Void
 import Prelude hiding (id,(.))
 

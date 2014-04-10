@@ -10,7 +10,7 @@
 {-# LANGUAGE FlexibleContexts #-}
 -------------------------------------------------------------------------------------------
 -- |
--- Copyright: 2008-2013 Edward Kmett
+-- Copyright: 2008-2014 Edward Kmett
 -- License  : BSD3
 --
 -- Maintainer : Edward Kmett <ekmett@gmail.com>
@@ -19,7 +19,7 @@
 --
 -- A more categorical definition of 'Bifunctor'
 -------------------------------------------------------------------------------------------
-module Control.Categorical.Bifunctor
+module Control.Bifunctor
   ( PFunctor (first)
   , QFunctor (second)
   , Bifunctor (bimap)

@@ -40,9 +40,8 @@ library
     GADTs
 
   exposed-modules:
-    Control.Categorical.Bifunctor
-    Control.Categorical.Functor
-    Control.Categorical.Object
+    Control.Bifunctor
+    Control.Functor
     Control.Category.Braided
     Control.Category.Cartesian
     Control.Category.Closed
@@ -51,6 +50,7 @@ library
     Control.Category.Dual
     Control.Category.Hask
     Control.Category.Monoidal
+    Control.Category.Object
 
 
 --    Control.Category.Cartesian.Closed,

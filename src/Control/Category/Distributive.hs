@@ -22,7 +22,7 @@ module Control.Category.Distributive
     ) where
 
 import Prelude hiding (Functor, map, (.), id, fst, snd, curry, uncurry)
-import Control.Categorical.Bifunctor
+import Control.Bifunctor
 import Control.Category.Monoidal
 import Control.Category.Cartesian
 

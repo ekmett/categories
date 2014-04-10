@@ -24,10 +24,10 @@ module Control.Category.Cartesian
     , bimapSum, braidSum, associateSum, disassociateSum
     ) where
 
+import Control.Category
 import Control.Category.Braided
 import Control.Category.Monoidal
 import Control.Categorical.Bifunctor
-import Control.Categorical.Category
 import Prelude hiding (Functor, map, (.), id, fst, snd, curry, uncurry)
 import qualified Prelude (fst,snd)
 

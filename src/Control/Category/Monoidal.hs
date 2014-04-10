@@ -6,7 +6,7 @@
 {-# LANGUAGE UndecidableInstances #-}
 -------------------------------------------------------------------------------------------
 -- |
--- Copyright : 2008-2013 Edward Kmett
+-- Copyright : 2008-2014 Edward Kmett
 -- License   : BSD
 --
 -- Maintainer : Edward Kmett <ekmett@gmail.com>
@@ -29,8 +29,8 @@ module Control.Category.Monoidal
   , Sum
   ) where
 
+import Control.Category
 import Control.Categorical.Bifunctor
-import Control.Categorical.Category
 import Data.Void
 import Prelude hiding (id,(.))
 

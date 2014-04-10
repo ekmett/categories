@@ -21,7 +21,7 @@ module Control.Categorical.Object
   , HasInitialObject(..)
   ) where
 
-import Control.Categorical.Category
+import Control.Category
 
 -- | The @Category (~>)@ has a terminal object @Terminal (~>)@ such that for all objects @a@ in @(~>)@,
 -- there exists a unique morphism from @a@ to @Terminal (~>)@.

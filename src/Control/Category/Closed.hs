@@ -34,7 +34,7 @@ module Control.Category.Closed
 import Prelude ()
 import qualified Prelude
 
-import Control.Categorical.Category
+import Control.Category
 import Control.Category.Braided
 import Control.Category.Monoidal
 -- import Control.Category.Cartesian

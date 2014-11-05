@@ -10,7 +10,7 @@ stability:     experimental
 homepage:      http://github.com/ekmett/categories
 bug-reports:   http://github.com/ekmett/categories/issues
 synopsis:      Categories
-copyright:     Copyright (C) 2008-2010, Edward A. Kmett
+copyright:     Copyright (C) 2008-2014, Edward A. Kmett
 description:   Categories
 build-type:    Simple
 tested-with:   GHC == 7.4.1, GHC == 7.6.1
@@ -21,6 +21,10 @@ extra-source-files:
   .vim.custom
   README.markdown
   CHANGELOG.markdown
+
+source-repository head
+type: git
+location: git://github.com/ekmett/categories.git
 
 flag Optimize
   description: Enable optimizations

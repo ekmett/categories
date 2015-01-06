@@ -1,8 +1,11 @@
 {-# LANGUAGE CPP #-}
-#if defined(__GLASGOW_HASKELL__) && __GLASGOW_HASKELL__ >= 702
+#if __GLASGOW_HASKELL__ >= 702
 {-# LANGUAGE Trustworthy #-}
 #endif
 {-# LANGUAGE MultiParamTypeClasses, FunctionalDependencies, FlexibleContexts, UndecidableInstances, FlexibleInstances #-}
+#if __GLASGOW_HASKELL__ >= 708
+{-# LANGUAGE DeriveDataTypeable #-}
+#endif
 -------------------------------------------------------------------------------------------
 -- |
 -- Module      : Control.Categorical.Functor
@@ -31,25 +34,27 @@ import Prelude hiding (id, (.), Functor(..))
 import qualified Prelude
 #ifdef __GLASGOW_HASKELL__
 import Data.Data (Data(..), mkDataType, DataType, mkConstr, Constr, constrIndex, Fixity(..))
+#if __GLASGOW_HASKELL__ < 708
 #if MIN_VERSION_base(4,4,0)
 import Data.Typeable (Typeable1(..), TyCon, mkTyCon3, mkTyConApp, gcast1)
 #else
 import Data.Typeable (Typeable1(..), TyCon, mkTyCon, mkTyConApp, gcast1)
 #endif
+#else
+import Data.Typeable (Typeable, gcast1)
+#endif
 #endif
 
 -- TODO Data, Typeable
-newtype LiftedFunctor f a = LiftedFunctor (f a) deriving (Show, Read)
+newtype LiftedFunctor f a = LiftedFunctor (f a) deriving
+  ( Show
+  , Read
+#if __GLASGOW_HASKELL__ >= 708
+  , Typeable
+#endif
+  )
 
 #ifdef __GLASGOW_HASKELL__
-
-liftedTyCon :: TyCon
-#if MIN_VERSION_base(4,4,0)
-liftedTyCon = mkTyCon3 "categories" "Control.Categorical.Functor" "LiftedFunctor"
-#else
-liftedTyCon = mkTyCon "Control.Categorical.Functor.LiftedFunctor"
-#endif
-{-# NOINLINE liftedTyCon #-}
 
 liftedConstr :: Constr
 liftedConstr = mkConstr liftedDataType "LiftedFunctor" [] Prefix
@@ -59,10 +64,23 @@ liftedDataType :: DataType
 liftedDataType = mkDataType "Control.Categorical.Fucntor.LiftedFunctor" [liftedConstr]
 {-# NOINLINE liftedDataType #-}
 
+#if __GLASGOW_HASKELL__ < 708
 instance Typeable1 f => Typeable1 (LiftedFunctor f) where
   typeOf1 tfa = mkTyConApp liftedTyCon [typeOf1 (undefined `asArgsType` tfa)]
     where asArgsType :: f a -> t f a -> f a
           asArgsType = const
+
+liftedTyCon :: TyCon
+#if MIN_VERSION_base(4,4,0)
+liftedTyCon = mkTyCon3 "categories" "Control.Categorical.Functor" "LiftedFunctor"
+#else
+liftedTyCon = mkTyCon "Control.Categorical.Functor.LiftedFunctor"
+#endif
+{-# NOINLINE liftedTyCon #-}
+
+#else
+#define Typeable1 Typeable
+#endif
 
 instance (Typeable1 f, Data (f a), Data a) => Data (LiftedFunctor f a) where
   gfoldl f z (LiftedFunctor a) = z LiftedFunctor `f` a
@@ -74,17 +92,15 @@ instance (Typeable1 f, Data (f a), Data a) => Data (LiftedFunctor f a) where
   dataCast1 f = gcast1 f
 #endif
 
-newtype LoweredFunctor f a = LoweredFunctor (f a) deriving (Show, Read)
+newtype LoweredFunctor f a = LoweredFunctor (f a) deriving
+  ( Show
+  , Read
+#if __GLASGOW_HASKELL__ >= 708
+  , Typeable
+#endif
+  )
 
 #ifdef __GLASGOW_HASKELL__
-
-loweredTyCon :: TyCon
-#if MIN_VERSION_base(4,4,0)
-loweredTyCon = mkTyCon3 "categories" "Control.Categorical.Functor" "LoweredFunctor"
-#else
-loweredTyCon = mkTyCon "Control.Categorical.Functor.LoweredFunctor"
-#endif
-{-# NOINLINE loweredTyCon #-}
 
 loweredConstr :: Constr
 loweredConstr = mkConstr loweredDataType "LoweredFunctor" [] Prefix
@@ -94,10 +110,21 @@ loweredDataType :: DataType
 loweredDataType = mkDataType "Control.Categorical.Fucntor.LoweredFunctor" [loweredConstr]
 {-# NOINLINE loweredDataType #-}
 
+#if __GLASGOW_HASKELL__ < 708
 instance Typeable1 f => Typeable1 (LoweredFunctor f) where
   typeOf1 tfa = mkTyConApp loweredTyCon [typeOf1 (undefined `asArgsType` tfa)]
     where asArgsType :: f a -> t f a -> f a
           asArgsType = const
+
+loweredTyCon :: TyCon
+#if MIN_VERSION_base(4,4,0)
+loweredTyCon = mkTyCon3 "categories" "Control.Categorical.Functor" "LoweredFunctor"
+#else
+loweredTyCon = mkTyCon "Control.Categorical.Functor.LoweredFunctor"
+#endif
+{-# NOINLINE loweredTyCon #-}
+
+#endif
 
 instance (Typeable1 f, Data (f a), Data a) => Data (LoweredFunctor f a) where
   gfoldl f z (LoweredFunctor a) = z LoweredFunctor `f` a

@@ -1,3 +1,7 @@
+1.0.7
+-----
+* Build fixes for GHC 7.8.x to support the current version of `Typeable`
+
 1.0.6
 -----
 * Marked modules `Trustworthy`

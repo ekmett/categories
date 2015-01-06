@@ -1,7 +1,10 @@
-{-# LANGUAGE TypeOperators, FlexibleContexts #-}
 {-# LANGUAGE CPP #-}
-#if defined(__GLASGOW_HASKELL__) && __GLASGOW_HASKELL__ >= 702
+{-# LANGUAGE TypeOperators, FlexibleContexts #-}
+#if __GLASGOW_HASKELL__ >= 702
 {-# LANGUAGE Trustworthy #-}
+#endif
+#if __GLASGOW_HASKELL__ >= 708
+{-# LANGUAGE DeriveDataTypeable #-}
 #endif
 -------------------------------------------------------------------------------------------
 -- |
@@ -22,25 +25,37 @@ module Control.Category.Dual
 #define MIN_VERSION_base(x,y,z) 1
 #endif
 
-import Prelude (undefined,const,error)
 import Control.Category
 
 #ifdef __GLASGOW_HASKELL__
 import Data.Data (Data(..), mkDataType, DataType, mkConstr, Constr, constrIndex, Fixity(..))
+#if __GLASGOW_HASKELL__ < 708
 #if MIN_VERSION_base(4,4,0)
 import Data.Typeable (Typeable2(..), TyCon, mkTyCon3, mkTyConApp, gcast1)
 #else
 import Data.Typeable (Typeable2(..), TyCon, mkTyCon, mkTyConApp, gcast1)
 #endif
+import Prelude (undefined,const,error)
+#else
+import Prelude (error)
+import Data.Typeable (Typeable, gcast1)
+#endif
 #endif
 
 data Dual k a b = Dual { runDual :: k b a }
+#if __GLASGOW_HASKELL__ >= 708
+  deriving Typeable
+
+#define Typeable2 Typeable
+#endif
 
 instance Category k => Category (Dual k) where
   id = Dual id
   Dual f . Dual g = Dual (g . f)
 
 #ifdef __GLASGOW_HASKELL__
+
+#if __GLASGOW_HASKELL__ < 707
 instance Typeable2 k => Typeable2 (Dual k) where
   typeOf2 tfab = mkTyConApp dataTyCon [typeOf2 (undefined `asDualArgsType` tfab)]
     where asDualArgsType :: f b a -> t f a b -> f b a
@@ -53,6 +68,7 @@ dataTyCon = mkTyCon3 "categories" "Control.Category.Dual" "Dual"
 dataTyCon = mkTyCon "Control.Category.Dual.Dual"
 #endif
 {-# NOINLINE dataTyCon #-}
+#endif
 
 dualConstr :: Constr
 dualConstr = mkConstr dataDataType "Dual" [] Prefix

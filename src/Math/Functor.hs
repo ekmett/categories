@@ -78,6 +78,12 @@ instance Functor (Either a) where
   fmap _ (Left a) = Left a
   fmap f (Right b) = Right (f b)
 
+instance (Category p, Op p ~ Yoneda p) => Functor (Yoneda p a) where
+  type Dom (Yoneda p a) = Yoneda p
+  type Cod (Yoneda p a) = (->)
+  fmap = (.)
+
+
 class (Dom f ~ c, Cod f ~ d, Functor f) => FunctorOf (c :: i -> i -> *) (d :: j -> j -> *) (f :: i -> j)
 instance (Dom f ~ c, Cod f ~ d, Functor f) => FunctorOf c d f 
 
@@ -136,6 +142,11 @@ instance Functor Coercion where
   type Cod Coercion = Nat Coercion (->)
   fmap (Op f) = Nat (. f)
 
+instance (Category p, Op p ~ Yoneda p) => Functor (Yoneda p) where
+  type Dom (Yoneda p) = p
+  type Cod (Yoneda p) = Nat (Yoneda p) (->)
+  fmap f = Nat (. Op f)
+
 instance Functor (,) where
   type Dom (,) = (->)
   type Cod (,) = Nat (->) (->)
@@ -173,6 +184,10 @@ bimap :: Bifunctor p => Dom p a b -> Dom2 p c d -> Cod2 p (p a c) (p b d)
 bimap f g = case source f of
   Dict -> case target g of
     Dict -> runNat (fmap f) . second g
+
+--------------------------------------------------------------------------------
+-- * Profunctors
+--------------------------------------------------------------------------------
 
 -- mapping over a profunctor 
 dimap :: Bifunctor p => Op (Dom p) b a -> Dom2 p c d -> Cod2 p (p a c) (p b d)

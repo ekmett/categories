@@ -29,6 +29,7 @@ instance All p '[] where
 instance (p i, All p is) => All p (i ': is) where
   proofs = Dict1 :& proofs
 
+-- TODO: unsafeCoerce 
 reproof :: Rec (Dict1 p) is -> Dict (All p is)
 reproof RNil = Dict
 reproof (Dict1 :& as) = case reproof as of

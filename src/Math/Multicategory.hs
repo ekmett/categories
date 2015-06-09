@@ -53,7 +53,7 @@ instance Multicategory f => Category (Forest f) where
   type Ob (Forest f) = All (Mob f)
   id = go proofs where
     go :: Rec (Dict1 (Mob f)) is -> Forest f is is
-    go (Dict1 :& as) = ident :- idents as
+    go (Dict1 :& as) = ident :- go as
     go RNil          = Nil
 
   Nil . Nil = Nil

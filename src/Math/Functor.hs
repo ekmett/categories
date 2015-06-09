@@ -83,7 +83,6 @@ instance (Category p, Op p ~ Yoneda p) => Functor (Yoneda p a) where
   type Cod (Yoneda p a) = (->)
   fmap = (.)
 
-
 class (Dom f ~ c, Cod f ~ d, Functor f) => FunctorOf (c :: i -> i -> *) (d :: j -> j -> *) (f :: i -> j)
 instance (Dom f ~ c, Cod f ~ d, Functor f) => FunctorOf c d f 
 
@@ -171,7 +170,7 @@ type Dom2 p = NatDom (Cod p)
 type Cod2 p = NatCod (Cod p)
 
 class (Functor p, Cod p ~ Nat (Dom2 p) (Cod2 p), Category (Dom2 p), Category (Cod2 p)) => Bifunctor (p :: i -> j -> k)
-instance  (Functor p, Cod p ~ Nat (Dom2 p) (Cod2 p), Category (Dom2 p), Category (Cod2 p)) => Bifunctor (p :: i -> j -> k)
+instance (Functor p, Cod p ~ Nat (Dom2 p) (Cod2 p), Category (Dom2 p), Category (Cod2 p)) => Bifunctor (p :: i -> j -> k)
 
 first :: (Functor f, Cod f ~ Nat d e, Ob d c) => Dom f a b -> e (f a c) (f b c)
 first = runNat . fmap
@@ -189,6 +188,5 @@ bimap f g = case source f of
 -- * Profunctors
 --------------------------------------------------------------------------------
 
--- mapping over a profunctor 
 dimap :: Bifunctor p => Op (Dom p) b a -> Dom2 p c d -> Cod2 p (p a c) (p b d)
 dimap = bimap . unop

@@ -32,10 +32,12 @@ instance (Category p, Category q) => Category (p * q) where
   type Ob (p * q) = ProductOb p q
   id = Pair id id
   Pair f g . Pair h i = Pair (f . h) (g . i)
-  source (Pair f g) = case (source f, source g) of
-    (Dict, Dict) -> Dict
-  target (Pair f g) = case (target f, target g) of
-    (Dict, Dict) -> Dict
+  source (Pair f g) = case source f of
+    Dict -> case source g of
+      Dict -> Dict
+  target (Pair f g) = case target f of
+    Dict -> case target g of
+      Dict -> Dict
 
 instance (Groupoid p, Groupoid q) => Groupoid (p * q) where
   inv (Pair p q) = Pair (inv p) (inv q)

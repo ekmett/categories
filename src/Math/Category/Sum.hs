@@ -27,14 +27,14 @@ import Math.Category
 import Math.Groupoid
 
 class SumOb (p :: i -> i -> *) (q :: j -> j -> *) (o :: Either i j) where
-  coproductOb :: proxy1 p -> proxy2 q -> proxy3 o -> 
+  sumOb :: proxy1 p -> proxy2 q -> proxy3 o ->
     (forall a. Ob p a => (o ~ Left a) => r) -> (forall b. Ob q b => (o ~ Right b) => r) -> r
-   
+
 instance Ob p a => SumOb p q (Left a) where
-  coproductOb _ _ _ l _ = l
+  sumOb _ _ _ l _ = l
 
 instance Ob q b => SumOb p q (Right b) where
-  coproductOb _ _ _ _ r = r
+  sumOb _ _ _ _ r = r
 
 data (+) :: (i -> i -> *) -> (j -> j -> *) -> Either i j -> Either i j -> * where
   L :: p a b -> (p + q) (Left a) (Left b)
@@ -44,7 +44,7 @@ instance (Category p, Category q) => Category (p + q) where
   type Ob (p + q) = SumOb p q
   id = it where
     it :: forall o. SumOb p q o => (p + q) o o
-    it = coproductOb (Proxy :: Proxy p) (Proxy :: Proxy q) (Proxy :: Proxy o) (L id) (R id)
+    it = sumOb (Proxy :: Proxy p) (Proxy :: Proxy q) (Proxy :: Proxy o) (L id) (R id)
 
   L f . L g = L (f . g)
   R f . R g = R (f . g)

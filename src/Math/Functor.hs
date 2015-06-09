@@ -16,6 +16,7 @@
 module Math.Functor 
   ( Functor(..)
   , FunctorOf
+  , ob
   , Nat(..)
   , Bifunctor, Dom2, Cod2
   , bimap, first, second
@@ -27,7 +28,8 @@ import Data.Constraint as Constraint
 import Data.Type.Equality as Equality
 import Data.Type.Coercion as Coercion
 import Math.Category
-import Prelude (($), Either(..))
+import qualified Prelude
+import Prelude (($), Either(..), Maybe(..))
 
 --------------------------------------------------------------------------------
 -- * Functors
@@ -77,6 +79,16 @@ instance Functor (Either a) where
   type Cod (Either a) = (->)
   fmap _ (Left a) = Left a
   fmap f (Right b) = Right (f b)
+
+instance Functor [] where
+  type Dom [] = (->)
+  type Cod [] = (->)
+  fmap = Prelude.fmap
+
+instance Functor Maybe where
+  type Dom Maybe = (->)
+  type Cod Maybe = (->)
+  fmap = Prelude.fmap
 
 instance (Category p, Op p ~ Yoneda p) => Functor (Yoneda p a) where
   type Dom (Yoneda p a) = Yoneda p

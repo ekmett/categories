@@ -30,7 +30,11 @@ library
     Math.Category.Dual
     Math.Category.Product
     Math.Category.Sum
+    Math.Functor
     Math.Groupoid
+    Math.Multicategory
+    Math.Rec
+    Math.Rec.All
 
   build-depends:
     base >= 4 && < 5,

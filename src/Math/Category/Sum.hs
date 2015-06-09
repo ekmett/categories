@@ -12,6 +12,9 @@
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
+-- really, GHC, really?
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
+
 module Math.Category.Sum
   ( (+)(..)
   , SumOb(..)

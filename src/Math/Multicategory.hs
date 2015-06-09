@@ -8,6 +8,8 @@
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE TypeOperators #-}
 
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
+
 module Math.Multicategory 
   ( Forest(..)
   , Multicategory(..)
@@ -20,8 +22,7 @@ import Data.Constraint
 import Data.Proxy
 import Math.Category
 import Math.Rec
-import Math.Rec.All
-import Prelude (($), undefined)
+import Prelude (($))
 
 --------------------------------------------------------------------------------
 -- * Forests
@@ -36,13 +37,13 @@ inputs _ Nil = RNil
 inputs f (a :- as) = f a `appendRec` inputs f as
 
 outputs :: (forall as b. f as b -> p b) -> Forest f is os -> Rec p os
-outputs f Nil = RNil
+outputs _ Nil = RNil
 outputs f (a :- as) = f a :& outputs f as
 
 splitForest :: forall f g ds is js os r. Rec f is -> Forest g js os -> Forest g ds (is ++ js)
             -> (forall bs cs. (ds ~ (bs ++ cs)) => Forest g bs is -> Forest g cs js -> r) -> r
-splitForest RNil bs as k = k Nil as
-splitForest (i :& is) bs ((j :: g as o) :- js) k = splitForest is bs js $
+splitForest RNil _ as k = k Nil as
+splitForest (_ :& is) bs ((j :: g as o) :- js) k = splitForest is bs js $
   \ (l :: Forest g bs as1) (r :: Forest g cs js) ->
     case appendAssocAxiom (Proxy :: Proxy as) (Proxy :: Proxy bs) (Proxy :: Proxy cs) of
       Dict -> k (j :- l) r

@@ -33,7 +33,6 @@ library
     Math.Groupoid
     Math.Multicategory
     Math.Rec
-    Math.Rec.All
 
   build-depends:
     base >= 4 && < 5,

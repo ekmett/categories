@@ -1,10 +1,16 @@
+{-# LANGUAGE ConstraintKinds #-}
 {-# LANGUAGE DataKinds #-}
+{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GADTs #-}
+{-# LANGUAGE KindSignatures #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE PolyKinds #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE Trustworthy #-}
 
 -- GHC warns about splitRec, but a "fix" yield unreachable code and won't compile.
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
@@ -22,6 +28,11 @@ module Math.Rec
   , type (++)
   , appendNilAxiom
   , appendAssocAxiom
+  -- * Dict1
+  , Dict1(..)
+  -- * All
+  , All(..)
+  , reproof
   ) where
 
 import Control.Applicative
@@ -74,3 +85,20 @@ foldrRec f z (a :& as) = f a (foldrRec f z as)
 traverseRec :: Applicative m => (forall i. f i -> m (g i)) -> Rec f is -> m (Rec g is)
 traverseRec f (a :& as) = (:&) <$> f a <*> traverseRec f as
 traverseRec _ RNil = pure RNil
+
+data Dict1 p a where
+  Dict1 :: p a => Dict1 p a
+
+class All (p :: i -> Constraint) (is :: [i]) where
+  proofs :: Rec (Dict1 p) is
+
+instance All p '[] where
+  proofs = RNil
+
+instance (p i, All p is) => All p (i ': is) where
+  proofs = Dict1 :& proofs
+
+reproof :: Rec (Dict1 p) is -> Dict (All p is)
+reproof RNil = Dict
+reproof (Dict1 :& as) = case reproof as of
+  Dict -> Dict

@@ -21,6 +21,7 @@ module Math.Multicategory
 import Data.Constraint
 import Data.Proxy
 import Math.Category
+import Math.Polycategory.PRO
 import Math.Rec
 import Prelude (($))
 
@@ -73,3 +74,11 @@ instance Multicategory f => Category (Forest f) where
 
   source = reproof . inputs sources
   target = reproof . outputs mtarget
+
+instance Multicategory f => PRO (Forest f) where
+  pro Nil rs = rs
+  pro (l :- ls) rs = case appendAssocAxiom (sources l) (go (source ls)) (go (source rs)) of
+      Dict -> l :- pro ls rs 
+    where
+     go :: Dict (All p as) -> Rec (Dict1 p) as
+     go Dict = proofs

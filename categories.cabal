@@ -31,6 +31,8 @@ library
     Math.Category.Sum
     Math.Functor
     Math.Groupoid
+    Math.Monad
+    Math.Monad.Atkey
     Math.Multicategory
     Math.Multicategory.Free
     Math.Polycategory.PRO

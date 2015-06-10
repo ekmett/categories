@@ -36,6 +36,7 @@ library
     Math.Monad.Atkey
     Math.Multicategory
     Math.Multicategory.Free
+    Math.Operad
     Math.Polycategory.PRO
     Math.Rec
 

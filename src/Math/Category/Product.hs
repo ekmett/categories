@@ -11,8 +11,7 @@
 {-# LANGUAGE UndecidableInstances #-}
 
 module Math.Category.Product
-  ( Fst, Snd, ProductOb
-  , (*)(..)
+  ( (*)(..)
   ) where
 
 import Data.Constraint

@@ -17,7 +17,7 @@
 
 module Math.Category.Sum
   ( (+)(..)
-  , SumOb(..)
+  , sumOb
   ) where
 
 import Prelude (Either(..))

@@ -17,6 +17,7 @@ import qualified Control.Monad as Base
 import qualified Prelude
 
 class (Functor f, Cod f ~ Dom f) => Monad f where
+  {-# MINIMAL return, (join | bind) #-}
   return :: Ob (Dom f) a => Dom f a (f a)
   join :: forall a. Ob (Dom f) a => Dom f (f (f a)) (f a)
   join = bind (id \\ (ob :: Ob (Dom f) a :- Ob (Cod f) (f a)))
@@ -40,6 +41,7 @@ instance Monad ((->) e) where
   join = Base.join
 
 class (Functor f, Cod f ~ Dom f) => Comonad f where
+  {-# MINIMAL extract, (duplicate | extend) #-}
   extract :: Ob (Dom f) a => Dom f (f a) a
   duplicate :: forall a. Ob (Dom f) a => Dom f (f a) (f (f a))
   duplicate = extend (id \\ (ob :: Ob (Dom f) a :- Ob (Cod f) (f a)))

@@ -30,6 +30,7 @@ library
     Math.Category.Product
     Math.Category.Sum
     Math.Functor
+    Math.Functor.Faithful
     Math.Groupoid
     Math.Monad
     Math.Monad.Atkey

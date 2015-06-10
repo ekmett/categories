@@ -7,6 +7,8 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeOperators #-}
 
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
+
 module Math.Multicategory.Free
   ( Graded(..)
   , Free(..)
@@ -35,5 +37,7 @@ instance Graded f => Multicategory (Free f) where
   ident = Ident
   compose Ident ((a :: Free f bs c) :- Nil) = case appendNilAxiom :: Dict (bs ~ (bs ++ '[])) of Dict -> a
   compose (Apply f as) bs = Apply f (as . bs)
+
   sources m = mapRec (const Dict1) (grade m)
+
   mtarget _ = Dict1

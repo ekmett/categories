@@ -20,7 +20,10 @@ module Math.Multicategory
 
 import Data.Constraint
 import Data.Proxy
+import Data.Type.Equality
 import Math.Category
+import Math.Functor
+import Math.Monad
 import Math.Polycategory.PRO
 import Math.Rec
 import Prelude (($))
@@ -82,3 +85,19 @@ instance Multicategory f => PRO (Forest f) where
     where
      go :: Dict (All p as) -> Rec (Dict1 p) as
      go Dict = proofs
+
+data IM :: ([k] -> k -> *) -> (k -> *) -> k -> * where
+  IM :: f is o -> Rec a is -> IM f a o
+
+instance Functor (IM f) where
+  type Dom (IM f) = Nat (:~:) (->)
+  type Cod (IM f) = Nat (:~:) (->)
+  fmap f = Nat $ \(IM s d) -> IM s (runNat (fmap f) d)
+
+instance Functor (IM f a) where
+  type Dom (IM f a) = (:~:)
+  type Cod (IM f a) = (->)
+  fmap Refl a = a
+
+--instance Multicategory f => Monad (IM f) where
+--  return = Nat $ \a -> IM ident (a :& RNil)

@@ -12,6 +12,7 @@
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE DefaultSignatures #-}
 
 module Math.Functor 
   ( Functor(..)
@@ -20,7 +21,7 @@ module Math.Functor
   , Nat(..)
   , Bifunctor, Dom2, Cod2
   , bimap, first, second
-  , dimap
+  , dimap, lmap, rmap
   , contramap
   ) where
 
@@ -94,6 +95,7 @@ instance (Category p, Op p ~ Yoneda p) => Functor (Yoneda p a) where
   type Dom (Yoneda p a) = Yoneda p
   type Cod (Yoneda p a) = (->)
   fmap = (.)
+
 
 class (Dom f ~ c, Cod f ~ d, Functor f) => FunctorOf (c :: i -> i -> *) (d :: j -> j -> *) (f :: i -> j)
 instance (Dom f ~ c, Cod f ~ d, Functor f) => FunctorOf c d f 
@@ -202,3 +204,9 @@ bimap f g = case source f of
 
 dimap :: Bifunctor p => Op (Dom p) b a -> Dom2 p c d -> Cod2 p (p a c) (p b d)
 dimap = bimap . unop
+
+lmap :: (Functor f, Cod f ~ Nat d e, Ob d c) => Op (Dom f) b a -> e (f a c) (f b c)
+lmap = runNat . fmap . unop
+
+rmap :: forall p a b c. (Bifunctor p, Ob (Dom p) c) => Dom2 p a b -> Cod2 p (p c a) (p c b)
+rmap = second

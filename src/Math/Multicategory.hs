@@ -23,7 +23,7 @@ import Data.Proxy
 import Data.Type.Equality
 import Math.Category
 import Math.Functor
-import Math.Monad
+-- import Math.Monad
 import Math.Polycategory.PRO
 import Math.Rec
 import Prelude (($))

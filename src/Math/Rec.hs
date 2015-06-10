@@ -38,7 +38,6 @@ module Math.Rec
 import Control.Applicative
 import Data.Constraint
 import Data.Type.Equality
-import Math.Category
 import Math.Functor
 import Prelude (($), fst, snd)
 import Unsafe.Coerce

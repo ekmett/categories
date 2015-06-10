@@ -8,11 +8,11 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeOperators #-}
 
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
+
 module Math.Operad where
 
 import Data.Constraint
-import Data.Proxy
-import Data.Type.Equality
 import Math.Category
 import Math.Functor
 import Math.Monad
@@ -60,11 +60,11 @@ instance Operad f => Comonad (W f) where
   extend (f :: W f a -> b) (w :: W f a) = W $ \s -> go RNil (sources s) s where
     go :: forall (ls :: [()]) (rs :: [()]). Rec (Dict1 (Mob f)) ls -> Rec (Dict1 (Mob f)) rs -> f (ls ++ rs) '() -> Rec (Coat b '()) rs
     go _ RNil _ = RNil
-    go ls (p :& rs) s = g :& go (appendRec ls (p :& RNil)) rs (shift s)
+    go ls0 (p :& rs0) s = g :& go (appendRec ls0 (p :& RNil)) rs0 (shift s)
       where
         g = Coat $ f $ W $ \s' ->
-          prune ls (sources s') rs (runW w (compose s (pro (idents ls) (s' :- idents rs))))
+          prune ls0 (sources s') rs0 (runW w (compose s (pro (idents ls0) (s' :- idents rs0))))
         prune ls is rs = takeRec is rs . dropRec ls
-        shift s = case appendAssocAxiom ls (p :& RNil) rs of Dict -> s
+        shift s' = case appendAssocAxiom ls0 (p :& RNil) rs0 of Dict -> s'
         idents :: Rec (Dict1 (Mob f)) as -> Forest f as as
-        idents p = case reproof p of Dict -> id
+        idents p' = case reproof p' of Dict -> id

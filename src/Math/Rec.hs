@@ -37,6 +37,10 @@ module Math.Rec
 
 import Control.Applicative
 import Data.Constraint
+import Data.Type.Equality
+import Math.Category
+import Math.Functor
+import Prelude (($), fst, snd)
 import Unsafe.Coerce
 
 type family (++) (a :: [k]) (b :: [k]) :: [k]
@@ -54,6 +58,16 @@ appendAssocAxiom _ _ _ = unsafeCoerce (Dict :: Dict (as ~ as))
 data Rec f as where
   RNil :: Rec f '[]
   (:&) :: !(f i) -> !(Rec f is) -> Rec f (i ': is)
+
+instance Functor (Rec f) where
+  type Dom (Rec f) = (:~:)
+  type Cod (Rec f) = (->)
+  fmap Refl as = as
+
+instance Functor Rec where
+  type Dom Rec = Nat (:~:) (->)
+  type Cod Rec = Nat (:~:) (->)
+  fmap f = Nat $ mapRec (runNat f)
 
 -- | Append two records
 appendRec :: Rec f as -> Rec f bs -> Rec f (as ++ bs)

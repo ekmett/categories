@@ -36,8 +36,7 @@ data M (f :: [()] -> () -> *) (a :: *) where
 instance Functor (M f) where
   type Dom (M f) = (->)
   type Cod (M f) = (->)
-  fmap f (M s d) = M s (mapRec (at f) d)
-
+  fmap f (M s d) = M s (mapRec (runNat (runNat (fmap f))) d)
 
 instance Operad f => Monad (M f) where
   return a = M ident (At a :& RNil)

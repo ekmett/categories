@@ -1,7 +1,7 @@
 categories
 ==========
 
-[![Hackage](https://img.shields.io/hackage/v/categories.svg)](https://hackage.haskell.org/package/categories) [![Build Status](https://secure.travis-ci.org/ekmett/categories.png?branch=master)](http://travis-ci.org/ekmett/categories
+[![Hackage](https://img.shields.io/hackage/v/categories.svg)](https://hackage.haskell.org/package/categories) [![Build Status](https://secure.travis-ci.org/ekmett/categories.png?branch=master)](http://travis-ci.org/ekmett/categories)
 
 This package provides a number of classes for working with `Category` instances with more structure in Haskell.
 

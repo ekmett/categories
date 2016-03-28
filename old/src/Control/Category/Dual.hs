@@ -42,7 +42,7 @@ import Data.Typeable (Typeable, gcast1)
 #endif
 #endif
 
-data Dual k a b = Dual { runDual :: k b a }
+newtype Dual k a b = Dual { runDual :: k b a }
 #if __GLASGOW_HASKELL__ >= 708
   deriving Typeable
 

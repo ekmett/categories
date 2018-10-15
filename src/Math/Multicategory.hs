@@ -9,21 +9,26 @@
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE NoStarIsType #-}
 
-{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
+
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns -fno-warn-unused-top-binds #-}
 
 module Math.Multicategory 
   ( Forest(..)
   , C(..)
   , Multicategory(..)
+  , Mob
   -- * Utilities 
   , inputs, outputs
   , splitForest
+  , compose
   ) where
 
 import Data.Constraint
 import Data.Proxy
 import Data.Type.Equality
+import Data.Kind(Type)
 import Math.Category
 import Math.Functor
 import Math.Monad
@@ -38,7 +43,7 @@ import qualified Prelude
 -- * Forests
 --------------------------------------------------------------------------------
 
-data Forest :: ([i] -> i -> *) -> [i] -> [i] -> * where
+data Forest :: ([i] -> i -> Type) -> [i] -> [i] -> Type where
   Nil :: Forest f '[] '[]
   (:-) :: f k o -> Forest f m n -> Forest f (k ++ m) (o ': n)
 
@@ -72,7 +77,7 @@ instance (Multicategory f) => Functor (Forest f is) where
 -- * Forgetting the multicategory structure
 --------------------------------------------------------------------------------
 
-data C (f :: [i] -> i -> *) (a :: i) (b :: i) where
+data C (f :: [i] -> i -> Type) (a :: i) (b :: i) where
   C :: { runC :: f '[a] b } -> C f a b
 
 instance Multicategory f => Category (C f) where
@@ -93,8 +98,8 @@ class
   , Dom f ~ Op (Forest f)
   , Dom2 f ~ C f
   , Cod2 f ~ (->)
-  ) => Multicategory (f :: [i] -> i -> *) where
-  type MDom f :: i -> i -> *
+  ) => Multicategory (f :: [i] -> i -> Type) where
+  type MDom f :: i -> i -> Type
   ident   :: Mob f a => f '[a] a
   sources :: f as b -> Rec (Dict1 (Mob f)) as
   mtarget :: f as b -> Dict1 (Mob f) b
@@ -127,7 +132,7 @@ instance Multicategory f => PRO (Forest f) where
      go :: Dict (All p as) -> Rec (Dict1 p) as
      go Dict = proofs
 
-data IM :: ([k] -> k -> *) -> (k -> *) -> k -> * where
+data IM :: ([k] -> k -> Type) -> (k -> Type) -> k -> Type where
   IM :: f is o -> Rec a is -> IM f a o
 
 -- A subcategory of (:~:) satisfying a constraint `p`
@@ -148,6 +153,8 @@ instance Category (Dat p) where
 instance Functor (Dat p) where
   type Dom (Dat p) = Op (Dat p)
   type Cod (Dat p) = Nat (Dat p) (->)
+  
+  
 
 instance Functor (Dat p a) where
   type Dom (Dat p a) = Dat p

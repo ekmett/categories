@@ -22,6 +22,7 @@ import Math.Polycategory.PRO
 import Math.Rec
 import Prelude (($))
 
+
 class (Multicategory f, Mob f ~ (~) '()) => Operad f
 instance (Multicategory f, Mob f ~ (~) '()) => Operad f
 

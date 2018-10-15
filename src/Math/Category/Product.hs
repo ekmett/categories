@@ -9,14 +9,18 @@
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE UndecidableSuperClasses #-}
+{-# LANGUAGE NoStarIsType #-}
 
 module Math.Category.Product
-  ( (*)(..)
+  ( type (*)(..)
   ) where
 
 import Data.Constraint
+import Data.Kind(Type)
 import Math.Category
 import Math.Groupoid
+
 
 type family Fst (r :: (a,b)) :: a where Fst '(x,y) = x
 type family Snd (r :: (a,b)) :: b where Snd '(x,y) = y
@@ -24,7 +28,7 @@ type family Snd (r :: (a,b)) :: b where Snd '(x,y) = y
 class    (r ~ '(Fst r, Snd r), Ob p (Fst r), Ob q (Snd r)) => ProductOb p q r
 instance (r ~ '(Fst r, Snd r), Ob p (Fst r), Ob q (Snd r)) => ProductOb p q r
 
-data (*) :: (i -> i -> *) -> (j -> j -> *) -> (i,j) -> (i,j) -> * where
+data (*) :: (i -> i -> Type) -> (j -> j -> Type) -> (i,j) -> (i,j) -> Type where
   Pair :: p a b -> q c d -> (p * q) '(a,c) '(b,d)
 
 instance (Category p, Category q) => Category (p * q) where

@@ -16,17 +16,21 @@
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 
 module Math.Category.Sum
-  ( (+)(..)
+  ( type (+)(..)
   , sumOb
   ) where
 
 import Prelude (Either(..))
 import Data.Constraint
 import Data.Proxy
+import Data.Kind(Type)
 import Math.Category
 import Math.Groupoid
 
-class SumOb (p :: i -> i -> *) (q :: j -> j -> *) (o :: Either i j) where
+type Left = 'Left
+type Right = 'Right
+
+class SumOb (p :: i -> i -> Type) (q :: j -> j -> Type) (o :: Either i j) where
   sumOb :: proxy1 p -> proxy2 q -> proxy3 o ->
     (forall a. Ob p a => (o ~ Left a) => r) -> (forall b. Ob q b => (o ~ Right b) => r) -> r
 
@@ -36,7 +40,7 @@ instance Ob p a => SumOb p q (Left a) where
 instance Ob q b => SumOb p q (Right b) where
   sumOb _ _ _ _ r = r
 
-data (+) :: (i -> i -> *) -> (j -> j -> *) -> Either i j -> Either i j -> * where
+data (+) :: (i -> i -> Type) -> (j -> j -> Type) -> Either i j -> Either i j -> Type where
   L :: p a b -> (p + q) (Left a) (Left b)
   R :: q a b -> (p + q) (Right a) (Right b)
 

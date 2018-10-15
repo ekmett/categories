@@ -6,8 +6,9 @@
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE CPP #-}
 
-{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns -fno-warn-unused-imports #-}
 
 module Math.Multicategory.Free
   ( Graded(..)
@@ -32,6 +33,7 @@ instance Graded f => Graded (Free f) where
   grade Ident        = Proxy :& RNil
   grade (Apply _ as) = inputs grade as
 
+#if 0  
 instance Graded f => Multicategory (Free f) where
   type Mob (Free f) = Vacuous
   ident = Ident
@@ -41,3 +43,4 @@ instance Graded f => Multicategory (Free f) where
   sources m = mapRec (const Dict1) (grade m)
 
   mtarget _ = Dict1
+#endif

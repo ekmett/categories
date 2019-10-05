@@ -27,6 +27,7 @@ module Control.Category.Cartesian.Closed
 import Prelude ()
 import qualified Prelude
 
+import Control.Arrow(Kleisli(..))
 import Control.Category
 import Control.Category.Braided
 import Control.Category.Cartesian
@@ -49,6 +50,12 @@ instance CCC (->) where
   apply (f,a) = f a
   curry = Prelude.curry
   uncurry = Prelude.uncurry
+
+instance Prelude.Monad m => CCC (Kleisli m) where
+  type Exp (Kleisli m) = Kleisli m
+  apply = Kleisli (\(Kleisli f, a) -> f a)
+  uncurry (Kleisli f) = Kleisli (\(x, y) -> f x Prelude.>>= \(Kleisli g) -> g y)
+  curry (Kleisli f) = Kleisli (\x -> Prelude.return (Kleisli (\y -> (f (x, y)))))
 
 {-# RULES
 "curry apply"         curry apply = id

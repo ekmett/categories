@@ -23,6 +23,7 @@ module Control.Category.Cartesian
     , bimapSum, braidSum, associateSum, disassociateSum
     ) where
 
+import Control.Arrow (Kleisli(..))
 import Control.Category.Braided
 import Control.Category.Monoidal
 import Prelude hiding (Functor, map, (.), id, fst, snd, curry, uncurry)
@@ -62,6 +63,13 @@ instance Cartesian (->) where
     snd = Prelude.snd
     diag a = (a,a)
     (f &&& g) a = (f a, g a)
+
+instance Monad m => Cartesian (Kleisli m) where
+    type Product (Kleisli m) = (,)
+    fst = Kleisli $ return . fst
+    snd = Kleisli $ return . snd
+    diag = Kleisli $ return . diag
+    Kleisli f &&& Kleisli g = Kleisli $ \a -> (,) <$> f a <*> g a
 
 -- | free construction of 'Bifunctor' for the product 'Bifunctor' @Product k@ if @(&&&)@ is known
 bimapProduct :: Cartesian k => k a c -> k b d -> Product k a b `k` Product k c d
@@ -107,6 +115,13 @@ instance CoCartesian (->) where
     codiag (Right a) = a
     (f ||| _) (Left a) = f a
     (_ ||| g) (Right a) = g a
+
+instance Monad m => CoCartesian (Kleisli m) where
+  type Sum (Kleisli m) = Either
+  inl = Kleisli $ return . inl
+  inr = Kleisli $ return . inr
+  codiag = Kleisli $ return . codiag
+  Kleisli f ||| Kleisli g = Kleisli $ either f g
 
 -- | free construction of 'Bifunctor' for the coproduct 'Bifunctor' @Sum k@ if @(|||)@ is known
 bimapSum :: CoCartesian k => k a c -> k b d -> Sum k a b `k` Sum k c d

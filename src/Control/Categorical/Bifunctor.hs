@@ -24,6 +24,7 @@ module Control.Categorical.Bifunctor
     ) where
 
 import Prelude hiding (id, (.))
+import Control.Arrow (Kleisli(..))
 import Control.Category
 import Control.Category.Dual
 
@@ -57,6 +58,19 @@ instance Bifunctor Either (->) (->) (->) where
 
 instance QFunctor (->) (->) (->) where
     second = (.)
+
+instance Monad m => PFunctor (,) (Kleisli m) (Kleisli m) where first f = bimap f id
+instance Monad m => QFunctor (,) (Kleisli m) (Kleisli m) where second f = bimap id f
+instance Monad m => Bifunctor (,) (Kleisli m) (Kleisli m) (Kleisli m) where
+  bimap (Kleisli f) (Kleisli g) = (Kleisli (\(a, c) -> (,) <$> f a <*> g c))
+
+instance Monad m => PFunctor Either (Kleisli m) (Kleisli m) where first f = bimap f id
+instance Monad m => QFunctor Either (Kleisli m) (Kleisli m) where second f = bimap id f
+instance Monad m => Bifunctor Either (Kleisli m) (Kleisli m) (Kleisli m) where
+  bimap (Kleisli f) (Kleisli g) = (Kleisli $ either (fmap Left . f) (fmap Right . g))
+
+instance Monad m => QFunctor (Kleisli m) (Kleisli m) (Kleisli m) where
+  second f = Kleisli $ return . (f .)
 
 difirst :: PFunctor f (Dual s) t => s b a -> t (f a c) (f b c)
 difirst = first . Dual

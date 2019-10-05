@@ -21,6 +21,7 @@ module Control.Category.Associative
     ( Associative(..)
     ) where
 
+import Control.Arrow (Kleisli(..))
 import Control.Categorical.Bifunctor
 
 {- | A category with an associative bifunctor satisfying Mac Lane\'s pentagonal coherence identity law:
@@ -48,3 +49,11 @@ instance Associative (->) Either where
         disassociate (Left a) = Left (Left a)
         disassociate (Right (Left b)) = Left (Right b)
         disassociate (Right (Right c)) = Right c
+
+instance Monad m => Associative (Kleisli m) (,) where
+  associate = Kleisli $ return . associate
+  disassociate = Kleisli $ return . disassociate
+
+instance Monad m => Associative (Kleisli m) Either where
+  associate = Kleisli $ return . associate
+  disassociate = Kleisli $ return . disassociate

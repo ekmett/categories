@@ -25,6 +25,7 @@ module Control.Category.Monoidal
 
 import Control.Category.Associative
 import Data.Void
+import Control.Arrow (Kleisli(..))
 
 -- | Denotes that we have some reasonable notion of 'Identity' for a particular 'Bifunctor' in this 'Category'. This
 -- notion is currently used by both 'Monoidal' and 'Comonoidal'
@@ -63,6 +64,20 @@ instance Monoidal (->) Either where
   idr = either id absurd
   coidl = Right
   coidr = Left
+
+instance Monad m => Monoidal (Kleisli m) (,) where
+  type Id (Kleisli m) (,) = ()
+  idl = Kleisli $ return . snd
+  idr = Kleisli $ return . fst
+  coidl = Kleisli $ return . (,) ()
+  coidr = Kleisli $ return . flip (,) ()
+
+instance Monad m => Monoidal (Kleisli m) Either where
+  type Id (Kleisli m) Either = Void
+  idl = Kleisli $ either absurd return
+  idr = Kleisli $ either return absurd
+  coidl = Kleisli $ return . Right
+  coidr = Kleisli $ return . Left
 
 {-- RULES
 -- "bimap id idl/associate"   second idl . associate = first idr

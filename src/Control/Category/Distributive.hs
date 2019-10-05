@@ -24,6 +24,7 @@ module Control.Category.Distributive
 import Prelude hiding (Functor, map, (.), id, fst, snd, curry, uncurry)
 import Control.Categorical.Bifunctor
 import Control.Category.Cartesian
+import Control.Arrow (Kleisli(..))
 
 -- | The canonical factoring morphism.
 
@@ -38,6 +39,9 @@ class (Cartesian k, CoCartesian k) => Distributive k where
 instance Distributive (->) where
     distribute (a, Left b) = Left (a,b)
     distribute (a, Right c) = Right (a,c)
+
+instance Monad m => Distributive (Kleisli m) where
+    distribute = Kleisli $ \x -> return (distribute x)
 
 {-- RULES
 "factor . distribute" factor . distribute = id

@@ -21,6 +21,7 @@ module Control.Category.Braided
   ) where
 
 -- import Control.Categorical.Bifunctor
+import Control.Arrow (Kleisli(..))
 import Control.Category.Associative
 
 {- | A braided (co)(monoidal or associative) category can commute the arguments of its bi-endofunctor. Obeys the laws:
@@ -50,6 +51,12 @@ instance Braided (->) Either where
 instance Braided (->) (,) where
     braid ~(a,b) = (b,a)
 
+instance Monad m => Braided (Kleisli m) Either where
+  braid = Kleisli $ return . braid
+
+instance Monad m => Braided (Kleisli m) (,) where
+  braid = Kleisli $ return . braid
+
 {-- RULES
 "braid/associate/braid"         second braid . associate . first braid    = associate . braid . associate
 "braid/disassociate/braid"      first braid . disassociate . second braid = disassociate . braid . disassociate
@@ -71,3 +78,6 @@ swap = braid
 
 instance Symmetric (->) Either
 instance Symmetric (->) (,)
+
+instance Monad m => Symmetric (Kleisli m) Either
+instance Monad m => Symmetric (Kleisli m) (,)

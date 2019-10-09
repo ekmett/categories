@@ -1,4 +1,5 @@
 {-# LANGUAGE TypeFamilies, MultiParamTypeClasses #-}
+{-# LANGUAGE PolyKinds #-}
 -------------------------------------------------------------------------------------------
 -- |
 -- Module    : Control.Category.Monoidal

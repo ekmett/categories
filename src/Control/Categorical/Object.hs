@@ -1,4 +1,5 @@
 {-# LANGUAGE TypeFamilies, TypeOperators #-}
+{-# LANGUAGE PolyKinds #-}
 -------------------------------------------------------------------------------------------
 -- |
 -- Module   : Control.Category.Object

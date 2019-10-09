@@ -1,4 +1,5 @@
 {-# LANGUAGE GADTs, TypeOperators #-}
+{-# LANGUAGE PolyKinds #-}
 -------------------------------------------------------------------------------------------
 -- |
 -- Module    : Control.Category.Discrete
